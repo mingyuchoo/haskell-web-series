@@ -33,6 +33,7 @@ library
   build-depends:
       aeson
     , base >=4.7 && <5
+    , bytestring
     , http-types
     , text
     , wai
@@ -49,6 +50,7 @@ executable warp-t01-json-exe
   build-depends:
       aeson
     , base >=4.7 && <5
+    , bytestring
     , http-types
     , text
     , wai
@@ -67,6 +69,7 @@ test-suite warp-t01-json-test
   build-depends:
       aeson
     , base >=4.7 && <5
+    , bytestring
     , http-types
     , text
     , wai
