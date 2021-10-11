@@ -1,6 +1,4 @@
-{-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE TemplateHaskell   #-}
+{-# LANGUAGE TemplateHaskell #-}
 --------------------------------------------------------------------------------
 module Settings.StaticFiles
     where

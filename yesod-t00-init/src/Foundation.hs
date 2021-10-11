@@ -1,4 +1,3 @@
-{-# LANGUAGE ExplicitForAll        #-}
 {-# LANGUAGE InstanceSigs          #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE NoImplicitPrelude     #-}
