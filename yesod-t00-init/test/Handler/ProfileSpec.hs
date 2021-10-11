@@ -2,7 +2,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 --------------------------------------------------------------------------------
-module Handler.ProfileSpec (spec) where
+module Handler.ProfileSpec
+    ( spec
+    ) where
 
 --------------------------------------------------------------------------------
 import           TestImport

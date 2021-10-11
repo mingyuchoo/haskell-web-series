@@ -35,7 +35,8 @@
 -- If you change a template, you'll need to either exit GHCi and reload,
 -- or manually @touch@ another Haskell module.
 
-module DevelMain where
+module DevelMain
+    where
 
 --------------------------------------------------------------------------------
 import           Application              (getApplicationRepl, shutdownApp)

@@ -11,9 +11,14 @@ module TestImport
 import           Application             (makeFoundation, makeLogWare)
 import           ClassyPrelude           as X hiding (Handler, delete, deleteBy)
 import           Database.Persist        as X hiding (get)
-import           Database.Persist.Sql    (SqlPersistM, connEscapeName,
-                                          rawExecute, rawSql,
-                                          runSqlPersistMPool, unSingle)
+import           Database.Persist.Sql
+    ( SqlPersistM
+    , connEscapeName
+    , rawExecute
+    , rawSql
+    , runSqlPersistMPool
+    , unSingle
+    )
 import           Foundation              as X
 import           Model                   as X
 import           Test.Hspec              as X
@@ -24,8 +29,12 @@ import           Yesod.Test              as X
 
 -- Wiping the database
 import           Control.Monad.Logger    (runLoggingT)
-import           Database.Persist.Sqlite (createSqlitePoolFromInfo, fkEnabled,
-                                          mkSqliteConnectionInfo, sqlDatabase)
+import           Database.Persist.Sqlite
+    ( createSqlitePoolFromInfo
+    , fkEnabled
+    , mkSqliteConnectionInfo
+    , sqlDatabase
+    )
 import           Lens.Micro              (set)
 import           Settings                (appDatabaseConf)
 import           Yesod.Core              (messageLoggerSource)

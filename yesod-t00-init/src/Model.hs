@@ -12,7 +12,8 @@
 {-# LANGUAGE UndecidableInstances       #-}
 
 --------------------------------------------------------------------------------
-module Model where
+module Model
+    where
 
 --------------------------------------------------------------------------------
 import           ClassyPrelude.Yesod

@@ -5,7 +5,8 @@
 {-# LANGUAGE TypeFamilies          #-}
 
 --------------------------------------------------------------------------------
-module Handler.Profile where
+module Handler.Profile
+    where
 
 --------------------------------------------------------------------------------
 import           Import

@@ -2,7 +2,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TemplateHaskell   #-}
 --------------------------------------------------------------------------------
-module Settings.StaticFiles where
+module Settings.StaticFiles
+    where
 
 --------------------------------------------------------------------------------
 import           Settings     (appStaticDir, compileTimeAppSettings)

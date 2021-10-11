@@ -1,7 +1,9 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 --------------------------------------------------------------------------------
-module Handler.CommentSpec (spec) where
+module Handler.CommentSpec
+    ( spec
+    ) where
 
 --------------------------------------------------------------------------------
 import           Data.Aeson
