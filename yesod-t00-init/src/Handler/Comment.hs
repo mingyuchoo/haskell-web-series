@@ -1,4 +1,5 @@
-module Handler.Comment where
+module Handler.Comment
+    where
 
 --------------------------------------------------------------------------------
 import           Import

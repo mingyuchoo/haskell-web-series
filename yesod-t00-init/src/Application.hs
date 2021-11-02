@@ -1,53 +1,60 @@
-{-# LANGUAGE MultiParamTypeClasses #-}
-{-# LANGUAGE NoImplicitPrelude     #-}
-{-# LANGUAGE OverloadedStrings     #-}
-{-# LANGUAGE RecordWildCards       #-}
-{-# LANGUAGE TemplateHaskell       #-}
-{-# LANGUAGE TypeFamilies          #-}
+{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards   #-}
+{-# LANGUAGE TemplateHaskell   #-}
 
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 --------------------------------------------------------------------------------
 module Application
-    ( getApplicationDev
-    , appMain
+    ( appMain
     , develMain
+    , getApplicationDev
     , makeFoundation
     , makeLogWare
-
-    -- * for DevelMain
+      -- * for DevelMain
     , getApplicationRepl
     , shutdownApp
-
-    -- * for GHCI
-    , handler
+      -- * for GHCI
     , db
+    , handler
     ) where
 
 --------------------------------------------------------------------------------
 import           Control.Monad.Logger                 (liftLoc, runLoggingT)
-import           Database.Persist.Sqlite              (createSqlitePool,
-                                                       runSqlPool, sqlDatabase,
-                                                       sqlPoolSize)
+import           Database.Persist.Sqlite
+    ( createSqlitePool
+    , runSqlPool
+    , sqlDatabase
+    , sqlPoolSize
+    )
 import           Import
 import           Language.Haskell.TH.Syntax           (qLocation)
 import           Network.HTTP.Client.TLS              (getGlobalManager)
 import           Network.Wai                          (Middleware)
-import           Network.Wai.Handler.Warp             (Settings,
-                                                       defaultSettings,
-                                                       defaultShouldDisplayException,
-                                                       getPort, runSettings,
-                                                       setHost, setOnException,
-                                                       setPort)
+import           Network.Wai.Handler.Warp
+    ( Settings
+    , defaultSettings
+    , defaultShouldDisplayException
+    , getPort
+    , runSettings
+    , setHost
+    , setOnException
+    , setPort
+    )
 
-import           Network.Wai.Middleware.RequestLogger (Destination (Logger),
-                                                       IPAddrSource (..),
-                                                       OutputFormat (..),
-                                                       destination,
-                                                       mkRequestLogger,
-                                                       outputFormat)
-import           System.Log.FastLogger                (defaultBufSize,
-                                                       newStdoutLoggerSet,
-                                                       toLogStr)
+import           Network.Wai.Middleware.RequestLogger
+    ( Destination (Logger)
+    , IPAddrSource (..)
+    , OutputFormat (..)
+    , destination
+    , mkRequestLogger
+    , outputFormat
+    )
+import           System.Log.FastLogger
+    ( defaultBufSize
+    , newStdoutLoggerSet
+    , toLogStr
+    )
 
 -- Import all relevant handler modules here.
 -- Don't forget to add new modules to your cabal file!
@@ -57,8 +64,7 @@ import           Handler.Home
 import           Handler.Profile
 
 --------------------------------------------------------------------------------
--- |
--- This line actually creates our YesodDispatch instance. It is the second half
+-- | This line actually creates our YesodDispatch instance. It is the second half
 -- of the call to mkYesodData which occurs in Foundation.hs. Please see the
 -- comments there for more details.
 mkYesodDispatch "App" resourcesApp

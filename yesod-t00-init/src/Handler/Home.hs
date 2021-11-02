@@ -5,20 +5,22 @@
 {-# LANGUAGE TypeFamilies          #-}
 
 --------------------------------------------------------------------------------
-module Handler.Home where
+module Handler.Home
+    where
 
 --------------------------------------------------------------------------------
 import           Import
 import           Text.Julius           (RawJS (..))
-import           Yesod.Form.Bootstrap3 (BootstrapFormLayout (..),
-                                        renderBootstrap3)
+import           Yesod.Form.Bootstrap3
+    ( BootstrapFormLayout (..)
+    , renderBootstrap3
+    )
 
 --------------------------------------------------------------------------------
 -- Define our data that will be used for creating the form.
-data FileForm = FileForm
-    { fileInfo        :: FileInfo
-    , fileDescription :: Text
-    }
+data FileForm = FileForm { fileInfo        :: FileInfo
+                         , fileDescription :: Text
+                         }
 
 --------------------------------------------------------------------------------
 -- This is a handler function for the GET request method on the HomeR

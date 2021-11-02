@@ -6,7 +6,8 @@
 
 --------------------------------------------------------------------------------
 -- | Common handler functions.
-module Handler.Common where
+module Handler.Common
+    where
 
 --------------------------------------------------------------------------------
 import           Data.FileEmbed (embedFile)
