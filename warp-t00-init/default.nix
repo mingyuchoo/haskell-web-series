@@ -9,7 +9,12 @@ in
   modifier = drv:
     pkgs.haskell.lib.addBuildTools drv (
       with pkgs.haskellPackages;
-      [ cabal-install
+      [ stack
+        cabal-install
+        stylish-haskell
+        hindent
+        hlint
+        hoogle
         ghcid
       ]
     );
