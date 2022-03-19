@@ -12,6 +12,7 @@ in
       [ stack
         cabal-install
         stylish-haskell
+        haskell-language-server
         hindent
         hlint
         hoogle
