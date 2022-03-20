@@ -1,6 +1,7 @@
-{-# LANGUAGE DataKinds       #-}
-{-# LANGUAGE TemplateHaskell #-}
-{-# LANGUAGE TypeOperators   #-}
+{-# LANGUAGE DataKinds                #-}
+{-# LANGUAGE StandaloneKindSignatures #-}
+{-# LANGUAGE TemplateHaskell          #-}
+{-# LANGUAGE TypeOperators            #-}
 
 module Lib
     ( app
@@ -9,19 +10,23 @@ module Lib
 
 import           Data.Aeson
 import           Data.Aeson.TH
+import           Data.Kind
 import           Data.Text
 import           Data.Time.Calendar
 import           Network.Wai
 import           Network.Wai.Handler.Warp
 import           Servant
 
-
+type UserAPI1 :: *
 type UserAPI1 = "users" :> Get '[JSON] [User]
+
+type UserAPI2 :: *
 type UserAPI2 = "users" :> Get '[JSON] [User]
            :<|> "isaac"  :> Get '[JSON] User
            :<|> "albert" :> Get '[JSON] User
 
 
+type User :: *
 data User = User { name              :: String
                  , age               :: Int
                  , email             :: String
