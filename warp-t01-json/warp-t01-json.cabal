@@ -70,6 +70,7 @@ test-suite warp-t01-json-test
       aeson
     , base >=4.7 && <5
     , bytestring
+    , hspec
     , http-types
     , text
     , wai

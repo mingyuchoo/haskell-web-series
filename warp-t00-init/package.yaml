@@ -21,8 +21,8 @@ description:         Please see the README on GitHub at <https://github.com/gith
 
 dependencies:
 - base >= 4.7 && < 5
-- http-types
 - wai
+- http-types
 - warp
 
 library:
@@ -49,3 +49,4 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - warp-t00-init
+    - hspec

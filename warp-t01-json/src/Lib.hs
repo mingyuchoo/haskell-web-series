@@ -1,4 +1,5 @@
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings        #-}
+{-# LANGUAGE StandaloneKindSignatures #-}
 
 module Lib
     where
@@ -6,6 +7,7 @@ module Lib
 import           Data.Aeson
 import           Data.ByteString           (ByteString, length)
 import           Data.ByteString.Lazy      (fromStrict)
+import           Data.Kind                 ()
 import           Data.Text                 (Text, pack)
 import           Network.HTTP.Types        (status200)
 import           Network.HTTP.Types.Header (hContentType)
