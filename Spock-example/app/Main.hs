@@ -12,11 +12,18 @@ import           Network.HTTP.Types
 import           Web.Spock
 import           Web.Spock.Config
 
+import           System.IO
+    ( BufferMode (NoBuffering)
+    , hSetBuffering
+    , stdout
+    )
+
 data MySession = EmptySession
 data MyAppState = DummyAppState (IORef Int)
 
 main :: IO ()
 main = do
+    hSetBuffering stdout NoBuffering
     Db.runSqlite "example.db" $ Db.runMigration migrateAll
     runNoLoggingT $
         Db.withSqlitePool "example.db" 10 $ \pool -> liftIO $ do

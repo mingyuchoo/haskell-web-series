@@ -5,6 +5,9 @@ module Main
 
 import           Data.Kind
 import           Lib
+import           System.IO (BufferMode (NoBuffering), hSetBuffering, stdout)
 
 main :: IO ()
-main = startApp
+main = do
+  hSetBuffering stdout NoBuffering
+  startApp

@@ -1,6 +1,10 @@
-module Main where
+module Main
+    where
 
-import Lib
+import           Lib
+import           System.IO (BufferMode (NoBuffering), hSetBuffering, stdout)
 
 main :: IO ()
-main = someFunc
+main = do
+  hSetBuffering stdout NoBuffering
+  someFunc

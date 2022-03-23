@@ -13,6 +13,12 @@ import           Web.Spock
 import           Web.Spock.Config
 import           Web.Spock.Lucid        (lucid)
 
+import           System.IO
+    ( BufferMode (NoBuffering)
+    , hSetBuffering
+    , stdout
+    )
+
 data Note = Note { author   :: Text
                  , contents :: Text
                  }
@@ -21,6 +27,7 @@ type Server a = SpockM () () ServerState a
 
 app :: Server ()
 app = do
+    hSetBuffering stdout NoBuffering
     get root $ do
         notes' <- getState >>= (liftIO . readIORef . notes)
         lucid $ do

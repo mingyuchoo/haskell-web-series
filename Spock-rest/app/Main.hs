@@ -29,6 +29,13 @@ import qualified Database.Persist        as P
 import           Database.Persist.Sqlite hiding (get)
 import           Database.Persist.TH
 
+import           System.IO
+    ( BufferMode (NoBufferintg)
+    , hSetBuffering
+    , stdout
+    )
+
+
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
 Person json -- The json keyword will make Persistent generate sensible ToJSON and FromJSON instances for us.
   name Text
@@ -43,6 +50,7 @@ type ApiAction a = SpockAction SqlBackend () () a
 
 main :: IO ()
 main = do
+  hSetBuffering stdout NoBuffering
   pool <- runStdoutLoggingT $ createSqlitePool "api.db" 5
   spockCfg <- defaultSpockCfg () (PCPool pool) ()
   runStdoutLoggingT $ runSqlPool (do runMigration migrateAll) pool
