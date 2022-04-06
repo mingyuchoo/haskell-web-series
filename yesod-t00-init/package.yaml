@@ -66,9 +66,10 @@ executables:
     main: main.hs
     source-dirs: app
     ghc-options:
+    - -dynamic
     - -threaded
     - -rtsopts
-    - -with-rtsopts=-N
+    - -with-rtsopts=-N4
     dependencies:
     - yesod-t00-init
     when:
@@ -82,6 +83,7 @@ tests:
     source-dirs: test
     ghc-options: -Wall
     dependencies:
+    - dynamic
     - yesod-t00-init
     - hspec >=2.0.0
     - yesod-test

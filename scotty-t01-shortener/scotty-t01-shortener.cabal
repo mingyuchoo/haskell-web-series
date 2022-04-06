@@ -34,8 +34,6 @@ library
       base >=4.7 && <5
     , blaze-html
     , containers
-    , doctest
-    , doctest-discover
     , http-types
     , scotty
     , text
@@ -47,13 +45,11 @@ executable scotty-t01-shortener-exe
       Paths_scotty_t01_shortener
   hs-source-dirs:
       app
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       base >=4.7 && <5
     , blaze-html
     , containers
-    , doctest
-    , doctest-discover
     , http-types
     , scotty
     , scotty-t01-shortener
@@ -67,7 +63,7 @@ test-suite scotty-t01-shortener-test
       Paths_scotty_t01_shortener
   hs-source-dirs:
       test
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       base >=4.7 && <5
     , blaze-html

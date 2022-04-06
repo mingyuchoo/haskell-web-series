@@ -32,6 +32,9 @@ library
       src
   build-depends:
       base >=4.7 && <5
+    , containers
+    , flow
+    , parallel
     , scotty
   default-language: Haskell2010
 
@@ -41,9 +44,12 @@ executable scotty-t00-init-exe
       Paths_scotty_t00_init
   hs-source-dirs:
       app
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       base >=4.7 && <5
+    , containers
+    , flow
+    , parallel
     , scotty
     , scotty-t00-init
   default-language: Haskell2010
@@ -55,9 +61,12 @@ test-suite scotty-t00-init-test
       Paths_scotty_t00_init
   hs-source-dirs:
       test
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       base >=4.7 && <5
+    , containers
+    , flow
+    , parallel
     , scotty
     , scotty-t00-init
   default-language: Haskell2010

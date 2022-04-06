@@ -21,6 +21,9 @@ description:         Please see the README on GitHub at <https://github.com/gith
 
 dependencies:
 - base >= 4.7 && < 5
+- containers
+- flow
+- parallel
 - scotty
 
 library:
@@ -31,9 +34,10 @@ executables:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
+    - -dynamic
     - -threaded
     - -rtsopts
-    - -with-rtsopts=-N
+    - -with-rtsopts=-N4
     dependencies:
     - scotty-t00-init
 
@@ -42,8 +46,9 @@ tests:
     main:                Spec.hs
     source-dirs:         test
     ghc-options:
+    - -dynamic
     - -threaded
     - -rtsopts
-    - -with-rtsopts=-N
+    - -with-rtsopts=-N4
     dependencies:
     - scotty-t00-init

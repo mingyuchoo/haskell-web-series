@@ -23,16 +23,17 @@ dependencies:
 - base >= 4.7 && < 5
 - aeson
 - containers
-- Spock
-- Spock-core
+- monad-logger
 - reroute
 - stm-containers
 - stm-hamt
-- text
-- monad-logger
+- parallel
 - persistent
 - persistent-sqlite
 - persistent-template
+- text
+- Spock
+- Spock-core
 
 library:
   source-dirs: src
@@ -42,9 +43,10 @@ executables:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
+    - dynamic
     - -threaded
     - -rtsopts
-    - -with-rtsopts=-N
+    - -with-rtsopts=-N4
     dependencies:
     - Spock-rest
 
@@ -53,8 +55,9 @@ tests:
     main:                Spec.hs
     source-dirs:         test
     ghc-options:
+    - -dynamic
     - -threaded
     - -rtsopts
-    - -with-rtsopts=-N
+    - -with-rtsopts=-N4
     dependencies:
     - Spock-rest

@@ -37,6 +37,7 @@ library
     , base >=4.7 && <5
     , containers
     , monad-logger
+    , parallel
     , persistent
     , persistent-sqlite
     , persistent-template
@@ -52,7 +53,7 @@ executable Spock-rest-exe
       Paths_Spock_rest
   hs-source-dirs:
       app
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       Spock
     , Spock-core
@@ -61,6 +62,7 @@ executable Spock-rest-exe
     , base >=4.7 && <5
     , containers
     , monad-logger
+    , parallel
     , persistent
     , persistent-sqlite
     , persistent-template
@@ -77,7 +79,7 @@ test-suite Spock-rest-test
       Paths_Spock_rest
   hs-source-dirs:
       test
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       Spock
     , Spock-core
@@ -86,6 +88,7 @@ test-suite Spock-rest-test
     , base >=4.7 && <5
     , containers
     , monad-logger
+    , parallel
     , persistent
     , persistent-sqlite
     , persistent-template

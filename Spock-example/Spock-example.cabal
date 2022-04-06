@@ -34,10 +34,12 @@ library
       Spock
     , Spock-core
     , base >=4.7 && <5
+    , containers
     , focus
     , http-types
     , monad-logger
     , mtl
+    , parallel
     , persistent
     , persistent-sqlite
     , persistent-template
@@ -55,16 +57,18 @@ executable Spock-example-exe
       Paths_Spock_example
   hs-source-dirs:
       app
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       Spock
     , Spock-core
     , Spock-example
     , base >=4.7 && <5
+    , containers
     , focus
     , http-types
     , monad-logger
     , mtl
+    , parallel
     , persistent
     , persistent-sqlite
     , persistent-template
@@ -83,16 +87,18 @@ test-suite Spock-example-test
       Paths_Spock_example
   hs-source-dirs:
       test
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       Spock
     , Spock-core
     , Spock-example
     , base >=4.7 && <5
+    , containers
     , focus
     , http-types
     , monad-logger
     , mtl
+    , parallel
     , persistent
     , persistent-sqlite
     , persistent-template

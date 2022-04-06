@@ -32,6 +32,9 @@ library
   build-depends:
       aeson
     , base >=4.7 && <5
+    , containers
+    , flow
+    , parallel
     , servant-server
     , text
     , time
@@ -45,10 +48,13 @@ executable servant-t00-init-exe
       Paths_servant_t00_init
   hs-source-dirs:
       app
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       aeson
     , base
+    , containers
+    , flow
+    , parallel
     , servant-server
     , servant-t00-init
     , text
@@ -64,13 +70,16 @@ test-suite servant-t00-init-test
       Paths_servant_t00_init
   hs-source-dirs:
       test
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       aeson
     , base
+    , containers
+    , flow
     , hspec
     , hspec-wai
     , hspec-wai-json
+    , parallel
     , servant-server
     , servant-t00-init
     , text

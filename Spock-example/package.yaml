@@ -21,21 +21,23 @@ description:         Please see the README on GitHub at <https://github.com/gith
 
 dependencies:
 - base >= 4.7 && < 5
+- containers
+- focus
 - http-types
-- text
 - monad-logger
 - mtl
-- focus
+- parallel
 - persistent
 - persistent-template
 - persistent-sqlite
 - primitive-extras
 - primitive-unlifted
-- Spock
-- Spock-core
 - reroute
 - stm-containers
 - stm-hamt
+- text
+- Spock
+- Spock-core
 
 library:
   source-dirs: src
@@ -45,9 +47,10 @@ executables:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
+    - -dynamic
     - -threaded
     - -rtsopts
-    - -with-rtsopts=-N
+    - -with-rtsopts=-N4
     dependencies:
     - Spock-example
 
@@ -56,8 +59,9 @@ tests:
     main:                Spec.hs
     source-dirs:         test
     ghc-options:
+    - -dynamic
     - -threaded
     - -rtsopts
-    - -with-rtsopts=-N
+    - -with-rtsopts=-N4
     dependencies:
     - Spock-example

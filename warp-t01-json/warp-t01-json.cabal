@@ -34,7 +34,10 @@ library
       aeson
     , base >=4.7 && <5
     , bytestring
+    , containers
+    , flow
     , http-types
+    , parallel
     , text
     , wai
     , warp
@@ -46,12 +49,15 @@ executable warp-t01-json-exe
       Paths_warp_t01_json
   hs-source-dirs:
       app
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -O -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       aeson
     , base >=4.7 && <5
     , bytestring
+    , containers
+    , flow
     , http-types
+    , parallel
     , text
     , wai
     , warp
@@ -65,13 +71,16 @@ test-suite warp-t01-json-test
       Paths_warp_t01_json
   hs-source-dirs:
       test
-  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       aeson
     , base >=4.7 && <5
     , bytestring
+    , containers
+    , flow
     , hspec
     , http-types
+    , parallel
     , text
     , wai
     , warp
