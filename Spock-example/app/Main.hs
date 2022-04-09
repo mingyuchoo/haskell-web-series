@@ -18,9 +18,15 @@ import           System.IO
     , stdout
     )
 
+-- |
+--
+--
 data MySession = EmptySession
 data MyAppState = DummyAppState (IORef Int)
 
+-- |
+--
+--
 main :: IO ()
 main = do
     hSetBuffering stdout NoBuffering
@@ -31,6 +37,9 @@ main = do
         spockCfg <- defaultSpockCfg EmptySession (PCPool pool) (DummyAppState ref)
         runSpock 8000 (spock spockCfg app)
 
+-- |
+--
+--
 app :: SpockM Db.SqlBackend MySession MyAppState ()
 app = do
     get root $ text "Hello, World!"

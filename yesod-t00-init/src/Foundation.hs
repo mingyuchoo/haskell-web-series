@@ -6,11 +6,11 @@
 {-# LANGUAGE TemplateHaskell       #-}
 {-# LANGUAGE TypeFamilies          #-}
 
---------------------------------------------------------------------------------
+
 module Foundation
     where
 
---------------------------------------------------------------------------------
+
 import           Control.Monad.Logger (LogSource)
 import           Database.Persist.Sql (ConnectionPool, runSqlPool)
 import           Import.NoFoundation
@@ -27,7 +27,7 @@ import           Yesod.Core.Types     (Logger)
 import qualified Yesod.Core.Unsafe    as Unsafe
 import           Yesod.Default.Util   (addStaticContentExternal)
 
---------------------------------------------------------------------------------
+
 -- | The foundation datatype for your application. This can be a good place to
 -- keep settings and values requiring initialization before your application
 -- starts running, such as database connections. Every handler will have
@@ -49,8 +49,10 @@ data MenuItem = MenuItem { menuItemLabel          :: Text
 data MenuTypes = NavbarLeft MenuItem
                | NavbarRight MenuItem
 
---------------------------------------------------------------------------------
+
 -- |
+--
+--
 -- This is where we define all of the routes in our application. For a full
 -- explanation of the syntax, please see:
 -- http://www.yesodweb.com/book/routing-and-handlers
@@ -66,21 +68,25 @@ data MenuTypes = NavbarLeft MenuItem
 -- type Widget = WidgetFor App ()
 mkYesodData "App" $(parseRoutesFile "config/routes.yesodroutes")
 
---------------------------------------------------------------------------------
+
 -- | A convenient synonym for creating forms.
 type Form x = Html -> MForm (HandlerFor App) (FormResult x, Widget)
 
---------------------------------------------------------------------------------
+
 -- | A convenient synonym for database access functions.
 type DB a = forall (m :: * -> *).
     (MonadUnliftIO m) => ReaderT SqlBackend m a
 
---------------------------------------------------------------------------------
+
 -- |
+--
+--
 -- Please see the documentation for the Yesod typeclass. There are a number
 -- of settings which can be configured by overriding methods here.
 instance Yesod App where
     -- |
+--
+--
     -- Controls the base of generated URLs. For more information on modifying,
     -- see: https://github.com/yesodweb/yesod/wiki/Overriding-approot
     approot :: Approot App
@@ -90,6 +96,8 @@ instance Yesod App where
             Just root -> root
 
     -- |
+--
+--
     -- Store session data on the client in encrypted cookies,
     -- default session idle timeout is 120 minutes
     makeSessionBackend :: App -> IO (Maybe SessionBackend)
@@ -98,6 +106,8 @@ instance Yesod App where
         "config/client_session_key.aes"
 
     -- |
+--
+--
     -- Yesod Middleware allows you to run code before and after each handler
     -- function.
     -- The defaultYesodMiddleware adds the response header
@@ -114,6 +124,8 @@ instance Yesod App where
     yesodMiddleware = defaultYesodMiddleware
 
     -- |
+--
+--
     defaultLayout :: Widget -> Handler Html
     defaultLayout widget = do
         master <- getYesod
@@ -169,11 +181,15 @@ instance Yesod App where
         withUrlRenderer $(hamletFile "templates/default-layout-wrapper.hamlet")
 
     -- |
+--
+--
     -- The page to be redirected to when authentication is required.
     authRoute :: App -> Maybe (Route App)
     authRoute _ = Just $ AuthR LoginR
 
     -- |
+--
+--
     isAuthorized
         :: Route App  -- ^ The route the user is visiting.
         -> Bool       -- ^ Whether or not this is a "write" request.
@@ -187,11 +203,15 @@ instance Yesod App where
     isAuthorized (StaticR _) _ = return Authorized
 
     -- |
+--
+--
     -- the profile route requires that the user is authenticated, so we
     -- delegate to that function
     isAuthorized ProfileR _    = isAuthenticated
 
     -- |
+--
+--
     -- This function creates static content files in the static folder
     -- and names them based on a hash of their content. This allows
     -- expiration dates to be set far in the future without worry of
@@ -217,6 +237,8 @@ instance Yesod App where
         genFileName lbs = "autogen-" ++ base64md5 lbs
 
     -- |
+--
+--
     -- What messages should be logged. The following includes all messages when
     -- in development, and warnings and errors in production.
     shouldLogIO :: App -> LogSource -> LogLevel -> IO Bool
@@ -227,14 +249,20 @@ instance Yesod App where
             || level == LevelError
 
     -- |
+--
+--
     makeLogger :: App -> IO Logger
     makeLogger = return . appLogger
 
---------------------------------------------------------------------------------
+
 -- |
+--
+--
 -- Define breadcrumbs.
 instance YesodBreadcrumbs App where
     -- |
+--
+--
     -- Takes the route that the user is currently on, and returns a tuple
     -- of the 'Text' that you want the label to display, and a previous
     -- breadcrumb route.
@@ -246,43 +274,61 @@ instance YesodBreadcrumbs App where
     breadcrumb ProfileR  = return ("Profile", Just HomeR)
     breadcrumb  _        = return ("home", Nothing)
 
---------------------------------------------------------------------------------
+
 -- |
+--
+--
 -- How to run database actions.
 instance YesodPersist App where
     type YesodPersistBackend App = SqlBackend
     -- |
+--
+--
     runDB :: SqlPersistT Handler a -> Handler a
     runDB action = do
         master <- getYesod
         runSqlPool action $ appConnPool master
 
---------------------------------------------------------------------------------
+
 -- |
+--
+--
 instance YesodPersistRunner App where
     -- |
+--
+--
     getDBRunner :: Handler (DBRunner App, Handler ())
     getDBRunner = defaultGetDBRunner appConnPool
 
---------------------------------------------------------------------------------
+
 -- |
+--
+--
 instance YesodAuth App where
     type AuthId App = UserId
 
     -- |
+--
+--
     -- Where to send a user after successful login
     loginDest :: App -> Route App
     loginDest _ = HomeR
     -- |
+--
+--
     -- Where to send a user after logout
     logoutDest :: App -> Route App
     logoutDest _ = HomeR
     -- |
+--
+--
     -- Override the above two destinations when a Referer: header is present
     redirectToReferer :: App -> Bool
     redirectToReferer _ = True
 
     -- |
+--
+--
     authenticate :: (MonadHandler m, HandlerSite m ~ App)
                  => Creds App -> m (AuthenticationResult App)
     authenticate creds = liftHandler $ runDB $ do
@@ -295,6 +341,8 @@ instance YesodAuth App where
                 }
 
     -- |
+--
+--
     -- You can add other plugins like Google Email, email or OAuth here
     authPlugins :: App -> [AuthPlugin App]
     authPlugins app = [authOpenId Claimed []] ++ extraAuthPlugins
@@ -302,7 +350,7 @@ instance YesodAuth App where
         where extraAuthPlugins = [authDummy
                                  | appAuthDummyLogin $ appSettings app]
 
---------------------------------------------------------------------------------
+
 -- | Access function to determine if a user is logged in.
 isAuthenticated :: Handler AuthResult
 isAuthenticated = do
@@ -311,32 +359,44 @@ isAuthenticated = do
         Nothing -> Unauthorized "You must login to access this page"
         Just _  -> Authorized
 
---------------------------------------------------------------------------------
+
 -- |
+--
+--
 instance YesodAuthPersist App
 
---------------------------------------------------------------------------------
+
 -- |
+--
+--
 -- This instance is required to use forms. You can modify renderMessage to
 -- achieve customized and internationalized form validation messages.
 instance RenderMessage App FormMessage where
     -- |
+--
+--
     renderMessage :: App -> [Lang] -> FormMessage -> Text
     renderMessage _ _ = defaultFormMessage
 
---------------------------------------------------------------------------------
+
 -- |
+--
+--
 -- Useful when writing code that is re-usable outside of the Handler context.
 -- An example is background jobs that send email.
 -- This can also be useful for writing code that works across
 -- multiple Yesod applications.
 instance HasHttpManager App where
     -- |
+--
+--
     getHttpManager :: App -> Manager
     getHttpManager = appHttpManager
 
---------------------------------------------------------------------------------
+
 -- |
+--
+--
 unsafeHandler :: App -> Handler a -> IO a
 unsafeHandler = Unsafe.fakeHandlerGetLogger appLogger
 

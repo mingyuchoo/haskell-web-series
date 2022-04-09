@@ -10,9 +10,15 @@ import           Test.Hspec
 import           Test.Hspec.Wai
 import           Test.Hspec.Wai.JSON
 
+-- |
+--
+--
 main :: IO ()
 main = hspec spec
 
+-- |
+--
+--
 spec :: Spec
 spec = with (return app) $ do
     describe "GET /users" $ do

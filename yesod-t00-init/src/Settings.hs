@@ -4,7 +4,7 @@
 {-# LANGUAGE RecordWildCards   #-}
 {-# LANGUAGE TemplateHaskell   #-}
 
---------------------------------------------------------------------------------
+
 -- | Settings are centralized, as much as possible, into this file. This
 -- includes database connection settings, static file locations, etc.
 -- In addition, you can configure a number of different aspects of Yesod
@@ -13,7 +13,7 @@
 module Settings
     where
 
---------------------------------------------------------------------------------
+
 import           ClassyPrelude.Yesod
 import qualified Control.Exception          as Exception
 import           Data.Aeson
@@ -35,7 +35,7 @@ import           Yesod.Default.Util
     , widgetFileReload
     )
 
---------------------------------------------------------------------------------
+
 -- | Runtime settings to configure this application. These settings can be
 -- loaded from various sources: defaults, environment variables, config files,
 -- theoretically even a database.
@@ -72,8 +72,10 @@ data AppSettings = AppSettings { appStaticDir              :: String
                                  -- ^ Indicate if auth dummy login should be enabled.
                                }
 
---------------------------------------------------------------------------------
+
 -- |
+--
+--
 instance FromJSON AppSettings where
     parseJSON = withObject "AppSettings" $ \o -> do
         let defaultDev =
@@ -99,7 +101,7 @@ instance FromJSON AppSettings where
         appAuthDummyLogin         <- o .:? "auth-dummy-login"      .!= dev
         return AppSettings {..}
 
---------------------------------------------------------------------------------
+
 -- | Settings for 'widgetFile', such as which template languages to support and
 -- default Hamlet settings.
 --
@@ -109,13 +111,15 @@ instance FromJSON AppSettings where
 widgetFileSettings :: WidgetFileSettings
 widgetFileSettings = def
 
---------------------------------------------------------------------------------
+
 -- | How static files should be combined.
 combineSettings :: CombineSettings
 combineSettings = def
 
---------------------------------------------------------------------------------
+
 -- |
+--
+--
 -- The rest of this file contains settings which rarely need changing by a
 -- user.
 widgetFile :: String -> Q Exp
@@ -124,18 +128,18 @@ widgetFile = (if appReloadTemplates compileTimeAppSettings
                 else widgetFileNoReload)
               widgetFileSettings
 
---------------------------------------------------------------------------------
+
 -- | Raw bytes at compile time of @config/settings.yml@
 configSettingsYmlBS :: ByteString
 configSettingsYmlBS = $(embedFile configSettingsYml)
 
---------------------------------------------------------------------------------
+
 -- | @config/settings.yml@, parsed to a @Value@.
 configSettingsYmlValue :: Value
 configSettingsYmlValue = either Exception.throw id
                        $ decodeEither' configSettingsYmlBS
 
---------------------------------------------------------------------------------
+
 -- | A version of @AppSettings@ parsed at compile time from @config/settings.yml@.
 compileTimeAppSettings :: AppSettings
 compileTimeAppSettings =
@@ -143,8 +147,10 @@ compileTimeAppSettings =
         Error e          -> error e
         Success settings -> settings
 
---------------------------------------------------------------------------------
+
 -- |
+--
+--
 -- The following two functions can be used to combine multiple CSS or JS files
 -- at compile time to decrease the number of http requests.
 -- Sample usage (inside a Widget):
@@ -156,8 +162,10 @@ combineStylesheets = combineStylesheets'
     (appSkipCombining compileTimeAppSettings)
     combineSettings
 
---------------------------------------------------------------------------------
+
 -- |
+--
+--
 combineScripts :: Name -> [Route Static] -> Q Exp
 combineScripts = combineScripts'
     (appSkipCombining compileTimeAppSettings)

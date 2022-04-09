@@ -8,6 +8,8 @@ module Lib
 import           Web.Scotty
 
 -- | render "Hello, World!"
+--
+--
 someFunc :: IO ()
 someFunc =
     scotty 3000 $ get "/" $

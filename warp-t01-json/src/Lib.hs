@@ -22,6 +22,8 @@ import           Network.Wai
 import           Network.Wai.Handler.Warp  (run)
 
 -- | Main Function
+--
+--
 someFunc :: IO ()
 someFunc = do
     let port = 3000
@@ -29,6 +31,8 @@ someFunc = do
     run port app
 
 -- | Application
+--
+--
 app :: Application
 app req res = do
     case (pathInfo req, queryString req) of
@@ -36,6 +40,8 @@ app req res = do
       _                               -> res $ notFoundRoute
 
 -- | JSON Response
+--
+--
 homeRoute :: ByteString -> Response
 homeRoute bs =
     responseLBS
@@ -44,6 +50,8 @@ homeRoute bs =
         (fromStrict bs)
 
 -- | Page not found
+--
+--
 notFoundRoute :: Response
 notFoundRoute =
     responseLBS
@@ -52,6 +60,8 @@ notFoundRoute =
         "Page not found."
 
 -- | JSON data
+--
+--
 jsonData :: [Text]
 jsonData = (pack . show) <$> [1 .. 100]
 

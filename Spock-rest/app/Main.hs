@@ -35,7 +35,9 @@ import           System.IO
     , stdout
     )
 
-
+-- |
+--
+--
 share [mkPersist sqlSettings, mkMigrate "migrateAll"] [persistLowerCase|
 Person json -- The json keyword will make Persistent generate sensible ToJSON and FromJSON instances for us.
   name Text
@@ -43,11 +45,19 @@ Person json -- The json keyword will make Persistent generate sensible ToJSON an
   deriving Show
 |]
 
-
+-- |
+--
+--
 type Api = SpockM SqlBackend () () ()
 
+-- |
+--
+--
 type ApiAction a = SpockAction SqlBackend () () a
 
+-- |
+--
+--
 main :: IO ()
 main = do
   hSetBuffering stdout NoBuffering
@@ -56,6 +66,9 @@ main = do
   runStdoutLoggingT $ runSqlPool (do runMigration migrateAll) pool
   runSpock 8080 (spock spockCfg app)
 
+-- |
+--
+--
 app :: Api
 app = do
   get "people" $ do
@@ -79,6 +92,9 @@ runSQL
   => SqlPersistT (LoggingT IO) a -> m a
 runSQL action = runQuery $ \conn -> runStdoutLoggingT $ runSqlConn action conn
 
+-- |
+--
+--
 errorJson :: Int -> Text -> ApiAction ()
 errorJson code message =
   json $

@@ -1,6 +1,9 @@
-import Lib 
+import Lib
 import Test.Hspec (hspec, describe, it, shouldBe)
 
+-- |
+--
+--
 main :: IO ()
 main = hspec $ do
   describe "Given a situation" $ do
