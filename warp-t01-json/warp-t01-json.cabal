@@ -79,6 +79,7 @@ test-suite warp-t01-json-test
     , containers
     , flow
     , hspec
+    , hspec-discover
     , http-types
     , parallel
     , text

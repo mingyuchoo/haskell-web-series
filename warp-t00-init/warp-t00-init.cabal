@@ -65,7 +65,7 @@ test-suite warp-t00-init-test
       Paths_warp_t00_init
   hs-source-dirs:
       test
-  ghc-options: -dynamic -threaded -rtsopts -with-rtsopts=-N
+  ghc-options: -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       base >=4.7 && <5
     , containers
