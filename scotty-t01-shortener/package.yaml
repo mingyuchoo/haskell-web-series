@@ -20,12 +20,15 @@ extra-source-files:
 description:         Please see the README on GitHub at <https://github.com/githubuser/scotty-t01-shortener#readme>
 
 dependencies:
-- base >= 4.7 && < 5
+- base >= 4.9.1.0 && < 5
 - blaze-html
 - containers
 - http-types
 - scotty
 - text
+
+default-extensions: []
+ghc-options: []
 
 library:
   source-dirs: src

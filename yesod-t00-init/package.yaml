@@ -42,8 +42,9 @@ dependencies:
 - wai
 - foreign-store
 
-# The library contains all of our application code. The executable
-# defined below is just a thin wrapper.
+default-extensions: []
+ghc-options: []
+
 library:
   source-dirs: src
   when:

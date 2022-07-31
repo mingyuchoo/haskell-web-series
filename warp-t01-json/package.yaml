@@ -20,7 +20,7 @@ extra-source-files:
 description:         Please see the README on GitHub at <https://github.com/githubuser/warp-t01-json#readme>
 
 dependencies:
-- base >= 4.7 && < 5
+- base >= 4.9.1.0 && < 5
 - aeson
 - bytestring
 - containers
@@ -30,6 +30,9 @@ dependencies:
 - text
 - wai
 - warp
+
+default-extensions: []
+ghc-options: []
 
 library:
   source-dirs: src
