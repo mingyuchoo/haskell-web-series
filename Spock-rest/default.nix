@@ -1,7 +1,7 @@
 # default.nix
 let
   pkgs = import <nixpkgs> {};
-  compilerVersion = "ghc921";
+  compilerVersion = "ghc924";
   compiler = pkgs.haskell.packages."${compilerVersion}";
 in
   compiler.developPackage {
