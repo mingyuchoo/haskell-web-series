@@ -12,3 +12,16 @@
 - `wai`
 - `warp`
 
+## Dockerfile
+
+### How to build
+
+```sh
+$ docker build --tag warp:0.1 --file Dockerfile .
+```
+
+### How to run
+
+```sh
+$ docker run --detach --name warp --publish 0.0.0.0:3000:3000 warp:0.1
+```
