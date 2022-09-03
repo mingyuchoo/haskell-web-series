@@ -26,7 +26,11 @@ $ cabal install
 ```bash
 $ stack new <project>
 $ cd <project>
+
 $ stack build
+# build more faster
+$ stack build --fast --file-watch --ghc-options "-j4 +RTS -A128m -n2m -RTS"
+
 $ stack run
 $ stack repl
 ```
