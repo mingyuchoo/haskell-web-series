@@ -2,7 +2,7 @@
 
 ## Basic Cabal Commands
 
-```bash
+```sh
 $ mkdir <project>
 $ cd <project>
 $ cabal init
@@ -23,7 +23,7 @@ $ cabal install
 
 ### Basic Stack Commands
 
-```bash
+```sh
 $ stack new <project>
 $ cd <project>
 

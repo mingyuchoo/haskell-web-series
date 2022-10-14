@@ -8,29 +8,29 @@
 
 ## Prerequsites
 
-```bash
+```sh
 sudo apt install -y zlib1g-dev  # for zlib
 ```
 
 ## How to create a new servant project
 
-```bash
+```sh
 stack new <project-name> servant
 cd <project-name>
 stack build
 stack test
-stack run 
+stack run
 ```
 
 ## How to build this project
 
-```bash
+```sh
 stack build # build
 stack exec servant-t00-init-exe # start server to port:8080
 ```
 
 ## How to call API from this project
 
-```bash
+```sh
 curl http://localhost:8080/users
 ```
