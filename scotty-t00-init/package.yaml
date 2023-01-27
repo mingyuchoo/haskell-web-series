@@ -4,7 +4,7 @@ github:              "mingyuchoo/scotty-t00-init"
 license:             BSD3
 author:              "Mingyu Choo"
 maintainer:          "mingyuchoo@gmail.com"
-copyright:           "2022 Mingyu Choo"
+copyright:           "Mingyu Choo"
 
 extra-source-files:
 - README.md

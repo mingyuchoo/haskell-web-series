@@ -4,7 +4,7 @@ github:              "mingyuchoo/scotty-t01-shortener"
 license:             BSD3
 author:              "Mingyu Choo"
 maintainer:          "mingyuchoo@gmail.com"
-copyright:           "2022 Mingyu Choo"
+copyright:           "Mingyu Choo"
 
 extra-source-files:
 - README.md
