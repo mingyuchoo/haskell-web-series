@@ -16,12 +16,12 @@
 
 ### How to build
 
-```sh
+```bash
 $ docker build --tag warp:0.1 --file Dockerfile .
 ```
 
 ### How to run
 
-```sh
+```bash
 $ docker run --detach --name warp --publish 0.0.0.0:3000:3000 warp:0.1
 ```
