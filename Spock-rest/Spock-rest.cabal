@@ -1,6 +1,6 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.34.4.
+-- This file has been generated from package.yaml by hpack version 0.35.1.
 --
 -- see: https://github.com/sol/hpack
 
@@ -30,11 +30,12 @@ library
       Paths_Spock_rest
   hs-source-dirs:
       src
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
       Spock
     , Spock-core
     , aeson
-    , base >=4.7 && <5
+    , base >=4.9.1.0 && <5
     , containers
     , monad-logger
     , parallel
@@ -53,13 +54,13 @@ executable Spock-rest-exe
       Paths_Spock_rest
   hs-source-dirs:
       app
-  ghc-options: dynamic -threaded -rtsopts -with-rtsopts=-N4
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       Spock
     , Spock-core
     , Spock-rest
     , aeson
-    , base >=4.7 && <5
+    , base >=4.9.1.0 && <5
     , containers
     , monad-logger
     , parallel
@@ -79,13 +80,13 @@ test-suite Spock-rest-test
       Paths_Spock_rest
   hs-source-dirs:
       test
-  ghc-options: -dynamic -threaded -rtsopts -with-rtsopts=-N4
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       Spock
     , Spock-core
     , Spock-rest
     , aeson
-    , base >=4.7 && <5
+    , base >=4.9.1.0 && <5
     , containers
     , monad-logger
     , parallel
