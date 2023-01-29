@@ -1,6 +1,6 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.34.4.
+-- This file has been generated from package.yaml by hpack version 0.35.1.
 --
 -- see: https://github.com/sol/hpack
 
@@ -29,9 +29,10 @@ library
       Paths_servant_t00_init
   hs-source-dirs:
       src
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
       aeson
-    , base >=4.7 && <5
+    , base >=4.9.1.0 && <5
     , containers
     , flow
     , parallel
@@ -48,7 +49,7 @@ executable servant-t00-init-exe
       Paths_servant_t00_init
   hs-source-dirs:
       app
-  ghc-options: -dynamic -threaded -rtsopts -with-rtsopts=-N4
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       aeson
     , base
@@ -70,7 +71,7 @@ test-suite servant-t00-init-test
       Paths_servant_t00_init
   hs-source-dirs:
       test
-  ghc-options: -dynamic -threaded -rtsopts -with-rtsopts=-N4
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       aeson
     , base

@@ -1,6 +1,6 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.34.4.
+-- This file has been generated from package.yaml by hpack version 0.35.1.
 --
 -- see: https://github.com/sol/hpack
 
@@ -30,9 +30,10 @@ library
       Paths_warp_t01_json
   hs-source-dirs:
       src
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
       aeson
-    , base >=4.7 && <5
+    , base >=4.9.1.0 && <5
     , bytestring
     , containers
     , flow
@@ -49,10 +50,10 @@ executable warp-t01-json-exe
       Paths_warp_t01_json
   hs-source-dirs:
       app
-  ghc-options: -O -dynamic -threaded -rtsopts -with-rtsopts=-N4
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       aeson
-    , base >=4.7 && <5
+    , base >=4.9.1.0 && <5
     , bytestring
     , containers
     , flow
@@ -71,10 +72,10 @@ test-suite warp-t01-json-test
       Paths_warp_t01_json
   hs-source-dirs:
       test
-  ghc-options: -dynamic -threaded -rtsopts -with-rtsopts=-N4
+  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       aeson
-    , base >=4.7 && <5
+    , base >=4.9.1.0 && <5
     , bytestring
     , containers
     , flow
