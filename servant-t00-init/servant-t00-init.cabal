@@ -11,7 +11,7 @@ homepage:       https://github.com/minguuchoo/servant-t00-init#readme
 bug-reports:    https://github.com/minguuchoo/servant-t00-init/issues
 author:         mingyuchoo
 maintainer:     mingyuchoo@gmail.com
-copyright:      MIT License
+copyright:      2023 Mingyu Choo
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple

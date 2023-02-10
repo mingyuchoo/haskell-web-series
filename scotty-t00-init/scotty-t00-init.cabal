@@ -11,7 +11,7 @@ homepage:       https://github.com/mingyuchoo/scotty-t00-init#readme
 bug-reports:    https://github.com/mingyuchoo/scotty-t00-init/issues
 author:         Mingyu Choo
 maintainer:     mingyuchoo@gmail.com
-copyright:      Mingyu Choo
+copyright:      2023 Mingyu Choo
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple

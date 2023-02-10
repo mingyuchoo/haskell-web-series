@@ -11,7 +11,7 @@ homepage:       https://github.com/mingyuchoo/scotty-t01-shortener#readme
 bug-reports:    https://github.com/mingyuchoo/scotty-t01-shortener/issues
 author:         Mingyu Choo
 maintainer:     mingyuchoo@gmail.com
-copyright:      Mingyu Choo
+copyright:      2023 Mingyu Choo
 license:        BSD3
 license-file:   LICENSE
 build-type:     Simple
