@@ -4,7 +4,7 @@ github:              "minguuchoo/servant-t00-init"
 license:             BSD3
 author:              "mingyuchoo"
 maintainer:          "mingyuchoo@gmail.com"
-copyright:           "MIT License"
+copyright:           "2023 Mingyu Choo"
 
 extra-source-files:
 - README.md

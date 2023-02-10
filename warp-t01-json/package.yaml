@@ -4,7 +4,7 @@ github:              "mingyuchoo/warp-t01-json"
 license:             BSD3
 author:              "Mingyu Choo"
 maintainer:          "mingyuchoo@gmail.com"
-copyright:           "Mingyu Choo"
+copyright:           "2023 Mingyu Choo"
 
 extra-source-files:
 - README.md

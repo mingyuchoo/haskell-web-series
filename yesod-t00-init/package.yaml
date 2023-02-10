@@ -1,5 +1,10 @@
-name:    yesod-t00-init
-version: "0.0.0"
+name:                yesod-t00-init
+version:             0.1.0.0
+github:              "mingyuchoo/yesod-t00-init"
+license:             BSD3
+author:              "Mingyu Choo"
+maintainer:          "mingyuchoo@gmail.com"
+copyright:           "2023 Mingyu Choo"
 
 dependencies:
 - base >=4.9.1.0 && <5
