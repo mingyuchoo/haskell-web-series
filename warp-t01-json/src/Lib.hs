@@ -64,9 +64,12 @@ app request respond
       reqQueryString = queryString request
 
 
+-- | Index Page
+--
 index :: Response
 index =
   responseFile status200 [(hContentType, "text/html")] "www/index.html" Nothing
+
 
 -- | JSON Response
 --
