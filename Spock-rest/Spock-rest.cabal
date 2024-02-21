@@ -46,7 +46,7 @@ library
     , stm-containers
     , stm-hamt
     , text
-  default-language: Haskell2010
+  default-language: .GHC2021
 
 executable Spock-rest-exe
   main-is: Main.hs
@@ -71,7 +71,7 @@ executable Spock-rest-exe
     , stm-containers
     , stm-hamt
     , text
-  default-language: Haskell2010
+  default-language: .GHC2021
 
 test-suite Spock-rest-test
   type: exitcode-stdio-1.0
@@ -97,4 +97,4 @@ test-suite Spock-rest-test
     , stm-containers
     , stm-hamt
     , text
-  default-language: Haskell2010
+  default-language: .GHC2021

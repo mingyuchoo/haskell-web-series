@@ -8,6 +8,8 @@
 
 ## Prerequsites
 
+### In Ubunut
+
 ```bash
 sudo apt install -y zlib1g-dev  # for zlib
 ```

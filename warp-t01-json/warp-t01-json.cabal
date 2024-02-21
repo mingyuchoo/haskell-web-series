@@ -42,7 +42,7 @@ library
     , text
     , wai
     , warp
-  default-language: Haskell2010
+  default-language: .GHC2021
 
 executable warp-t01-json-exe
   main-is: Main.hs
@@ -63,7 +63,7 @@ executable warp-t01-json-exe
     , wai
     , warp
     , warp-t01-json
-  default-language: Haskell2010
+  default-language: .GHC2021
 
 test-suite warp-t01-json-test
   type: exitcode-stdio-1.0
@@ -87,4 +87,4 @@ test-suite warp-t01-json-test
     , wai
     , warp
     , warp-t01-json
-  default-language: Haskell2010
+  default-language: .GHC2021
