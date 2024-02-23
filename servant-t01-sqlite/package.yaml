@@ -1,0 +1,63 @@
+name:                servant-t01-sqlite
+version:             0.1.0.0
+github:              mingyuchoo/servant-t01-sqlite
+license:             MIT
+author:              Mingyu Choo
+maintainer:          mingyuchoo@gmail.com
+copyright:           2024, Mingyu Choo
+synopsis:            Short description of your package
+category:            CLI
+description:         Please see the README on GitHub at <https://github.com/mingyuchoo/servant-t01-sqlite#readme>
+
+extra-source-files:
+- README.md
+- CHANGELOG.md
+
+dependencies:
+- base >= 4.18 && < 5
+- aeson
+- servant-server
+- text
+- wai
+- warp
+- sqlite-simple
+
+default-extensions:
+- StandaloneKindSignatures
+
+ghc-options:
+- -Wall
+- -O2
+- -haddock
+
+language: GHC2021
+
+library:
+  source-dirs: src
+
+executables:
+  servant-t01-sqlite-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -dynamic
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N4
+    dependencies:
+    - servant-t01-sqlite
+
+tests:
+  servant-t01-sqlite-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -dynamic
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N4
+    dependencies:
+    - servant-t01-sqlite
+    - hspec
+    - doctest
+    - doctest-discover
