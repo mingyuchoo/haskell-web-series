@@ -9,16 +9,16 @@ module Lib
 -- -------------------------------------------------------------------
 
 -- For web server
+import           Control.Concurrent.MVar
+import           Control.Monad.IO.Class   (liftIO)
+import           Data.Aeson
+import           Data.List                (partition)
+import           Data.Maybe               (listToMaybe)
+import           Database.SQLite.Simple
+import           GHC.Generics             (Generic)
 import           Network.Wai
 import           Network.Wai.Handler.Warp
 import           Servant
-import           Control.Monad.IO.Class   (liftIO)
-import           Control.Concurrent.MVar
-import           Database.SQLite.Simple
-import           Data.Aeson
-import           GHC.Generics (Generic)
-import Data.List (partition)
-import Data.Maybe (listToMaybe)
 
 -- -------------------------------------------------------------------
 -- Data Types
@@ -57,8 +57,8 @@ app usersVar = serve userAPI (userServer usersVar)
 -- -------------------------------------------------------------------
 
 type UserAPI = "users" :> Get '[JSON] [User]
-             -- :<|> "users" :> QueryParam "userId" User :> Get '[JSON] [User]
              :<|> "users" :> ReqBody '[JSON] User :> Post '[JSON] User
+             :<|> "users" :> Capture "userId" Int :> Get '[JSON] (Maybe User)
              :<|> "users" :> Capture "userId" Int :> ReqBody '[JSON] User :> Put '[JSON] User
              :<|> "usres" :> Capture "userId" Int :> Delete '[JSON] (Maybe User)
 
@@ -66,26 +66,36 @@ userAPI :: Proxy UserAPI
 userAPI = Proxy
 
 userServer :: MVar [User] -> Server UserAPI
-userServer usersVar = getUsers :<|> postUser :<|> putUser :<|> deleteUser
+userServer usersVar = getUsers :<|> postUser :<|> getUser :<|> putUser :<|> deleteUser
   where
     getUsers :: Handler [User]
     getUsers = liftIO $ readMVar usersVar
 
     postUser :: User -> Handler User
     postUser user = do
-      liftIO $ modifyMVar_ usersVar $ \users -> return (user: users)
+      liftIO $ modifyMVar_ usersVar $ \users ->
+        return (user: users)
       return user
+
+    getUser :: Int -> Handler (Maybe User)
+    getUser uId = do
+      users <- liftIO $ readMVar usersVar
+      return $ listToMaybe $ filter (\user -> userId user == uId) users
 
     putUser :: Int -> User -> Handler User
     putUser uId updatedUser = do
-      liftIO $ modifyMVar_ usersVar $ \users -> return $ map (\user -> if userId user == uId then updatedUser else user) users
+      liftIO $ modifyMVar_ usersVar $ \users ->
+        return $ map (\user ->
+                        if userId user == uId then updatedUser else user) users
       return updatedUser
 
     deleteUser ::  Int -> Handler (Maybe User)
     deleteUser uId = do
       liftIO $ modifyMVar usersVar $ \users ->
-        let (remain, removed) = partition (\user -> userId user == uId) users
-        in return (remain, listToMaybe removed)
+        let
+          (remain, removed) = partition (\user -> userId user == uId) users
+        in
+          return (remain, listToMaybe removed)
 
 
 -- -------------------------------------------------------------------
