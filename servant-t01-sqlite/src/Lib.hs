@@ -9,11 +9,8 @@ module Lib
 -- -------------------------------------------------------------------
 
 -- For web server
-import           Control.Concurrent.MVar
 import           Control.Monad.IO.Class   (liftIO)
 import           Data.Aeson
-import           Data.List                (partition)
-import           Data.Maybe               (listToMaybe)
 import           Database.SQLite.Simple
 import           GHC.Generics             (Generic)
 import           Network.Wai
@@ -45,58 +42,46 @@ someFunc :: IO ()
 someFunc = do
   migrate
   putStrLn "Server is running..."
-  usersVar <- newMVar []
-  run 4000 (app usersVar)
+  run 4000 app
 
 
-app :: MVar [User] -> Application
-app usersVar = serve userAPI (userServer usersVar)
+app :: Application
+app = serve userAPI userServer
 
 -- -------------------------------------------------------------------
 -- API Server
 -- -------------------------------------------------------------------
 
 type UserAPI = "users" :> Get '[JSON] [User]
-             :<|> "users" :> ReqBody '[JSON] User :> Post '[JSON] User
-             :<|> "users" :> Capture "userId" Int :> Get '[JSON] (Maybe User)
-             :<|> "users" :> Capture "userId" Int :> ReqBody '[JSON] User :> Put '[JSON] User
-             :<|> "usres" :> Capture "userId" Int :> Delete '[JSON] (Maybe User)
+             :<|> "users" :> ReqBody '[JSON] User :> Post '[JSON] [User]
+             :<|> "users" :> Capture "userId" Int :> Get '[JSON] [User]
+             :<|> "users" :> Capture "userId" Int :> ReqBody '[JSON] User :> Put '[JSON] [User]
+             :<|> "usres" :> Capture "userId" Int :> Delete '[JSON] ()
 
 userAPI :: Proxy UserAPI
 userAPI = Proxy
 
-userServer :: MVar [User] -> Server UserAPI
-userServer usersVar = getUsers :<|> postUser :<|> getUser :<|> putUser :<|> deleteUser
+userServer :: Server UserAPI
+userServer = getUsers
+  :<|> postUser
+  :<|> getUser
+  :<|> putUser
+  :<|> deleteUser
   where
     getUsers :: Handler [User]
-    getUsers = liftIO $ readMVar usersVar
+    getUsers = liftIO selectAll
 
-    postUser :: User -> Handler User
-    postUser user = do
-      liftIO $ modifyMVar_ usersVar $ \users ->
-        return (user: users)
-      return user
+    postUser :: User -> Handler [User]
+    postUser = liftIO . insert
 
-    getUser :: Int -> Handler (Maybe User)
-    getUser uId = do
-      users <- liftIO $ readMVar usersVar
-      return $ listToMaybe $ filter (\user -> userId user == uId) users
+    getUser :: Int -> Handler [User]
+    getUser = liftIO . select
 
-    putUser :: Int -> User -> Handler User
-    putUser uId updatedUser = do
-      liftIO $ modifyMVar_ usersVar $ \users ->
-        return $ map (\user ->
-                        if userId user == uId then updatedUser else user) users
-      return updatedUser
+    putUser :: Int -> User -> Handler [User]
+    putUser uId user =  liftIO $ update uId user
 
-    deleteUser ::  Int -> Handler (Maybe User)
-    deleteUser uId = do
-      liftIO $ modifyMVar usersVar $ \users ->
-        let
-          (remain, removed) = partition (\user -> userId user == uId) users
-        in
-          return (remain, listToMaybe removed)
-
+    deleteUser ::  Int -> Handler ()
+    deleteUser uId = liftIO $ delete uId
 
 -- -------------------------------------------------------------------
 -- Database
@@ -113,12 +98,24 @@ migrate :: IO ()
 migrate = withConn $ \conn ->
   execute_ conn "CREATE TABLE IF NOT EXISTS haskell_user (userId INTEGER PRIMARY KEY, userName TEXT)"
 
+insert :: User -> IO [User]
+insert user = withConn $ \conn -> do
+  _ <- execute conn "INSERT INTO haskell_user (userId, userName) VALUES (?, ?)" user
+  query conn "SELECT userId, userName FROM haskell_user WHERE userId = (?) AND userName = (?)" user
 
-insert :: String -> Handler String
-insert userName = liftIO $ withConn $ \conn -> do
-  execute conn "INSERT INTO haskell_user (userName) VALUES (?)" (Only userName)
-  pure userName
+select :: Int -> IO [User]
+select uId = withConn $ \conn ->
+  query conn "SELECT userId, userName FROM haskell_user WHERE userId = (?)" (Only uId)
 
-select :: String -> Handler [User]
-select userName = liftIO $ withConn $ \conn ->
-  query conn "SELECT userId, userName FROM haskell_user WHERE userName = (?)" (Only userName)
+selectAll :: IO [User]
+selectAll = withConn $ \conn ->
+  query_ conn "SELECT userId, userName FROM haskell_user"
+
+update :: Int -> User -> IO [User]
+update uId user@(User _ uName) = withConn $ \conn -> do
+  _ <- executeNamed conn "UPDATE haskell_user SET userName = :userName WHERE userId = :userId" [ ":userName" := uName, ":userId" := uId]
+  query conn "SELECT userId, userName FROM haskell_user WHERE userId = (?) AND userName = (?)" user
+
+delete :: Int -> IO ()
+delete uId = withConn $ \conn ->
+  execute conn "DELETE FROM haskell_user WHERE userId = (?)" (Only uId)
