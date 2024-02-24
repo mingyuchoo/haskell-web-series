@@ -21,7 +21,7 @@ stack test --fast --file-watch --watch-all
 # or
 stack test --coverage --fast --file-watch --watch-all --haddock
 # or
-ghcid -c="stack ghci test/Spec.hs"
+ghcid --command "stack ghci test/Spec.hs"
 ```
 
 ## How to run
