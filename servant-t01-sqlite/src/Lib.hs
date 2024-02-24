@@ -9,49 +9,23 @@ module Lib
 -- -------------------------------------------------------------------
 
 -- For web server
-import           Network.Wai.Handler.Warp (run)
+import           Network.Wai
+import           Network.Wai.Handler.Warp
 import           Servant
-    ( Application
-    , Capture
-    , Delete
-    , Get
-    , Handler
-    , JSON
-    , NoContent
-    , Post
-    , Proxy (Proxy)
-    , Put
-    , QueryParam
-    , ReqBody
-    , Server
-    , serve
-    , (:>)
-    )
-
--- For Databaser
 import           Control.Monad.IO.Class   (liftIO)
+import           Control.Concurrent.MVar
 import           Database.SQLite.Simple
---     ( Connection
---     , FromRow (fromRow)
---     , ToRow (toRow)
---     , close
---     , execute
---     , execute_
---     , field
---     , open
---     , query_
---     )
-
--- For define types
-import           Data.Aeson.Types         (FromJSON, ToJSON)
-import           GHC.Generics
+import           Data.Aeson
+import           GHC.Generics (Generic)
+import Data.List (partition)
+import Data.Maybe (listToMaybe)
 
 -- -------------------------------------------------------------------
 -- Data Types
 -- -------------------------------------------------------------------
 
-data User = User { id   :: Int
-                 , name :: String
+data User = User { userId   :: Int
+                 , userName :: String
                  } deriving (Eq, Show, Generic)
 
 instance FromJSON User
@@ -61,7 +35,7 @@ instance FromRow User where
   fromRow = User <$> field <*> field
 
 instance ToRow User where
-  toRow (User id name) = toRow (id, name)
+  toRow (User userId userName) = toRow (userId, userName)
 
 -- -------------------------------------------------------------------
 -- Application
@@ -72,47 +46,47 @@ someFunc = do
   migrate
   putStrLn "Server is running..."
   usersVar <- newMVar []
-  _ <- run 4000 $ app usersVar
-  return ()
+  run 4000 (app usersVar)
+
+
+app :: MVar [User] -> Application
+app usersVar = serve userAPI (userServer usersVar)
 
 -- -------------------------------------------------------------------
 -- API Server
 -- -------------------------------------------------------------------
 
-type UserAPI =    "users" :> QueryParam "name" User :> Get '[JSON] [User]
+type UserAPI = "users" :> Get '[JSON] [User]
+             -- :<|> "users" :> QueryParam "userId" User :> Get '[JSON] [User]
              :<|> "users" :> ReqBody '[JSON] User :> Post '[JSON] User
-             :<|> "users" :> Capture "name" User :> Put '[JSON] User
-             :<|> "usres" :> Capture "name" User :> Delete '[JSON] User
+             :<|> "users" :> Capture "userId" Int :> ReqBody '[JSON] User :> Put '[JSON] User
+             :<|> "usres" :> Capture "userId" Int :> Delete '[JSON] (Maybe User)
 
-app :: MVar [User] -> Application
-app usersVar = serve userAPI userServer
+userAPI :: Proxy UserAPI
+userAPI = Proxy
+
+userServer :: MVar [User] -> Server UserAPI
+userServer usersVar = getUsers :<|> postUser :<|> putUser :<|> deleteUser
   where
-    userAPI :: Proxy UserAPI
-    userAPI = Proxy
+    getUsers :: Handler [User]
+    getUsers = liftIO $ readMVar usersVar
 
-    userServer :: MVar [User] -> Server UserAPI
-    userServer usersVar = getUsers :<|> postUser :<|> putUser :<|> deleteUser
-      where
-        getUsers :: Maybe User -> Handler [User]
-        getUsers user = do
-          users <- liftIO $ readMVar usersVar
-          return $ maybe users (\name -> lifter (== name) users) mName
+    postUser :: User -> Handler User
+    postUser user = do
+      liftIO $ modifyMVar_ usersVar $ \users -> return (user: users)
+      return user
 
-        postUser :: Text -> Handler User
-        postUser user = do
-          liftIO $ modifyMVar_ usersVar $ \users -> return (name: users)
-          return user
+    putUser :: Int -> User -> Handler User
+    putUser uId updatedUser = do
+      liftIO $ modifyMVar_ usersVar $ \users -> return $ map (\user -> if userId user == uId then updatedUser else user) users
+      return updatedUser
 
-        putUser :: Text -> Text -> Handler Text
-        putUser oldUser newUser = do
-          liftIO $ modifyMVar_ userVar $ \users ->
-            return $ map (\user ->
-                            if user == oldUser then newUser else user) users
+    deleteUser ::  Int -> Handler (Maybe User)
+    deleteUser uId = do
+      liftIO $ modifyMVar usersVar $ \users ->
+        let (remain, removed) = partition (\user -> userId user == uId) users
+        in return (remain, listToMaybe removed)
 
-        deleteUser :: User -> Handler User
-        deleteUser user = do
-          liftIO $ modifyMVar_ usersVar $ \users -> return $ filter (/= name) user
-          return name
 
 -- -------------------------------------------------------------------
 -- Database
@@ -127,14 +101,14 @@ withConn action = do
 
 migrate :: IO ()
 migrate = withConn $ \conn ->
-  execute_ conn "CREATE TABLE IF NOT EXISTS haskell_user (id INTEGER PRIMARY KEY, name TEXT)"
+  execute_ conn "CREATE TABLE IF NOT EXISTS haskell_user (userId INTEGER PRIMARY KEY, userName TEXT)"
 
 
 insert :: String -> Handler String
-insert name = liftIO $ withConn $ \conn -> do
-  execute conn "INSERT INTO haskell_user (name) VALUES (?)" (Only name)
-  pure name
+insert userName = liftIO $ withConn $ \conn -> do
+  execute conn "INSERT INTO haskell_user (userName) VALUES (?)" (Only userName)
+  pure userName
 
 select :: String -> Handler [User]
-select name = liftIO $ withConn $ \conn ->
-  query conn "SELECT id, name FROM haskell_user WHERE name = (?)" (Only name)
+select userName = liftIO $ withConn $ \conn ->
+  query conn "SELECT userId, userName FROM haskell_user WHERE userName = (?)" (Only userName)
