@@ -59,9 +59,9 @@ app = serve userAPI userServer
 -- (path :: k) :> (a :: *)
 type UserAPI = "users" :> Get '[JSON] [User]
              :<|> "users" :> ReqBody '[JSON] User :> Post '[JSON] [User]
-             :<|> "users" :> Capture "userId" Int :> Get '[JSON] [User]
+             :<|> "users" :> Capture "userId" Int :> Get  '[JSON] [User]
              :<|> "users" :> Capture "userId" Int :> ReqBody '[JSON] User :> Put '[JSON] [User]
-             :<|> "usres" :> Capture "userId" Int :> Delete '[JSON] ()
+             :<|> "usres" :> Capture "userId" Int :> Delete '[JSON] [User]
 
 userAPI :: Proxy UserAPI
 userAPI = Proxy
@@ -86,7 +86,7 @@ userServer = getUsers
     putUser :: Int -> User -> Handler [User]
     putUser uId user =  liftIO $ update uId user
 
-    deleteUser ::  Int -> Handler ()
+    deleteUser ::  Int -> Handler [User]
     deleteUser uId = liftIO $ delete uId
 
 -- -------------------------------------------------------------------
@@ -125,9 +125,11 @@ selectAll = withConn $ \conn ->
 update :: Int -> User -> IO [User]
 update uId user@(User _ uName) = withConn $ \conn -> do
   -- executeNamed :: Connection -> Query -> [NamedParam] -> IO ()
-  _ <- executeNamed conn "UPDATE haskell_user SET userName = :userName WHERE userId = :userId" [ ":userName" := uName, ":userId" := uId]
+  _ <- execute conn "UPDATE haskell_user SET userName = (?) WHERE userId = (?)" (uName, uId)
   query conn "SELECT userId, userName FROM haskell_user WHERE userId = (?) AND userName = (?)" user
 
-delete :: Int -> IO ()
-delete uId = withConn $ \conn ->
+delete :: Int -> IO [User]
+delete uId = withConn $ \conn -> do
+  user <- query conn "SELECT userId, userName FROM haskell_user WHERE userId = (?)" (Only uId)
   execute conn "DELETE FROM haskell_user WHERE userId = (?)" (Only uId)
+  return user
