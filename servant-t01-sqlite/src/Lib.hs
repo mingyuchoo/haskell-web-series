@@ -3,12 +3,11 @@
 {-# LANGUAGE TypeOperators     #-}
 
 module Lib
-    ( someFunc
+    ( appRunner
     ) where
 
 -- -------------------------------------------------------------------
 
--- For web server
 import           Control.Monad.IO.Class   (liftIO)
 import           Data.Aeson
 import           Database.SQLite.Simple
@@ -29,8 +28,6 @@ instance FromJSON User
 
 instance ToJSON User
 
--- (<$>) :: Functor f => (a -> b) -> f a -> f b
--- (<*>) :: Applicative f => f (a -> b) -> f a -> f b
 instance FromRow User where
   fromRow = User <$> field <*> field
 
@@ -41,8 +38,8 @@ instance ToRow User where
 -- Application
 -- -------------------------------------------------------------------
 
-someFunc :: IO ()
-someFunc = do
+appRunner :: IO ()
+appRunner = do
   migrate
   putStrLn "Server is running..."
   run 4000 app
@@ -55,13 +52,11 @@ app = serve userAPI userServer
 -- API
 -- -------------------------------------------------------------------
 
--- data a :<|> b
--- (path :: k) :> (a :: *)
 type UserAPI = "users" :> Get '[JSON] [User]
              :<|> "users" :> ReqBody '[JSON] User :> Post '[JSON] [User]
              :<|> "users" :> Capture "userId" Int :> Get  '[JSON] [User]
              :<|> "users" :> Capture "userId" Int :> ReqBody '[JSON] User :> Put '[JSON] [User]
-             :<|> "usres" :> Capture "userId" Int :> Delete '[JSON] [User]
+             :<|> "users" :> Capture "userId" Int :> Delete '[JSON] [User]
 
 userAPI :: Proxy UserAPI
 userAPI = Proxy
@@ -73,7 +68,6 @@ userServer = getUsers
   :<|> putUser
   :<|> deleteUser
   where
-    -- liftIO :: IO a -> m a
     getUsers :: Handler [User]
     getUsers = liftIO selectAll
 
@@ -102,29 +96,24 @@ withConn action = do
 
 migrate :: IO ()
 migrate = withConn $ \conn ->
-  -- execute_ :: Connection -> Query -> IO ()
   execute_ conn "CREATE TABLE IF NOT EXISTS haskell_user (userId INTEGER PRIMARY KEY, userName TEXT)"
 
 insert :: User -> IO [User]
 insert user = withConn $ \conn -> do
-  -- execute :: ToRows q => Connection -> Query -> q -> IO ()
   _ <- execute conn "INSERT INTO haskell_user (userId, userName) VALUES (?, ?)" user
 
   query conn "SELECT userId, userName FROM haskell_user WHERE userId = (?) AND userName = (?)" user
 
 select :: Int -> IO [User]
 select uId = withConn $ \conn ->
-  -- query :: (ToRow q, FromRow r) => Connection -> Query -> q -> IO [r]
   query conn "SELECT userId, userName FROM haskell_user WHERE userId = (?)" (Only uId)
 
 selectAll :: IO [User]
 selectAll = withConn $ \conn ->
-  -- query_ :: FromRow r => Connection -> Query -> IO [r]
   query_ conn "SELECT userId, userName FROM haskell_user"
 
 update :: Int -> User -> IO [User]
 update uId user@(User _ uName) = withConn $ \conn -> do
-  -- executeNamed :: Connection -> Query -> [NamedParam] -> IO ()
   _ <- execute conn "UPDATE haskell_user SET userName = (?) WHERE userId = (?)" (uName, uId)
   query conn "SELECT userId, userName FROM haskell_user WHERE userId = (?) AND userName = (?)" user
 
