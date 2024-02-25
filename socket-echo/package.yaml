@@ -1,0 +1,62 @@
+name:                socket-echo
+version:             0.1.0.0
+github:              mingyuchoo/socket-echo
+license:             MIT
+author:              Mingyu Choo
+maintainer:          mingyuchoo@gmail.com
+copyright:           2024, Mingyu Choo
+synopsis:            Short description of your package
+category:            CLI
+description:         Please see the README on GitHub at <https://github.com/mingyuchoo/socket-echo#readme>
+
+extra-source-files:
+- README.md
+- CHANGELOG.md
+
+dependencies:
+- base >= 4.18 && < 5
+- network
+
+default-extensions:
+- StandaloneKindSignatures
+
+ghc-options:
+- -Wall
+- -O2
+- -haddock
+
+language: GHC2021
+
+library:
+  source-dirs: src
+
+executables:
+  socket-echo-exe:
+    main:                Main.hs
+    source-dirs:         app
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -dynamic
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N4
+    dependencies:
+    - socket-echo
+
+tests:
+  socket-echo-test:
+    main:                Spec.hs
+    source-dirs:         test
+    ghc-options:
+    - -threaded
+    - -rtsopts
+    - -dynamic
+    - -threaded
+    - -rtsopts
+    - -with-rtsopts=-N4
+    dependencies:
+    - socket-echo
+    - hspec
+    - doctest
+    - doctest-discover
