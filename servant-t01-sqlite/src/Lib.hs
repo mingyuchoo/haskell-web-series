@@ -17,7 +17,7 @@ import           Network.Wai.Handler.Warp
 import           Servant
 
 -- -------------------------------------------------------------------
--- Data Types
+-- Data
 -- -------------------------------------------------------------------
 
 data User = User { userId   :: Int
@@ -62,26 +62,26 @@ userAPI :: Proxy UserAPI
 userAPI = Proxy
 
 userServer :: Server UserAPI
-userServer = getUsers
-  :<|> postUser
-  :<|> getUser
-  :<|> putUser
-  :<|> deleteUser
+userServer = getAll
+  :<|> postOne
+  :<|> getOne
+  :<|> putOne
+  :<|> delOne
   where
-    getUsers :: Handler [User]
-    getUsers = liftIO selectAll
+    getAll :: Handler [User]
+    getAll = liftIO selectAllUser
 
-    postUser :: User -> Handler [User]
-    postUser = liftIO . insert
+    postOne :: User -> Handler [User]
+    postOne = liftIO . insertOneUser
 
-    getUser :: Int -> Handler [User]
-    getUser = liftIO . select
+    getOne :: Int -> Handler [User]
+    getOne = liftIO . selectOneUser
 
-    putUser :: Int -> User -> Handler [User]
-    putUser uId user =  liftIO $ update uId user
+    putOne :: Int -> User -> Handler [User]
+    putOne uId user =  liftIO $ updateOneUser uId user
 
-    deleteUser ::  Int -> Handler [User]
-    deleteUser uId = liftIO $ delete uId
+    delOne ::  Int -> Handler [User]
+    delOne uId = liftIO $ deleteOneUser uId
 
 -- -------------------------------------------------------------------
 -- Database
@@ -98,27 +98,27 @@ migrate :: IO ()
 migrate = withConn $ \conn ->
   execute_ conn "CREATE TABLE IF NOT EXISTS haskell_user (userId INTEGER PRIMARY KEY, userName TEXT)"
 
-insert :: User -> IO [User]
-insert user = withConn $ \conn -> do
+insertOneUser :: User -> IO [User]
+insertOneUser user = withConn $ \conn -> do
   _ <- execute conn "INSERT INTO haskell_user (userId, userName) VALUES (?, ?)" user
 
   query conn "SELECT userId, userName FROM haskell_user WHERE userId = (?) AND userName = (?)" user
 
-select :: Int -> IO [User]
-select uId = withConn $ \conn ->
+selectOneUser :: Int -> IO [User]
+selectOneUser uId = withConn $ \conn ->
   query conn "SELECT userId, userName FROM haskell_user WHERE userId = (?)" (Only uId)
 
-selectAll :: IO [User]
-selectAll = withConn $ \conn ->
+selectAllUser :: IO [User]
+selectAllUser = withConn $ \conn ->
   query_ conn "SELECT userId, userName FROM haskell_user"
 
-update :: Int -> User -> IO [User]
-update uId user@(User _ uName) = withConn $ \conn -> do
+updateOneUser :: Int -> User -> IO [User]
+updateOneUser uId user@(User _ uName) = withConn $ \conn -> do
   _ <- execute conn "UPDATE haskell_user SET userName = (?) WHERE userId = (?)" (uName, uId)
   query conn "SELECT userId, userName FROM haskell_user WHERE userId = (?) AND userName = (?)" user
 
-delete :: Int -> IO [User]
-delete uId = withConn $ \conn -> do
+deleteOneUser :: Int -> IO [User]
+deleteOneUser uId = withConn $ \conn -> do
   user <- query conn "SELECT userId, userName FROM haskell_user WHERE userId = (?)" (Only uId)
   execute conn "DELETE FROM haskell_user WHERE userId = (?)" (Only uId)
   return user
