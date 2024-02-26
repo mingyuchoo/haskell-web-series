@@ -1,4 +1,4 @@
-# socket-echo
+# socket-echo-server
 
 ## How to create a project
 

@@ -1,13 +1,13 @@
-name:                socket-echo
+name:                socket-echo-server
 version:             0.1.0.0
-github:              mingyuchoo/socket-echo
+github:              mingyuchoo/socket-echo-server
 license:             MIT
 author:              Mingyu Choo
 maintainer:          mingyuchoo@gmail.com
 copyright:           2024, Mingyu Choo
 synopsis:            Short description of your package
 category:            CLI
-description:         Please see the README on GitHub at <https://github.com/mingyuchoo/socket-echo#readme>
+description:         Please see the README on GitHub at <https://github.com/mingyuchoo/socket-echo-server#readme>
 
 extra-source-files:
 - README.md
@@ -31,7 +31,7 @@ library:
   source-dirs: src
 
 executables:
-  socket-echo-exe:
+  socket-echo-server-exe:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
@@ -42,10 +42,10 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N4
     dependencies:
-    - socket-echo
+    - socket-echo-server
 
 tests:
-  socket-echo-test:
+  socket-echo-server-test:
     main:                Spec.hs
     source-dirs:         test
     ghc-options:
@@ -56,7 +56,7 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N4
     dependencies:
-    - socket-echo
+    - socket-echo-server
     - hspec
     - doctest
     - doctest-discover

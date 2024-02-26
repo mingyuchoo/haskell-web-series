@@ -23,4 +23,4 @@ ghcid:
 	ghcid --command "stack ghci test/Spec.hs"
 
 run:
-	stack exec socket-echo-exe
+	stack exec socket-echo-server-exe

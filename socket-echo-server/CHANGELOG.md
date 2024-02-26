@@ -1,4 +1,4 @@
-# Changelog for `socket-echo`
+# Changelog for `socket-echo-server`
 
 All notable changes to this project will be documented in this file.
 
