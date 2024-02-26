@@ -1,4 +1,4 @@
-# servant-t01-sqlite
+# socket-echo-server
 
 ## How to create a project
 
@@ -14,7 +14,7 @@ stack build
 stack build --fast --file-watch --ghc-options "-j4 +RTS -A128m -n2m -RTS"
 ```
 
-## How to test as watch mode
+## How to unit test as watch mode
 
 ```bash
 stack test --fast --file-watch --watch-all
@@ -31,6 +31,20 @@ stack run
 ```
 You can also use `Makefile` for these works.
 
-# References
 
-- <https://marketsplash.com/tutorials/haskell/haskell-servant/>
+## How to test functionality
+
+```bash
+echo "Hello, Haskell!" | nc localhost 4242
+You said: Hello, Haskell!
+
+# or
+
+telnet localhost 4242
+Trying 127.0.0.1...
+Connected to localhost.
+Escape character is '^]'.
+Hello, Haskell!
+You said: Hello, Haskell!
+Connection closed by foreign host
+```

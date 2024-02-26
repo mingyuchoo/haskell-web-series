@@ -20,7 +20,7 @@ coverage:
 	stack test --coverage --fast --file-watch --watch-all --haddock
 
 ghcid:
-	ghcid --command "stack ghci"
+	ghcid --command "stack ghci test/Spec.hs"
 
 run:
-	stack exec servant-t01-sqlite-exe
+	stack exec socket-echo-server-exe

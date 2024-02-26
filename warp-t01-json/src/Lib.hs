@@ -2,7 +2,8 @@
 {-# LANGUAGE StandaloneKindSignatures #-}
 
 module Lib
-    where
+    ( appRunner
+    ) where
 
 import           Data.Aeson                ()
 import           Data.ByteString           (ByteString, length)
@@ -34,9 +35,8 @@ import           Network.Wai.Handler.Warp  (run)
 
 -- | Main Function
 --
---
-someFunc :: IO ()
-someFunc = do
+appRunner :: IO ()
+appRunner = do
   putStrLn <| "listening on " <> show port
   run port app
   where
@@ -45,7 +45,6 @@ someFunc = do
 
 
 -- | Application
---
 --
 app :: Request                           -- ^ request
     -> (Response -> IO ResponseReceived) -- ^ handler response to IO
@@ -64,45 +63,40 @@ app request respond
       reqQueryString = queryString request
 
 
--- | Index Page
+-- | POST /
+--
+post :: Response
+post =
+  responseLBS status200 [(hContentType, "text/plain")] "POST method"
+
+-- | PUT /
+--
+put :: Response
+put =
+  responseLBS status200 [(hContentType, "text/plain")] "PUT method"
+
+-- | DELETE /
+--
+delete :: Response
+delete =
+  responseLBS status200 [(hContentType, "text/plain")] "DELETE method"
+
+-- | GET / Index Page
 --
 index :: Response
 index =
   responseFile status200 [(hContentType, "text/html")] "www/index.html" Nothing
 
 
--- | JSON Response
---
+-- | GET / JSON Response
 --
 homeRoute :: ByteString -> Response
 homeRoute bs =
   responseLBS status200 [(hContentType, "application/json")] (fromStrict bs)
 
 
--- | Page not found
---
+-- | GET / Page not found
 --
 notFoundRoute :: Response
 notFoundRoute =
   responseLBS status200 [(hContentType, "text/plain")] "Page not found."
-
--- | Post
---
---
-post :: Response
-post =
-  responseLBS status200 [(hContentType, "text/plain")] "POST method"
-
--- | PUT
---
---
-put :: Response
-put =
-  responseLBS status200 [(hContentType, "text/plain")] "PUT method"
-
--- | Delete
---
---
-delete :: Response
-delete =
-  responseLBS status200 [(hContentType, "text/plain")] "DELETE method"
