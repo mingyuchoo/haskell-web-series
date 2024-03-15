@@ -1,7 +1,7 @@
 -- {-# OPTIONS_GHC -F -pgmF doctest-discover #-}
 -- {-# OPTIONS_GHC -F -pgmF hspec-discover   #-}
 
-import Test.Hspec (hspec, describe, it, shouldBe)
+import Test.Hspec (hspec, describe, it, shouldBe, Spec)
 import Lib
 
 -- |
