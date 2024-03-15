@@ -9,12 +9,38 @@ module Lib
 -- -------------------------------------------------------------------
 
 import           Control.Monad.IO.Class   (liftIO)
-import           Data.Aeson
+import           Data.Aeson               (FromJSON, ToJSON)
 import           Database.SQLite.Simple
+    ( Connection
+    , FromRow (..)
+    , Only (Only)
+    , ToRow (..)
+    , close
+    , execute
+    , execute_
+    , field
+    , open
+    , query
+    , query_
+    )
 import           GHC.Generics             (Generic)
-import           Network.Wai
-import           Network.Wai.Handler.Warp
+import           Network.Wai              (Application)
+import           Network.Wai.Handler.Warp (run)
 import           Servant
+    ( Capture
+    , Delete
+    , Get
+    , Handler
+    , JSON
+    , Post
+    , Proxy (..)
+    , Put
+    , ReqBody
+    , Server
+    , serve
+    , type (:<|>) (..)
+    , type (:>)
+    )
 
 -- -------------------------------------------------------------------
 -- Data
