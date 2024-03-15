@@ -30,3 +30,14 @@ ghcid --command "stack ghci test/Spec.hs"
 stack run
 ```
 You can also use `Makefile` for these works.
+
+## How to call API from this project
+
+```bash
+curl http://localhost:8080/users
+```
+## References
+
+- <https://docs.servant.dev/en/stable/tutorial/index.html>
+- <https://www.aosabook.org/en/posa/warp.html>
+- <https://www.yesodweb.com/book/web-application-interface>

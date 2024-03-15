@@ -30,3 +30,7 @@ ghcid --command "stack ghci test/Spec.hs"
 stack run
 ```
 You can also use `Makefile` for these works.
+
+# References
+
+- <https://marketsplash.com/tutorials/haskell/haskell-servant/>
