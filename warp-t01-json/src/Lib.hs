@@ -1,12 +1,11 @@
-{-# LANGUAGE OverloadedStrings        #-}
-{-# LANGUAGE StandaloneKindSignatures #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Lib
     ( appRunner
     ) where
 
 import           Data.Aeson                ()
-import           Data.ByteString           (ByteString, length)
+import           Data.ByteString           (ByteString)
 import           Data.ByteString.Lazy      (fromStrict)
 import           Data.Kind                 ()
 import           Flow                      ((<|))
@@ -18,14 +17,12 @@ import           Network.HTTP.Types
     , status200
     )
 import           Network.HTTP.Types.Header (hContentType)
-import           Network.HTTP.Types.URI    (Query)
 import           Network.Wai
     ( Request
     , Response
     , ResponseReceived
     , pathInfo
     , queryString
-    , rawPathInfo
     , requestMethod
     , responseFile
     , responseLBS
@@ -41,7 +38,7 @@ appRunner = do
   run port app
   where
     port :: Int
-    port = 3000
+    port = 4000
 
 
 -- | Application
@@ -50,17 +47,20 @@ app :: Request                           -- ^ request
     -> (Response -> IO ResponseReceived) -- ^ handler response to IO
     -> IO ResponseReceived               -- ^ response
 app request respond
-  | requestMethod request == methodPost   = respond <| post
-  | requestMethod request == methodPut    = respond <| put
-  | requestMethod request == methodDelete = respond <| delete
   | requestMethod request == methodGet  =
+    let
+      reqPathInfo = pathInfo request
+      reqQueryString = queryString request
+    in
     case (reqPathInfo, reqQueryString) of
       ([], _)                         -> respond <| index
       (["expr"], [("q", Just stuff)]) -> respond <| homeRoute stuff
-      _                               -> respond <| notFoundRoute
-    where
-      reqPathInfo = pathInfo request
-      reqQueryString = queryString request
+      (_, _)                          -> respond <| notFoundRoute
+  | requestMethod request == methodPost   = respond <| post
+  | requestMethod request == methodPut    = respond <| put
+  | requestMethod request == methodDelete = respond <| delete
+  | otherwise = respond <| notFoundRoute
+
 
 
 -- | POST /

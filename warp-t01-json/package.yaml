@@ -1,23 +1,17 @@
 name:                warp-t01-json
 version:             0.1.0.0
-github:              "mingyuchoo/warp-t01-json"
-license:             BSD3
-author:              "Mingyu Choo"
-maintainer:          "mingyuchoo@gmail.com"
-copyright:           "2023 Mingyu Choo"
+github:              mingyuchoo/warp-t01-json
+license:             MIT
+author:              Mingyu Choo
+maintainer:          mingyuhcoo@gmail.com
+copyright:           2024, Mingyu Choo
+synopsis:            Short description of your package
+category:            CLI
+description:         Please see the README on GitHub at <https://github.com/mingyuchoo/warp-t01-json#readme>
 
 extra-source-files:
 - README.md
-- ChangeLog.md
-
-# Metadata used when publishing your package
-# synopsis:            Short description of your package
-# category:            Web
-
-# To avoid duplicated efforts in documentation and dealing with the
-# complications of embedding Haddock markup inside cabal files, it is
-# common to point users to the README.md file.
-description:         Please see the README on GitHub at <https://github.com/mingyuchoo/warp-t01-json#readme>
+- CHANGELOG.md
 
 dependencies:
 - base >= 4.18 && < 5
@@ -31,17 +25,16 @@ dependencies:
 - wai
 - warp
 
-default-extensions: []
+default-extensions:
+- StandaloneKindSignatures
+- TypeApplications
+
 ghc-options:
 - -Wall
-- -Wcompat
-- -Widentities
-- -Wincomplete-record-updates
-- -Wincomplete-uni-patterns
-- -Wmissing-export-lists
-- -Wmissing-home-modules
-- -Wpartial-fields
-- -Wredundant-constraints
+- -O2
+- -haddock
+
+language: GHC2021
 
 library:
   source-dirs: src
@@ -51,7 +44,6 @@ executables:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
-    - -O
     - -dynamic
     - -threaded
     - -rtsopts
@@ -72,3 +64,5 @@ tests:
     - warp-t01-json
     - hspec
     - hspec-discover
+    - doctest
+    - doctest-discover

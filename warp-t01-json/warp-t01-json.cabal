@@ -6,18 +6,20 @@ cabal-version: 1.12
 
 name:           warp-t01-json
 version:        0.1.0.0
+synopsis:       Short description of your package
 description:    Please see the README on GitHub at <https://github.com/mingyuchoo/warp-t01-json#readme>
+category:       CLI
 homepage:       https://github.com/mingyuchoo/warp-t01-json#readme
 bug-reports:    https://github.com/mingyuchoo/warp-t01-json/issues
 author:         Mingyu Choo
-maintainer:     mingyuchoo@gmail.com
-copyright:      2023 Mingyu Choo
-license:        BSD3
+maintainer:     mingyuhcoo@gmail.com
+copyright:      2024, Mingyu Choo
+license:        MIT
 license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
     README.md
-    ChangeLog.md
+    CHANGELOG.md
 
 source-repository head
   type: git
@@ -30,7 +32,10 @@ library
       Paths_warp_t01_json
   hs-source-dirs:
       src
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
+  default-extensions:
+      StandaloneKindSignatures
+      TypeApplications
+  ghc-options: -Wall -O2 -haddock
   build-depends:
       aeson
     , base >=4.18 && <5
@@ -42,7 +47,7 @@ library
     , text
     , wai
     , warp
-  default-language: Haskell2010
+  default-language: GHC2021
 
 executable warp-t01-json-exe
   main-is: Main.hs
@@ -50,7 +55,10 @@ executable warp-t01-json-exe
       Paths_warp_t01_json
   hs-source-dirs:
       app
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -O -dynamic -threaded -rtsopts -with-rtsopts=-N4
+  default-extensions:
+      StandaloneKindSignatures
+      TypeApplications
+  ghc-options: -Wall -O2 -haddock -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       aeson
     , base >=4.18 && <5
@@ -63,7 +71,7 @@ executable warp-t01-json-exe
     , wai
     , warp
     , warp-t01-json
-  default-language: Haskell2010
+  default-language: GHC2021
 
 test-suite warp-t01-json-test
   type: exitcode-stdio-1.0
@@ -72,12 +80,17 @@ test-suite warp-t01-json-test
       Paths_warp_t01_json
   hs-source-dirs:
       test
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -dynamic -threaded -rtsopts -with-rtsopts=-N4
+  default-extensions:
+      StandaloneKindSignatures
+      TypeApplications
+  ghc-options: -Wall -O2 -haddock -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       aeson
     , base >=4.18 && <5
     , bytestring
     , containers
+    , doctest
+    , doctest-discover
     , flow
     , hspec
     , hspec-discover
@@ -87,4 +100,4 @@ test-suite warp-t01-json-test
     , wai
     , warp
     , warp-t01-json
-  default-language: Haskell2010
+  default-language: GHC2021

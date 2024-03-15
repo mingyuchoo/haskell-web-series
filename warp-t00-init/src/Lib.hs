@@ -1,8 +1,8 @@
-{-# LANGUAGE OverloadedStrings        #-}
-{-# LANGUAGE StandaloneKindSignatures #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 module Lib
-    where
+    ( someFunc
+    ) where
 
 import           Data.Kind                 ()
 import           Flow                      ((<|))
@@ -23,11 +23,13 @@ import           Network.Wai.Handler.Warp  (run)
 --
 someFunc :: IO ()
 someFunc = do
-  putStrLn $ "listening on " ++ show port
+  putStrLn <| "listening on " ++ show port
+  --run port app1
+  --run port app2
   run port app3
   where
     port :: Int
-    port = 3000
+    port = 4000
 
 
 -- |

@@ -1,16 +1,27 @@
-import Lib
+-- {-# OPTIONS_GHC -F -pgmF doctest-discover #-}
+-- {-# OPTIONS_GHC -F -pgmF hspec-discover   #-}
+
 import Test.Hspec (hspec, describe, it, shouldBe)
+import Lib
 
 -- |
 --
 --
 main :: IO ()
-main = hspec $ do
-  describe "Given a situation" $ do
-    describe "When an event is occurred" $ do
-      describe "Then it" $ do
-        it "Should be True" $ do
-          True `shouldBe` True
-  describe "GET /expr?q=Hello,World" $ do
-    it "Should response with Hello,World" $
-        get "/expr?q=Hello,World" `
+main = hspec spec
+
+-- |
+--
+--
+spec :: Spec
+spec = do
+    describe "Given Prelude" $ do
+        context "when use `read` function" $ do
+            it "should parse integers" $ do
+                read "10" `shouldBe` (10 :: Int)
+            it "should parse floating-point numbers" $ do
+                read "2.5" `shouldBe` (2.5 :: Float)
+    describe "Given Lib" $ do
+        context "when use `someFunc` function" $ do
+            it "should be succeeded" $ do
+              someFunc
