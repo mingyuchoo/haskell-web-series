@@ -1,0 +1,21 @@
+# https://www.stackage.org/lts-22.6
+resolver: lts-22.6
+
+packages:
+- .
+
+extra-package-dbs: []
+extra-deps: []
+flags: {}
+
+nix:
+  enable: true
+  pure: true
+  packages:
+  - zlib
+  - glpk
+  - pcre
+  #shell-file: shell.nix
+  nix-shell-options: []
+  path: []
+  add-gc-roots: false
