@@ -16,6 +16,6 @@ spec = do
             it "should parse floating-point numbers" $ do
                 read "2.5" `shouldBe` (2.5 :: Float)
     describe "Given Lib" $ do
-        context "when use `someFunc` function" $ do
+        context "when use `appRunner` function" $ do
             it "should be succeeded" $ do
-              someFunc
+              appRunner

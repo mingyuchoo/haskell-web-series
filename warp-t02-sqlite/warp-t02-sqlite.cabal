@@ -37,10 +37,13 @@ library
       TypeApplications
   ghc-options: -Wall -O2 -haddock
   build-depends:
-      base >=4.18 && <5
-    , containers
+      aeson
+    , base >=4.18 && <5
+    , bytestring
     , flow
-    , parallel
+    , http-types
+    , wai
+    , warp
   default-language: GHC2021
 
 executable warp-t02-sqlite-exe
@@ -54,10 +57,13 @@ executable warp-t02-sqlite-exe
       TypeApplications
   ghc-options: -Wall -O2 -haddock -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
-      base >=4.18 && <5
-    , containers
+      aeson
+    , base >=4.18 && <5
+    , bytestring
     , flow
-    , parallel
+    , http-types
+    , wai
+    , warp
     , warp-t02-sqlite
   default-language: GHC2021
 
@@ -73,12 +79,15 @@ test-suite warp-t02-sqlite-test
       TypeApplications
   ghc-options: -Wall -O2 -haddock -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
-      base >=4.18 && <5
-    , containers
+      aeson
+    , base >=4.18 && <5
+    , bytestring
     , doctest
     , doctest-discover
     , flow
     , hspec
-    , parallel
+    , http-types
+    , wai
+    , warp
     , warp-t02-sqlite
   default-language: GHC2021
