@@ -1,7 +1,6 @@
-{-# LANGUAGE StandaloneKindSignatures #-}
-
 module Main
-    where
+    ( main
+    ) where
 
 import           Data.Kind
 import           Lib

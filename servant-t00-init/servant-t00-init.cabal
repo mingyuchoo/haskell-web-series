@@ -6,21 +6,24 @@ cabal-version: 1.12
 
 name:           servant-t00-init
 version:        0.1.0.0
-description:    Please see the README on GitHub at <https://github.com/minguuchoo/servant-t00-init#readme>
-homepage:       https://github.com/minguuchoo/servant-t00-init#readme
-bug-reports:    https://github.com/minguuchoo/servant-t00-init/issues
-author:         mingyuchoo
-maintainer:     mingyuchoo@gmail.com
-copyright:      2023 Mingyu Choo
-license:        BSD3
+synopsis:       Short description of your package
+description:    Please see the README on GitHub at <https://github.com/mingyuchoo/servant-t00-init#readme>
+category:       CLI
+homepage:       https://github.com/mingyuchoo/servant-t00-init#readme
+bug-reports:    https://github.com/mingyuchoo/servant-t00-init/issues
+author:         Mingyu Choo
+maintainer:     mingyuhcoo@gmail.com
+copyright:      2024, Mingyu Choo
+license:        MIT
 license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
     README.md
+    CHANGELOG.md
 
 source-repository head
   type: git
-  location: https://github.com/minguuchoo/servant-t00-init
+  location: https://github.com/mingyuchoo/servant-t00-init
 
 library
   exposed-modules:
@@ -29,7 +32,10 @@ library
       Paths_servant_t00_init
   hs-source-dirs:
       src
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
+  default-extensions:
+      StandaloneKindSignatures
+      TypeApplications
+  ghc-options: -Wall -O2 -haddock
   build-depends:
       aeson
     , base >=4.18 && <5
@@ -41,7 +47,7 @@ library
     , time
     , wai
     , warp
-  default-language: Haskell2010
+  default-language: GHC2021
 
 executable servant-t00-init-exe
   main-is: Main.hs
@@ -49,10 +55,13 @@ executable servant-t00-init-exe
       Paths_servant_t00_init
   hs-source-dirs:
       app
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -dynamic -threaded -rtsopts -with-rtsopts=-N4
+  default-extensions:
+      StandaloneKindSignatures
+      TypeApplications
+  ghc-options: -Wall -O2 -haddock -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       aeson
-    , base
+    , base >=4.18 && <5
     , containers
     , flow
     , parallel
@@ -62,7 +71,7 @@ executable servant-t00-init-exe
     , time
     , wai
     , warp
-  default-language: Haskell2010
+  default-language: GHC2021
 
 test-suite servant-t00-init-test
   type: exitcode-stdio-1.0
@@ -71,15 +80,18 @@ test-suite servant-t00-init-test
       Paths_servant_t00_init
   hs-source-dirs:
       test
-  ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -dynamic -threaded -rtsopts -with-rtsopts=-N4
+  default-extensions:
+      StandaloneKindSignatures
+      TypeApplications
+  ghc-options: -Wall -O2 -haddock -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       aeson
-    , base
+    , base >=4.18 && <5
     , containers
+    , doctest
+    , doctest-discover
     , flow
     , hspec
-    , hspec-wai
-    , hspec-wai-json
     , parallel
     , servant-server
     , servant-t00-init
@@ -87,4 +99,4 @@ test-suite servant-t00-init-test
     , time
     , wai
     , warp
-  default-language: Haskell2010
+  default-language: GHC2021

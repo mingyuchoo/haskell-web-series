@@ -12,7 +12,7 @@ category:       CLI
 homepage:       https://github.com/mingyuchoo/servant-t01-sqlite#readme
 bug-reports:    https://github.com/mingyuchoo/servant-t01-sqlite/issues
 author:         Mingyu Choo
-maintainer:     mingyuchoo@gmail.com
+maintainer:     mingyuhcoo@gmail.com
 copyright:      2024, Mingyu Choo
 license:        MIT
 license-file:   LICENSE
@@ -34,6 +34,7 @@ library
       src
   default-extensions:
       StandaloneKindSignatures
+      TypeApplications
   ghc-options: -Wall -O2 -haddock
   build-depends:
       aeson
@@ -53,6 +54,7 @@ executable servant-t01-sqlite-exe
       app
   default-extensions:
       StandaloneKindSignatures
+      TypeApplications
   ghc-options: -Wall -O2 -haddock -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       aeson
@@ -74,6 +76,7 @@ test-suite servant-t01-sqlite-test
       test
   default-extensions:
       StandaloneKindSignatures
+      TypeApplications
   ghc-options: -Wall -O2 -haddock -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       aeson

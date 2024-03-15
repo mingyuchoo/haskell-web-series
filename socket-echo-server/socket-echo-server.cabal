@@ -12,7 +12,7 @@ category:       CLI
 homepage:       https://github.com/mingyuchoo/socket-echo-server#readme
 bug-reports:    https://github.com/mingyuchoo/socket-echo-server/issues
 author:         Mingyu Choo
-maintainer:     mingyuchoo@gmail.com
+maintainer:     mingyuhcoo@gmail.com
 copyright:      2024, Mingyu Choo
 license:        MIT
 license-file:   LICENSE
@@ -29,11 +29,12 @@ library
   exposed-modules:
       Lib
   other-modules:
-      Paths_socket_echo
+      Paths_socket_echo_server
   hs-source-dirs:
       src
   default-extensions:
       StandaloneKindSignatures
+      TypeApplications
   ghc-options: -Wall -O2 -haddock
   build-depends:
       base >=4.18 && <5
@@ -43,12 +44,13 @@ library
 executable socket-echo-server-exe
   main-is: Main.hs
   other-modules:
-      Paths_socket_echo
+      Paths_socket_echo_server
   hs-source-dirs:
       app
   default-extensions:
       StandaloneKindSignatures
-  ghc-options: -Wall -O2 -haddock -threaded -rtsopts -dynamic -threaded -rtsopts -with-rtsopts=-N4
+      TypeApplications
+  ghc-options: -Wall -O2 -haddock -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       base >=4.18 && <5
     , network
@@ -59,12 +61,13 @@ test-suite socket-echo-server-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
-      Paths_socket_echo
+      Paths_socket_echo_server
   hs-source-dirs:
       test
   default-extensions:
       StandaloneKindSignatures
-  ghc-options: -Wall -O2 -haddock -threaded -rtsopts -dynamic -threaded -rtsopts -with-rtsopts=-N4
+      TypeApplications
+  ghc-options: -Wall -O2 -haddock -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       base >=4.18 && <5
     , doctest

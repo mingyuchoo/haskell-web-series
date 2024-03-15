@@ -1,38 +1,32 @@
 # servant-t00-init
 
-## References
-
-- <https://docs.servant.dev/en/stable/tutorial/index.html>
-- <https://www.aosabook.org/en/posa/warp.html>
-- <https://www.yesodweb.com/book/web-application-interface>
-
-## Prerequsites
-
-### In Ubunut
+## How to create a project
 
 ```bash
-sudo apt install -y zlib1g-dev  # for zlib
+stack new <project-name> mingyuchoo/new-template
 ```
 
-## How to create a new servant project
+## How to build
 
 ```bash
-stack new <project-name> servant
-cd <project-name>
 stack build
-stack test
+# or
+stack build --fast --file-watch --ghc-options "-j4 +RTS -A128m -n2m -RTS"
+```
+
+## How to test as watch mode
+
+```bash
+stack test --fast --file-watch --watch-all
+# or
+stack test --coverage --fast --file-watch --watch-all --haddock
+# or
+ghcid --command "stack ghci test/Spec.hs"
+```
+
+## How to run
+
+```bash
 stack run
 ```
-
-## How to build this project
-
-```bash
-stack build # build
-stack exec servant-t00-init-exe # start server to port:8080
-```
-
-## How to call API from this project
-
-```bash
-curl http://localhost:8080/users
-```
+You can also use `Makefile` for these works.

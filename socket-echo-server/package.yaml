@@ -3,7 +3,7 @@ version:             0.1.0.0
 github:              mingyuchoo/socket-echo-server
 license:             MIT
 author:              Mingyu Choo
-maintainer:          mingyuchoo@gmail.com
+maintainer:          mingyuhcoo@gmail.com
 copyright:           2024, Mingyu Choo
 synopsis:            Short description of your package
 category:            CLI
@@ -19,6 +19,7 @@ dependencies:
 
 default-extensions:
 - StandaloneKindSignatures
+- TypeApplications
 
 ghc-options:
 - -Wall
@@ -35,8 +36,6 @@ executables:
     main:                Main.hs
     source-dirs:         app
     ghc-options:
-    - -threaded
-    - -rtsopts
     - -dynamic
     - -threaded
     - -rtsopts
@@ -49,8 +48,6 @@ tests:
     main:                Spec.hs
     source-dirs:         test
     ghc-options:
-    - -threaded
-    - -rtsopts
     - -dynamic
     - -threaded
     - -rtsopts

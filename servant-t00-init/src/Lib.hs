@@ -1,5 +1,4 @@
 {-# LANGUAGE DataKinds                #-}
-{-# LANGUAGE StandaloneKindSignatures #-}
 {-# LANGUAGE TemplateHaskell          #-}
 {-# LANGUAGE TypeOperators            #-}
 

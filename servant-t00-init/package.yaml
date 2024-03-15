@@ -1,22 +1,17 @@
 name:                servant-t00-init
 version:             0.1.0.0
-github:              "minguuchoo/servant-t00-init"
-license:             BSD3
-author:              "mingyuchoo"
-maintainer:          "mingyuchoo@gmail.com"
-copyright:           "2023 Mingyu Choo"
+github:              mingyuchoo/servant-t00-init
+license:             MIT
+author:              Mingyu Choo
+maintainer:          mingyuhcoo@gmail.com
+copyright:           2024, Mingyu Choo
+synopsis:            Short description of your package
+category:            CLI
+description:         Please see the README on GitHub at <https://github.com/mingyuchoo/servant-t00-init#readme>
 
 extra-source-files:
 - README.md
-
-# Metadata used when publishing your package
-# synopsis:            Short description of your package
-# category:            Web
-
-# To avoid duplicated efforts in documentation and dealing with the
-# complications of embedding Haddock markup inside cabal files, it is
-# common to point users to the README.md file.
-description:         Please see the README on GitHub at <https://github.com/minguuchoo/servant-t00-init#readme>
+- CHANGELOG.md
 
 dependencies:
 - base >= 4.18 && < 5
@@ -30,17 +25,16 @@ dependencies:
 - wai
 - warp
 
-default-extensions: []
+default-extensions:
+- StandaloneKindSignatures
+- TypeApplications
+
 ghc-options:
 - -Wall
-- -Wcompat
-- -Widentities
-- -Wincomplete-record-updates
-- -Wincomplete-uni-patterns
-- -Wmissing-export-lists
-- -Wmissing-home-modules
-- -Wpartial-fields
-- -Wredundant-constraints
+- -O2
+- -haddock
+
+language: GHC2021
 
 library:
   source-dirs: src
@@ -55,7 +49,6 @@ executables:
     - -rtsopts
     - -with-rtsopts=-N4
     dependencies:
-    - base
     - servant-t00-init
 
 tests:
@@ -68,9 +61,7 @@ tests:
     - -rtsopts
     - -with-rtsopts=-N4
     dependencies:
-    - base
     - servant-t00-init
     - hspec
-    - hspec-wai
-    - hspec-wai-json
-    - aeson
+    - doctest
+    - doctest-discover

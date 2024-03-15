@@ -3,7 +3,7 @@ version:             0.1.0.0
 github:              mingyuchoo/servant-t01-sqlite
 license:             MIT
 author:              Mingyu Choo
-maintainer:          mingyuchoo@gmail.com
+maintainer:          mingyuhcoo@gmail.com
 copyright:           2024, Mingyu Choo
 synopsis:            Short description of your package
 category:            CLI
@@ -24,6 +24,7 @@ dependencies:
 
 default-extensions:
 - StandaloneKindSignatures
+- TypeApplications
 
 ghc-options:
 - -Wall

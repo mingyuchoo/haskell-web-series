@@ -1,6 +1,6 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.35.1.
+-- This file has been generated from package.yaml by hpack version 0.36.0.
 --
 -- see: https://github.com/sol/hpack
 
@@ -35,7 +35,7 @@ library
       Spock
     , Spock-core
     , aeson
-    , base >=4.9.1.0 && <5
+    , base >=4.18 && <5
     , containers
     , monad-logger
     , parallel
@@ -46,7 +46,7 @@ library
     , stm-containers
     , stm-hamt
     , text
-  default-language: .GHC2021
+  default-language: Haskell2010
 
 executable Spock-rest-exe
   main-is: Main.hs
@@ -60,7 +60,7 @@ executable Spock-rest-exe
     , Spock-core
     , Spock-rest
     , aeson
-    , base >=4.9.1.0 && <5
+    , base >=4.18 && <5
     , containers
     , monad-logger
     , parallel
@@ -71,7 +71,7 @@ executable Spock-rest-exe
     , stm-containers
     , stm-hamt
     , text
-  default-language: .GHC2021
+  default-language: Haskell2010
 
 test-suite Spock-rest-test
   type: exitcode-stdio-1.0
@@ -86,7 +86,7 @@ test-suite Spock-rest-test
     , Spock-core
     , Spock-rest
     , aeson
-    , base >=4.9.1.0 && <5
+    , base >=4.18 && <5
     , containers
     , monad-logger
     , parallel
@@ -97,4 +97,4 @@ test-suite Spock-rest-test
     , stm-containers
     , stm-hamt
     , text
-  default-language: .GHC2021
+  default-language: Haskell2010
