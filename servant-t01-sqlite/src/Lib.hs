@@ -67,7 +67,7 @@ instance ToRow User where
 appRunner :: IO ()
 appRunner = do
   migrate
-  putStrLn "Server is running..."
+  putStrLn "Server is started at port: 4000"
   run 4000 app
 
 
