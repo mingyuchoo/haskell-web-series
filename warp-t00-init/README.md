@@ -23,5 +23,5 @@ $ docker build --tag warp:0.1 --file Dockerfile .
 ### How to run
 
 ```bash
-$ docker run --detach --name warp --publish 0.0.0.0:3000:3000 warp:0.1
+$ docker run --detach --name warp --publish 0.0.0.0:4000:4000 warp:0.1
 ```

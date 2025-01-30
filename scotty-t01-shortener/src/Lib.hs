@@ -27,7 +27,7 @@ import           Web.Scotty
 shortener :: IO ()
 shortener = do
     urlsR <- newIORef (1 :: Int, mempty :: Map Int Text)
-    scotty 3000 $ do
+    scotty 4000 $ do
         get "/" $ do
             (_, urls) <- liftIO $ readIORef urlsR
             html $ renderHtml $

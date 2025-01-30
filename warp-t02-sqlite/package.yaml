@@ -4,7 +4,7 @@ github:              mingyuchoo/warp-t02-sqlite
 license:             MIT
 author:              Mingyu Choo
 maintainer:          mingyuhcoo@gmail.com
-copyright:           2024, Mingyu Choo
+copyright:           2025, Mingyu Choo
 synopsis:            Short description of your package
 category:            CLI
 description:         Please see the README on GitHub at <https://github.com/mingyuchoo/warp-t02-sqlite#readme>
@@ -15,7 +15,7 @@ extra-source-files:
 
 dependencies:
 - aeson
-- base >= 4.18 && < 5
+- base >= 4.19 && < 5
 - bytestring
 - flow
 - http-types
@@ -31,7 +31,7 @@ ghc-options:
 - -O2
 - -haddock
 
-language: GHC2021
+language: Haskell2010
 
 library:
   source-dirs: src

@@ -12,5 +12,5 @@ import           Web.Scotty
 --
 someFunc :: IO ()
 someFunc =
-    scotty 3000 $ get "/" $
+    scotty 4000 $ get "/" $
         html "<h1>Hello, World!</h1>"

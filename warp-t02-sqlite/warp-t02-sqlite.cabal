@@ -1,4 +1,4 @@
-cabal-version: 1.12
+cabal-version: 3.0
 
 -- This file has been generated from package.yaml by hpack version 0.36.0.
 --
@@ -13,7 +13,7 @@ homepage:       https://github.com/mingyuchoo/warp-t02-sqlite#readme
 bug-reports:    https://github.com/mingyuchoo/warp-t02-sqlite/issues
 author:         Mingyu Choo
 maintainer:     mingyuhcoo@gmail.com
-copyright:      2024, Mingyu Choo
+copyright:      2025, Mingyu Choo
 license:        MIT
 license-file:   LICENSE
 build-type:     Simple
@@ -38,13 +38,13 @@ library
   ghc-options: -Wall -O2 -haddock
   build-depends:
       aeson
-    , base >=4.18 && <5
+    , base >=4.19 && <5
     , bytestring
     , flow
     , http-types
     , wai
     , warp
-  default-language: GHC2021
+  default-language: Haskell2010
 
 executable warp-t02-sqlite-exe
   main-is: Main.hs
@@ -58,14 +58,14 @@ executable warp-t02-sqlite-exe
   ghc-options: -Wall -O2 -haddock -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       aeson
-    , base >=4.18 && <5
+    , base >=4.19 && <5
     , bytestring
     , flow
     , http-types
     , wai
     , warp
     , warp-t02-sqlite
-  default-language: GHC2021
+  default-language: Haskell2010
 
 test-suite warp-t02-sqlite-test
   type: exitcode-stdio-1.0
@@ -80,7 +80,7 @@ test-suite warp-t02-sqlite-test
   ghc-options: -Wall -O2 -haddock -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       aeson
-    , base >=4.18 && <5
+    , base >=4.19 && <5
     , bytestring
     , doctest
     , doctest-discover
@@ -90,4 +90,4 @@ test-suite warp-t02-sqlite-test
     , wai
     , warp
     , warp-t02-sqlite
-  default-language: GHC2021
+  default-language: Haskell2010

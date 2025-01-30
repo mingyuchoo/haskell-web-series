@@ -9,9 +9,9 @@ someFunc :: IO ()
 someFunc = do
   sock <- socket AF_INET Stream 0
   setSocketOption sock ReuseAddr 1
-  bind sock (SockAddrInet 4242 0)
+  bind sock (SockAddrInet 4000 0)
   listen sock 2
-  putStrLn "Listening on port 4242..."
+  putStrLn "Listening on port 4000..."
   mainLoop sock
 
 

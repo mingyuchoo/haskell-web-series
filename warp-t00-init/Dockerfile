@@ -4,7 +4,7 @@ RUN mkdir /app
 COPY . /app
 RUN cd /app && stack build --system-ghc && stack install
 
-EXPOSE 3000
+EXPOSE 4000
 
 WORKDIR /app
 ARG EXECUTABLE

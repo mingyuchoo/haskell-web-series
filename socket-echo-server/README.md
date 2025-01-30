@@ -35,12 +35,12 @@ You can also use `Makefile` for these works.
 ## How to test functionality
 
 ```bash
-echo "Hello, Haskell!" | nc localhost 4242
+echo "Hello, Haskell!" | nc localhost 4000
 You said: Hello, Haskell!
 
 # or
 
-telnet localhost 4242
+telnet localhost 4000
 Trying 127.0.0.1...
 Connected to localhost.
 Escape character is '^]'.

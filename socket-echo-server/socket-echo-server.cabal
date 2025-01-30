@@ -1,4 +1,4 @@
-cabal-version: 1.12
+cabal-version: 3.0
 
 -- This file has been generated from package.yaml by hpack version 0.36.0.
 --
@@ -13,7 +13,7 @@ homepage:       https://github.com/mingyuchoo/socket-echo-server#readme
 bug-reports:    https://github.com/mingyuchoo/socket-echo-server/issues
 author:         Mingyu Choo
 maintainer:     mingyuhcoo@gmail.com
-copyright:      2024, Mingyu Choo
+copyright:      2025, Mingyu Choo
 license:        MIT
 license-file:   LICENSE
 build-type:     Simple
@@ -37,9 +37,9 @@ library
       TypeApplications
   ghc-options: -Wall -O2 -haddock
   build-depends:
-      base >=4.18 && <5
+      base >=4.19 && <5
     , network
-  default-language: GHC2021
+  default-language: Haskell2010
 
 executable socket-echo-server-exe
   main-is: Main.hs
@@ -52,10 +52,10 @@ executable socket-echo-server-exe
       TypeApplications
   ghc-options: -Wall -O2 -haddock -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
-      base >=4.18 && <5
+      base >=4.19 && <5
     , network
     , socket-echo-server
-  default-language: GHC2021
+  default-language: Haskell2010
 
 test-suite socket-echo-server-test
   type: exitcode-stdio-1.0
@@ -69,10 +69,10 @@ test-suite socket-echo-server-test
       TypeApplications
   ghc-options: -Wall -O2 -haddock -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
-      base >=4.18 && <5
+      base >=4.19 && <5
     , doctest
     , doctest-discover
     , hspec
     , network
     , socket-echo-server
-  default-language: GHC2021
+  default-language: Haskell2010
