@@ -14,7 +14,7 @@ bug-reports:    https://github.com/mingyuchoo/servant-t01-sqlite/issues
 author:         Mingyu Choo
 maintainer:     mingyuhcoo@gmail.com
 copyright:      2025, Mingyu Choo
-license:        MIT
+license:        BSD 3-Clause
 license-file:   LICENSE
 build-type:     Simple
 extra-source-files:

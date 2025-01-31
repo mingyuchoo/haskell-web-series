@@ -1,7 +1,7 @@
 name:                socket-echo-server
 version:             0.1.0.0
 github:              mingyuchoo/socket-echo-server
-license:             MIT
+license:             BSD 3-Clause
 author:              Mingyu Choo
 maintainer:          mingyuhcoo@gmail.com
 copyright:           2025, Mingyu Choo

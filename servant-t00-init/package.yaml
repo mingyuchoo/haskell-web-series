@@ -1,7 +1,7 @@
 name:                servant-t00-init
 version:             0.1.0.0
 github:              mingyuchoo/servant-t00-init
-license:             MIT
+license:             BSD 3-Clause
 author:              Mingyu Choo
 maintainer:          mingyuhcoo@gmail.com
 copyright:           2025, Mingyu Choo

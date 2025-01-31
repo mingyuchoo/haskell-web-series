@@ -1,7 +1,7 @@
 name:                warp-t01-json
 version:             0.1.0.0
 github:              mingyuchoo/warp-t01-json
-license:             MIT
+license:             BSD 3-Clause
 author:              Mingyu Choo
 maintainer:          mingyuhcoo@gmail.com
 copyright:           2025, Mingyu Choo

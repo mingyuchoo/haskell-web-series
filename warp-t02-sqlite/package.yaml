@@ -1,7 +1,7 @@
 name:                warp-t02-sqlite
 version:             0.1.0.0
 github:              mingyuchoo/warp-t02-sqlite
-license:             MIT
+license:             BSD 3-Clause
 author:              Mingyu Choo
 maintainer:          mingyuhcoo@gmail.com
 copyright:           2025, Mingyu Choo
