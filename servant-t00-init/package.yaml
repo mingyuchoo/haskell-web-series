@@ -1,38 +1,38 @@
-name:                servant-t00-init
-version:             0.1.0.0
-github:              mingyuchoo/servant-t00-init
-license:             BSD 3-Clause
-author:              Mingyu Choo
-maintainer:          mingyuhcoo@gmail.com
-copyright:           2025, Mingyu Choo
-synopsis:            Short description of your package
-category:            CLI
-description:         Please see the README on GitHub at <https://github.com/mingyuchoo/servant-t00-init#readme>
+name: servant-t00-init
+version: 0.1.0.0
+github: mingyuchoo/servant-t00-init
+license: BSD-3-Clause
+author: Mingyu Choo
+maintainer: mingyuhcoo@gmail.com
+copyright: 2025, Mingyu Choo
+synopsis: Short description of your package
+category: CLI
+description: Please see the README on GitHub at <https://github.com/mingyuchoo/servant-t00-init#readme>
 
 extra-source-files:
-- README.md
-- CHANGELOG.md
+  - README.md
+  - CHANGELOG.md
 
 dependencies:
-- base >= 4.19 && < 5
-- aeson
-- containers
-- flow
-- parallel
-- servant-server
-- text
-- time
-- wai
-- warp
+  - base >= 4.19 && < 5
+  - aeson
+  - containers
+  - flow
+  - parallel
+  - servant-server
+  - text
+  - time
+  - wai
+  - warp
 
 default-extensions:
-- StandaloneKindSignatures
-- TypeApplications
+  - StandaloneKindSignatures
+  - TypeApplications
 
 ghc-options:
-- -Wall
-- -O2
-- -haddock
+  - -Wall
+  - -O2
+  - -haddock
 
 language: Haskell2010
 
@@ -41,27 +41,27 @@ library:
 
 executables:
   servant-t00-init-exe:
-    main:                Main.hs
-    source-dirs:         app
+    main: Main.hs
+    source-dirs: app
     ghc-options:
-    - -dynamic
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N4
+      - -dynamic
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N4
     dependencies:
-    - servant-t00-init
+      - servant-t00-init
 
 tests:
   servant-t00-init-test:
-    main:                Spec.hs
-    source-dirs:         test
+    main: Spec.hs
+    source-dirs: test
     ghc-options:
-    - -dynamic
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N4
+      - -dynamic
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N4
     dependencies:
-    - servant-t00-init
-    - hspec
-    - doctest
-    - doctest-discover
+      - servant-t00-init
+      - hspec
+      - doctest
+      - doctest-discover
