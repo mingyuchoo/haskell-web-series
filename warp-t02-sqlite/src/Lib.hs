@@ -6,7 +6,6 @@ module Lib
 
 import           Control.Exception         (bracket)
 import           Data.Aeson                (encode, decode, object)
-import           Data.ByteString           (ByteString)
 import qualified Data.ByteString.Lazy      as LBS
 import           Data.Kind                 ()
 import qualified Data.Text                 as T
