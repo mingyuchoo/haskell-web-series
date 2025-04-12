@@ -21,6 +21,10 @@ dependencies:
   - http-types
   - wai
   - warp
+  - text
+  - sqlite-simple
+  - uuid
+  - time
 
 default-extensions:
   - StandaloneKindSignatures

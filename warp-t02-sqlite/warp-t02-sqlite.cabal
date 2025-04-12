@@ -1,4 +1,4 @@
-cabal-version: 3.0
+cabal-version: 2.2
 
 -- This file has been generated from package.yaml by hpack version 0.38.0.
 --
@@ -27,6 +27,7 @@ source-repository head
 
 library
   exposed-modules:
+      Database
       Lib
   other-modules:
       Paths_warp_t02_sqlite
@@ -40,10 +41,14 @@ library
   ghc-options: -Wall -O2 -haddock
   build-depends:
       aeson
-    , base >=4.19 && <5
+    , base
     , bytestring
     , flow
     , http-types
+    , sqlite-simple
+    , text
+    , time
+    , uuid
     , wai
     , warp
   default-language: Haskell2010
@@ -62,10 +67,14 @@ executable warp-t02-sqlite-exe
   ghc-options: -Wall -O2 -haddock -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       aeson
-    , base >=4.19 && <5
+    , base
     , bytestring
     , flow
     , http-types
+    , sqlite-simple
+    , text
+    , time
+    , uuid
     , wai
     , warp
     , warp-t02-sqlite
@@ -86,13 +95,17 @@ test-suite warp-t02-sqlite-test
   ghc-options: -Wall -O2 -haddock -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       aeson
-    , base >=4.19 && <5
+    , base
     , bytestring
     , doctest
     , doctest-discover
     , flow
     , hspec
     , http-types
+    , sqlite-simple
+    , text
+    , time
+    , uuid
     , wai
     , warp
     , warp-t02-sqlite

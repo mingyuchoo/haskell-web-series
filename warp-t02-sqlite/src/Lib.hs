@@ -4,87 +4,130 @@ module Lib
     ( appRunner
     ) where
 
-import           Data.Aeson                ()
+import           Control.Exception         (bracket)
+import           Data.Aeson                (encode, decode, object)
 import           Data.ByteString           (ByteString)
-import           Data.ByteString.Lazy      (fromStrict)
+import qualified Data.ByteString.Lazy      as LBS
 import           Data.Kind                 ()
+import qualified Data.Text                 as T
+import           Database                  (User(..), initDB, createUser, getUser, getUsers, updateUser, deleteUser)
+import           Database.SQLite.Simple     (Connection)
 import           Flow                      ((<|))
 import           Network.HTTP.Types
-    ( methodDelete
+    ( Status
+    , methodDelete
     , methodGet
     , methodPost
     , methodPut
     , status200
+    , status201
+    , status204
+    , status400
+    , status404
     )
 import           Network.HTTP.Types.Header (hContentType)
 import           Network.Wai
-    ( Request (pathInfo, queryString, requestMethod)
+    ( Request (pathInfo, requestMethod)
     , Response
     , ResponseReceived
     , responseFile
     , responseLBS
+    , strictRequestBody
     )
 import           Network.Wai.Handler.Warp  (run)
+import           Text.Read                 (readMaybe)
 
 -- | Main Function
 --
 appRunner :: IO ()
 appRunner = do
   putStrLn <| "listening on " <> show port
-  run port app
+  bracket initDB (\_ -> putStrLn "Closing database connection") $ \conn -> do
+    run port (app conn)
   where
     port :: Int
     port = 4000
 
 -- | Application
 --
-app :: Request                           -- ^ request
+app :: Connection -> Request                           -- ^ request
     -> (Response -> IO ResponseReceived) -- ^ handler response to IO
     -> IO ResponseReceived               -- ^ response
-app request respond | requestMethod request == methodGet =
-                      let reqPathInfo = pathInfo request
-                          reqQueryString = queryString request
-                      in case (reqPathInfo, reqQueryString) of
-                           ([], _) -> respond <| index
-                           (["expr"], [("q", Just stuff)]) -> respond <| homeRoute stuff
-                           (_, _) -> respond <| notFoundRoute
-                    | requestMethod request == methodPost   = respond <| post
-                    | requestMethod request == methodPut    = respond <| put
-                    | requestMethod request == methodDelete = respond <| delete
-                    | otherwise                             = respond <| notFoundRoute
+app conn request respond = do
+  case requestMethod request of
+    -- GET requests
+    method | method == methodGet -> do
+      let reqPathInfo = pathInfo request
+      case reqPathInfo of
+        [] -> respond index
+        ["api", "users"] -> do
+          users <- getUsers conn
+          respond $ jsonResponse status200 $ encode users
+        ["api", "users", userId] -> do
+          case readMaybe (T.unpack userId) of
+            Just id' -> do
+              maybeUser <- getUser conn id'
+              case maybeUser of
+                Just user -> respond $ jsonResponse status200 $ encode user
+                Nothing -> respond $ jsonResponse status404 $ encode (object [("error", "User not found")])
+            Nothing -> respond $ jsonResponse status400 $ encode (object [("error", "Invalid user ID")])
+        _ -> respond $ responseFile status200 [(hContentType, "text/html"), ("Access-Control-Allow-Origin", "*")] "www/index.html" Nothing
 
--- | POST /
---
-post :: Response
-post =
-  responseLBS status200 [(hContentType, "text/plain")] "POST method"
+    -- POST requests
+    method | method == methodPost -> do
+      let reqPathInfo = pathInfo request
+      case reqPathInfo of
+        ["api", "users"] -> do
+          body <- strictRequestBody request
+          case decode body of
+            Just user -> do
+              newUser <- createUser conn user
+              respond $ jsonResponse status201 $ encode newUser
+            Nothing -> respond $ jsonResponse status400 $ encode (object [("error", "Invalid user data")])
+        _ -> respond $ jsonResponse status404 $ encode (object [("error", "Endpoint not found")])
 
--- | PUT /
---
-put :: Response
-put =
-  responseLBS status200 [(hContentType, "text/plain")] "PUT method"
+    -- PUT requests
+    method | method == methodPut -> do
+      let reqPathInfo = pathInfo request
+      case reqPathInfo of
+        ["api", "users", userId] -> do
+          case readMaybe (T.unpack userId) of
+            Just id' -> do
+              body <- strictRequestBody request
+              case decode body of
+                Just user -> do
+                  let userWithId = user { userId = Just id' }
+                  success <- updateUser conn userWithId
+                  if success
+                    then respond $ jsonResponse status200 $ encode userWithId
+                    else respond $ jsonResponse status404 $ encode (object [("error", "User not found")])
+                Nothing -> respond $ jsonResponse status400 $ encode (object [("error", "Invalid user data")])
+            Nothing -> respond $ jsonResponse status400 $ encode (object [("error", "Invalid user ID")])
+        _ -> respond $ jsonResponse status404 $ encode (object [("error", "Endpoint not found")])
 
--- | DELETE /
---
-delete :: Response
-delete =
-  responseLBS status200 [(hContentType, "text/plain")] "DELETE method"
+    -- DELETE requests
+    method | method == methodDelete -> do
+      let reqPathInfo = pathInfo request
+      case reqPathInfo of
+        ["api", "users", userId] -> do
+          case readMaybe (T.unpack userId) of
+            Just id' -> do
+              success <- deleteUser conn id'
+              if success
+                then respond $ jsonResponse status204 $ encode (object [])
+                else respond $ jsonResponse status404 $ encode (object [("error", "User not found")])
+            Nothing -> respond $ jsonResponse status400 $ encode (object [("error", "Invalid user ID")])
+        _ -> respond $ jsonResponse status404 $ encode (object [("error", "Endpoint not found")])
+
+    -- Other methods
+    _ -> respond $ jsonResponse status404 $ encode (object [("error", "Method not supported")])
+
+-- | CORS header
+-- | JSON Response helper
+jsonResponse :: Status -> LBS.ByteString -> Response
+jsonResponse status = responseLBS status [(hContentType, "application/json"), ("Access-Control-Allow-Origin", "*")]
 
 -- | GET / Index Page
 --
 index :: Response
-index =
-  responseFile status200 [(hContentType, "text/html")] "www/index.html" Nothing
-
--- | GET / JSON Response
---
-homeRoute :: ByteString -> Response
-homeRoute bs =
-  responseLBS status200 [(hContentType, "application/json")] (fromStrict bs)
-
--- | GET / Page not found
---
-notFoundRoute :: Response
-notFoundRoute =
-  responseLBS status200 [(hContentType, "text/plain")] "Page not found."
+index = responseFile status200 [(hContentType, "text/html"), ("Access-Control-Allow-Origin", "*")] "www/index.html" Nothing
