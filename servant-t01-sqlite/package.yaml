@@ -21,6 +21,11 @@ dependencies:
   - wai
   - warp
   - sqlite-simple
+  - lucid
+  - servant-lucid
+  - blaze-html
+  - http-media
+  - wai-app-static
 
 default-extensions:
   - StandaloneKindSignatures

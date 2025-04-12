@@ -11,6 +11,7 @@ module Lib
 
 import           Control.Monad.IO.Class   (liftIO)
 import           Data.Aeson               (FromJSON, ToJSON)
+import           Data.Text                (Text, pack)
 import           Database.SQLite.Simple
     ( Connection
     , FromRow (..)
@@ -25,8 +26,12 @@ import           Database.SQLite.Simple
     , query_
     )
 import           GHC.Generics             (Generic)
+import           Lucid
+import           Lucid.Base               (makeAttribute)
+import           Network.HTTP.Media       ((//), (/:))
 import           Network.Wai              (Application)
 import           Network.Wai.Handler.Warp (run)
+import           Network.Wai.Application.Static (staticApp, defaultWebAppSettings)
 import           Servant
     ( Capture
     , Delete
@@ -36,12 +41,16 @@ import           Servant
     , Post
     , Proxy (..)
     , Put
+    , Raw
     , ReqBody
     , Server
+    , ServerT
+    , serveDirectoryWith
     , serve
     , type (:<|>) (..)
     , type (:>)
     )
+import           Servant.HTML.Lucid       (HTML)
 
 -- -------------------------------------------------------------------
 -- Data
@@ -62,6 +71,69 @@ instance ToRow User where
   toRow (User userId userName) = toRow (userId, userName)
 
 -- -------------------------------------------------------------------
+-- HTML Templates
+-- -------------------------------------------------------------------
+
+-- Base template with common elements
+baseTemplate :: Text -> Html () -> Html () -> Html ()
+baseTemplate title headContent bodyContent = doctypehtml_ $ do
+  head_ $ do
+    meta_ [charset_ "utf-8"]
+    meta_ [name_ "viewport", content_ "width=device-width, initial-scale=1.0"]
+    title_ (toHtml title)
+    link_ [rel_ "stylesheet", href_ "/static/css/style.css"]
+    headContent
+  body_ $ do
+    div_ [class_ "container"] $ do
+      h1_ (toHtml title)
+      bodyContent
+    script_ [src_ "/static/js/main.js"] ("" :: Text)
+
+-- Index page template
+indexTemplate :: [User] -> Html ()
+indexTemplate users = baseTemplate "User Management" mempty $ do
+  div_ [id_ "message-container"] mempty
+  
+  -- User form
+  div_ [class_ "container"] $ do
+    h2_ [id_ "form-title"] "Create New User"
+    form_ [id_ "user-form"] $ do
+      input_ [type_ "hidden", id_ "form-mode", name_ "form-mode", value_ "create"]
+      div_ [class_ "form-group"] $ do
+        label_ [for_ "userId"] "User ID:"
+        input_ [type_ "number", id_ "userId", name_ "userId", required_ "required"]
+      div_ [class_ "form-group"] $ do
+        label_ [for_ "userName"] "User Name:"
+        input_ [type_ "text", id_ "userName", name_ "userName", required_ "required"]
+      button_ [type_ "submit", class_ "btn btn-success", id_ "submit-btn"] "Create User"
+      button_ [type_ "button", class_ "btn", onclick_ "resetForm()"] "Reset"
+  
+  -- Users table
+  div_ [class_ "container"] $ do
+    h2_ "User List"
+    table_ $ do
+      thead_ $ do
+        tr_ $ do
+          th_ "ID"
+          th_ "Name"
+          th_ "Actions"
+      tbody_ [id_ "users-table-body"] $ do
+        if null users
+          then tr_ $ td_ [colspan_ "3"] "No users found"
+          else mapM_ userRow users
+
+-- Single user row template
+userRow :: User -> Html ()
+userRow user = tr_ $ do
+  td_ (toHtml $ show $ userId user)
+  td_ (toHtml $ userName user)
+  td_ $ do
+    button_ [class_ "btn", onclick_ $ "editUser(" <> pack (show $ userId user) <> ", '" <> pack (userName user) <> "')"]
+      "Edit"
+    button_ [class_ "btn btn-danger", onclick_ $ "deleteUser(" <> pack (show $ userId user) <> ")"]
+      "Delete"
+
+-- -------------------------------------------------------------------
 -- Application
 -- -------------------------------------------------------------------
 
@@ -73,21 +145,43 @@ appRunner = do
 
 
 app :: Application
-app = serve userAPI userServer
+app = serve appAPI appServer
 
 -- -------------------------------------------------------------------
 -- API
 -- -------------------------------------------------------------------
 
+-- API for JSON endpoints
 type UserAPI = "users" :> Get '[JSON] [User]
              :<|> "users" :> ReqBody '[JSON] User :> Post '[JSON] [User]
              :<|> "users" :> Capture "userId" Int :> Get  '[JSON] [User]
              :<|> "users" :> Capture "userId" Int :> ReqBody '[JSON] User :> Put '[JSON] [User]
              :<|> "users" :> Capture "userId" Int :> Delete '[JSON] [User]
 
-userAPI :: Proxy UserAPI
-userAPI = Proxy
+-- API for HTML web interface
+type WebAPI = Get '[HTML] (Html ())
+          :<|> "static" :> Raw
 
+-- Combined API
+type AppAPI = WebAPI :<|> UserAPI
+
+appAPI :: Proxy AppAPI
+appAPI = Proxy
+
+-- Server implementation
+appServer :: Server AppAPI
+appServer = webServer :<|> userServer
+
+-- Web interface server
+webServer :: Server WebAPI
+webServer = indexHandler :<|> serveDirectoryWith (defaultWebAppSettings "static")
+  where
+    indexHandler :: Handler (Html ())
+    indexHandler = do
+      users <- liftIO selectAllUser
+      return $ indexTemplate users
+
+-- JSON API server
 userServer :: Server UserAPI
 userServer = getAll
   :<|> postOne

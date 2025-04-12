@@ -1,4 +1,4 @@
-cabal-version: 3.0
+cabal-version: 2.2
 
 -- This file has been generated from package.yaml by hpack version 0.38.0.
 --
@@ -41,10 +41,15 @@ library
   build-depends:
       aeson
     , base
+    , blaze-html
+    , http-media
+    , lucid
+    , servant-lucid
     , servant-server
     , sqlite-simple
     , text
     , wai
+    , wai-app-static
     , warp
   default-language: Haskell2010
 
@@ -63,11 +68,16 @@ executable servant-t01-sqlite-exe
   build-depends:
       aeson
     , base
+    , blaze-html
+    , http-media
+    , lucid
+    , servant-lucid
     , servant-server
     , servant-t01-sqlite
     , sqlite-simple
     , text
     , wai
+    , wai-app-static
     , warp
   default-language: Haskell2010
 
@@ -87,13 +97,18 @@ test-suite servant-t01-sqlite-test
   build-depends:
       aeson
     , base
+    , blaze-html
     , doctest
     , doctest-discover
     , hspec
+    , http-media
+    , lucid
+    , servant-lucid
     , servant-server
     , servant-t01-sqlite
     , sqlite-simple
     , text
     , wai
+    , wai-app-static
     , warp
   default-language: Haskell2010
