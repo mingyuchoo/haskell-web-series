@@ -10,8 +10,11 @@ module Lib
 -- -------------------------------------------------------------------
 
 import           Control.Monad.IO.Class   (liftIO)
-import           Data.Aeson               (FromJSON, ToJSON)
-import           Data.Text                (Text, pack)
+import           Control.Exception        (try)
+import           Data.Aeson               (FromJSON, ToJSON, object, (.=))
+import           Data.Aeson.Types         (Value(..), Pair)
+import qualified Data.Text               as T
+import           Data.Text                (Text, pack, unpack)
 import           Database.SQLite.Simple
     ( Connection
     , FromRow (..)
@@ -68,6 +71,12 @@ data NewUser = NewUser { newUserName :: String
 instance FromJSON NewUser
 
 instance ToJSON NewUser
+
+-- Validation error response
+data ValidationError = ValidationError { errorMessage :: Text
+                                     } deriving (Eq, Show, Generic)
+
+instance ToJSON ValidationError
 
 instance FromJSON User
 
@@ -144,13 +153,14 @@ userRow user = tr_ $ do
 -- Application
 -- -------------------------------------------------------------------
 
+-- Application runner
 appRunner :: IO ()
 appRunner = do
   migrate
   putStrLn "Server is started at port: 4000"
   run 4000 app
 
-
+-- Application server
 app :: Application
 app = serve appAPI appServer
 
@@ -160,9 +170,9 @@ app = serve appAPI appServer
 
 -- API for JSON endpoints
 type UserAPI = "users" :> Get '[JSON] [User]
-             :<|> "users" :> ReqBody '[JSON] NewUser :> Post '[JSON] [User]
+             :<|> "users" :> ReqBody '[JSON] NewUser :> Post '[JSON] (Either ValidationError [User])
              :<|> "users" :> Capture "userId" Int :> Get  '[JSON] [User]
-             :<|> "users" :> Capture "userId" Int :> ReqBody '[JSON] User :> Put '[JSON] [User]
+             :<|> "users" :> Capture "userId" Int :> ReqBody '[JSON] User :> Put '[JSON] (Either ValidationError [User])
              :<|> "users" :> Capture "userId" Int :> Delete '[JSON] [User]
 
 -- API for HTML web interface
@@ -172,6 +182,7 @@ type WebAPI = Get '[HTML] (Html ())
 -- Combined API
 type AppAPI = WebAPI :<|> UserAPI
 
+-- API proxy
 appAPI :: Proxy AppAPI
 appAPI = Proxy
 
@@ -199,14 +210,14 @@ userServer = getAll
     getAll :: Handler [User]
     getAll = liftIO selectAllUser
 
-    postOne :: NewUser -> Handler [User]
-    postOne = liftIO . insertOneUser
+    postOne :: NewUser -> Handler (Either ValidationError [User])
+    postOne newUser = liftIO $ validateAndInsertUser newUser
 
     getOne :: Int -> Handler [User]
     getOne = liftIO . selectOneUser
 
-    putOne :: Int -> User -> Handler [User]
-    putOne uId user =  liftIO $ updateOneUser uId user
+    putOne :: Int -> User -> Handler (Either ValidationError [User])
+    putOne uId user = liftIO $ validateAndUpdateUser uId user
 
     delOne ::  Int -> Handler [User]
     delOne uId = liftIO $ deleteOneUser uId
@@ -222,31 +233,70 @@ withConn action = do
   close conn
   pure a
 
+-- Migration
 migrate :: IO ()
 migrate = withConn $ \conn ->
   execute_ conn "CREATE TABLE IF NOT EXISTS haskell_user (userId INTEGER PRIMARY KEY AUTOINCREMENT, userName TEXT)"
 
+-- Original insert function
 insertOneUser :: NewUser -> IO [User]
 insertOneUser newUser = withConn $ \conn -> do
   execute conn "INSERT INTO haskell_user (userName) VALUES (?)" (Only (newUserName newUser))
   rowId <- lastInsertRowId conn
   query conn "SELECT userId, userName FROM haskell_user WHERE userId = ?" (Only rowId)
 
+-- Original select functions
 selectOneUser :: Int -> IO [User]
 selectOneUser uId = withConn $ \conn ->
   query conn "SELECT userId, userName FROM haskell_user WHERE userId = (?)" (Only uId)
 
+-- Original select all function
 selectAllUser :: IO [User]
 selectAllUser = withConn $ \conn ->
   query_ conn "SELECT userId, userName FROM haskell_user"
 
+-- Original update function
 updateOneUser :: Int -> User -> IO [User]
 updateOneUser uId user@(User _ uName) = withConn $ \conn -> do
   _ <- execute conn "UPDATE haskell_user SET userName = (?) WHERE userId = (?)" (uName, uId)
   query conn "SELECT userId, userName FROM haskell_user WHERE userId = (?) AND userName = (?)" user
 
+-- Original delete function
 deleteOneUser :: Int -> IO [User]
 deleteOneUser uId = withConn $ \conn -> do
   user <- query conn "SELECT userId, userName FROM haskell_user WHERE userId = (?)" (Only uId)
   execute conn "DELETE FROM haskell_user WHERE userId = (?)" (Only uId)
   return user
+
+-- Validation functions
+validateUsername :: String -> Either ValidationError ()
+validateUsername name
+  | null name = Left $ ValidationError "Username cannot be empty"
+  | length name < 3 = Left $ ValidationError "Username must be at least 3 characters long"
+  | length name > 50 = Left $ ValidationError "Username must be at most 50 characters long"
+  | not (all (\c -> c `elem` ['a'..'z'] ++ ['A'..'Z'] ++ ['0'..'9'] ++ [' ', '_', '-']) name) = 
+      Left $ ValidationError "Username can only contain letters, numbers, spaces, underscores, and hyphens"
+  | otherwise = Right ()
+
+-- Insert with validation
+validateAndInsertUser :: NewUser -> IO (Either ValidationError [User])
+validateAndInsertUser newUser = do
+  case validateUsername (newUserName newUser) of
+    Left err -> return $ Left err
+    Right () -> do
+      result <- try (insertOneUser newUser) :: IO (Either IOError [User])
+      case result of
+        Left e -> return $ Left $ ValidationError $ pack $ "Database error: " ++ show e
+        Right users -> return $ Right users
+
+-- Update with validation
+validateAndUpdateUser :: Int -> User -> IO (Either ValidationError [User])
+validateAndUpdateUser uId user = do
+  case validateUsername (userName user) of
+    Left err -> return $ Left err
+    Right () -> do
+      result <- try (updateOneUser uId user) :: IO (Either IOError [User])
+      case result of
+        Left e -> return $ Left $ ValidationError $ pack $ "Database error: " ++ show e
+        Right users -> return $ Right users
+

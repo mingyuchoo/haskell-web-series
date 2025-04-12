@@ -99,6 +99,15 @@ async function handleFormSubmit(event) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     
+    // Parse the response
+    const data = await response.json();
+    
+    // Check if there's a validation error
+    if (data && data.errorMessage) {
+      showMessage(`Validation error: ${data.errorMessage}`, 'error');
+      return;
+    }
+    
     // Reset form
     resetForm();
     
