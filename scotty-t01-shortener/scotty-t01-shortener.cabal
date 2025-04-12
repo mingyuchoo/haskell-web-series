@@ -1,6 +1,6 @@
 cabal-version: 3.0
 
--- This file has been generated from package.yaml by hpack version 0.36.0.
+-- This file has been generated from package.yaml by hpack version 0.38.0.
 --
 -- see: https://github.com/sol/hpack
 
@@ -10,7 +10,7 @@ description:    Please see the README on GitHub at <https://github.com/mingyucho
 homepage:       https://github.com/mingyuchoo/scotty-t01-shortener#readme
 bug-reports:    https://github.com/mingyuchoo/scotty-t01-shortener/issues
 author:         Mingyu Choo
-maintainer:     mingyuchoo@gmail.com@gmail.com
+maintainer:     mingyuchoo@gmail.com
 copyright:      2023 Mingyu Choo
 license:        BSD-3-Clause
 license-file:   LICENSE
@@ -28,11 +28,13 @@ library
       Lib
   other-modules:
       Paths_scotty_t01_shortener
+  autogen-modules:
+      Paths_scotty_t01_shortener
   hs-source-dirs:
       src
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints
   build-depends:
-      base >=4.19 && <5
+      base
     , blaze-html
     , containers
     , http-types
@@ -44,11 +46,13 @@ executable scotty-t01-shortener-exe
   main-is: Main.hs
   other-modules:
       Paths_scotty_t01_shortener
+  autogen-modules:
+      Paths_scotty_t01_shortener
   hs-source-dirs:
       app
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
-      base >=4.19 && <5
+      base
     , blaze-html
     , containers
     , http-types
@@ -62,11 +66,13 @@ test-suite scotty-t01-shortener-test
   main-is: Spec.hs
   other-modules:
       Paths_scotty_t01_shortener
+  autogen-modules:
+      Paths_scotty_t01_shortener
   hs-source-dirs:
       test
   ghc-options: -Wall -Wcompat -Widentities -Wincomplete-record-updates -Wincomplete-uni-patterns -Wmissing-export-lists -Wmissing-home-modules -Wpartial-fields -Wredundant-constraints -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
-      base >=4.19 && <5
+      base
     , blaze-html
     , containers
     , doctest
