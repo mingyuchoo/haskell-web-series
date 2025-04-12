@@ -56,15 +56,10 @@ async function handleFormSubmit(event) {
   const userId = document.getElementById('userId').value;
   const userName = document.getElementById('userName').value;
   
-  if (!userId || !userName) {
-    showMessage('Please fill in all fields', 'error');
+  if (!userName) {
+    showMessage('Please enter a user name', 'error');
     return;
   }
-  
-  const userData = {
-    userId: parseInt(userId),
-    userName: userName
-  };
   
   const formMode = document.getElementById('form-mode').value;
   
@@ -72,14 +67,25 @@ async function handleFormSubmit(event) {
     let response;
     
     if (formMode === 'create') {
+      // For creation, we only need userName as userId is auto-generated
+      const newUserData = {
+        newUserName: userName
+      };
+      
       response = await fetch('/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(userData)
+        body: JSON.stringify(newUserData)
       });
     } else if (formMode === 'update') {
+      // For updates, we need both userId and userName
+      const userData = {
+        userId: parseInt(userId),
+        userName: userName
+      };
+      
       response = await fetch(`/users/${userId}`, {
         method: 'PUT',
         headers: {
@@ -110,7 +116,6 @@ async function handleFormSubmit(event) {
 function setupCreateForm() {
   document.getElementById('form-title').textContent = 'Create New User';
   document.getElementById('form-mode').value = 'create';
-  document.getElementById('userId').removeAttribute('readonly');
   document.getElementById('userId').value = '';
   document.getElementById('userName').value = '';
   document.getElementById('submit-btn').textContent = 'Create User';

@@ -24,6 +24,7 @@ import           Database.SQLite.Simple
     , open
     , query
     , query_
+    , lastInsertRowId
     )
 import           GHC.Generics             (Generic)
 import           Lucid
@@ -59,6 +60,14 @@ import           Servant.HTML.Lucid       (HTML)
 data User = User { userId   :: Int
                  , userName :: String
                  } deriving (Eq, Show, Generic)
+
+-- Used for creating a new user without specifying userId
+data NewUser = NewUser { newUserName :: String
+                       } deriving (Eq, Show, Generic)
+
+instance FromJSON NewUser
+
+instance ToJSON NewUser
 
 instance FromJSON User
 
@@ -99,9 +108,7 @@ indexTemplate users = baseTemplate "User Management" mempty $ do
     h2_ [id_ "form-title"] "Create New User"
     form_ [id_ "user-form"] $ do
       input_ [type_ "hidden", id_ "form-mode", name_ "form-mode", value_ "create"]
-      div_ [class_ "form-group"] $ do
-        label_ [for_ "userId"] "User ID:"
-        input_ [type_ "number", id_ "userId", name_ "userId", required_ "required"]
+      input_ [type_ "hidden", id_ "userId", name_ "userId"]
       div_ [class_ "form-group"] $ do
         label_ [for_ "userName"] "User Name:"
         input_ [type_ "text", id_ "userName", name_ "userName", required_ "required"]
@@ -153,7 +160,7 @@ app = serve appAPI appServer
 
 -- API for JSON endpoints
 type UserAPI = "users" :> Get '[JSON] [User]
-             :<|> "users" :> ReqBody '[JSON] User :> Post '[JSON] [User]
+             :<|> "users" :> ReqBody '[JSON] NewUser :> Post '[JSON] [User]
              :<|> "users" :> Capture "userId" Int :> Get  '[JSON] [User]
              :<|> "users" :> Capture "userId" Int :> ReqBody '[JSON] User :> Put '[JSON] [User]
              :<|> "users" :> Capture "userId" Int :> Delete '[JSON] [User]
@@ -192,7 +199,7 @@ userServer = getAll
     getAll :: Handler [User]
     getAll = liftIO selectAllUser
 
-    postOne :: User -> Handler [User]
+    postOne :: NewUser -> Handler [User]
     postOne = liftIO . insertOneUser
 
     getOne :: Int -> Handler [User]
@@ -217,13 +224,13 @@ withConn action = do
 
 migrate :: IO ()
 migrate = withConn $ \conn ->
-  execute_ conn "CREATE TABLE IF NOT EXISTS haskell_user (userId INTEGER PRIMARY KEY, userName TEXT)"
+  execute_ conn "CREATE TABLE IF NOT EXISTS haskell_user (userId INTEGER PRIMARY KEY AUTOINCREMENT, userName TEXT)"
 
-insertOneUser :: User -> IO [User]
-insertOneUser user = withConn $ \conn -> do
-  _ <- execute conn "INSERT INTO haskell_user (userId, userName) VALUES (?, ?)" user
-
-  query conn "SELECT userId, userName FROM haskell_user WHERE userId = (?) AND userName = (?)" user
+insertOneUser :: NewUser -> IO [User]
+insertOneUser newUser = withConn $ \conn -> do
+  execute conn "INSERT INTO haskell_user (userName) VALUES (?)" (Only (newUserName newUser))
+  rowId <- lastInsertRowId conn
+  query conn "SELECT userId, userName FROM haskell_user WHERE userId = ?" (Only rowId)
 
 selectOneUser :: Int -> IO [User]
 selectOneUser uId = withConn $ \conn ->
