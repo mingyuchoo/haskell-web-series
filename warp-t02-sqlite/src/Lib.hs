@@ -5,12 +5,20 @@ module Lib
     ) where
 
 import           Control.Exception         (bracket)
-import           Data.Aeson                (encode, decode, object)
+import           Data.Aeson                (decode, encode, object)
 import qualified Data.ByteString.Lazy      as LBS
 import           Data.Kind                 ()
 import qualified Data.Text                 as T
-import           Database                  (User(..), initDB, createUser, getUser, getUsers, updateUser, deleteUser)
-import           Database.SQLite.Simple     (Connection)
+import           Database
+    ( User (..)
+    , createUser
+    , deleteUser
+    , getUser
+    , getUsers
+    , initDB
+    , updateUser
+    )
+import           Database.SQLite.Simple    (Connection)
 import           Flow                      ((<|))
 import           Network.HTTP.Types
     ( Status
@@ -41,7 +49,7 @@ import           Text.Read                 (readMaybe)
 appRunner :: IO ()
 appRunner = do
   putStrLn <| "listening on " <> show port
-  bracket initDB (\_ -> putStrLn "Closing database connection") $ \conn -> do
+  bracket initDB (\_ -> putStrLn "Closing database connection") <| \conn -> do
     run port (app conn)
   where
     port :: Int
@@ -49,7 +57,7 @@ appRunner = do
 
 -- | Application
 --
-app :: Connection -> Request                           -- ^ request
+app :: Connection -> Request             -- ^ request
     -> (Response -> IO ResponseReceived) -- ^ handler response to IO
     -> IO ResponseReceived               -- ^ response
 app conn request respond = do
@@ -61,16 +69,18 @@ app conn request respond = do
         [] -> respond index
         ["api", "users"] -> do
           users <- getUsers conn
-          respond $ jsonResponse status200 $ encode users
+          respond <| jsonResponse status200 <| encode users
         ["api", "users", userId] -> do
           case readMaybe (T.unpack userId) of
             Just id' -> do
               maybeUser <- getUser conn id'
               case maybeUser of
-                Just user -> respond $ jsonResponse status200 $ encode user
-                Nothing -> respond $ jsonResponse status404 $ encode (object [("error", "User not found")])
-            Nothing -> respond $ jsonResponse status400 $ encode (object [("error", "Invalid user ID")])
-        _ -> respond $ responseFile status200 [(hContentType, "text/html"), ("Access-Control-Allow-Origin", "*")] "www/index.html" Nothing
+                Just user -> respond <| jsonResponse status200 <| encode user
+                Nothing -> respond <| jsonResponse status404 <| encode (object [("error", "User not found")])
+            Nothing -> respond <| jsonResponse status400 <| encode (object [("error", "Invalid user ID")])
+        ["styles.css"] -> respond <| responseFile status200 [(hContentType, "text/css"), ("Access-Control-Allow-Origin", "*")] "www/styles.css" Nothing
+        ["script.js"] -> respond <| responseFile status200 [(hContentType, "application/javascript"), ("Access-Control-Allow-Origin", "*")] "www/script.js" Nothing
+        _ -> respond <| responseFile status200 [(hContentType, "text/html"), ("Access-Control-Allow-Origin", "*")] "www/index.html" Nothing
 
     -- POST requests
     method | method == methodPost -> do
@@ -81,9 +91,9 @@ app conn request respond = do
           case decode body of
             Just user -> do
               newUser <- createUser conn user
-              respond $ jsonResponse status201 $ encode newUser
-            Nothing -> respond $ jsonResponse status400 $ encode (object [("error", "Invalid user data")])
-        _ -> respond $ jsonResponse status404 $ encode (object [("error", "Endpoint not found")])
+              respond <| jsonResponse status201 <| encode newUser
+            Nothing -> respond <| jsonResponse status400 <| encode (object [("error", "Invalid user data")])
+        _ -> respond <| jsonResponse status404 <| encode (object [("error", "Endpoint not found")])
 
     -- PUT requests
     method | method == methodPut -> do
@@ -98,11 +108,11 @@ app conn request respond = do
                   let userWithId = user { userId = Just id' }
                   success <- updateUser conn userWithId
                   if success
-                    then respond $ jsonResponse status200 $ encode userWithId
-                    else respond $ jsonResponse status404 $ encode (object [("error", "User not found")])
-                Nothing -> respond $ jsonResponse status400 $ encode (object [("error", "Invalid user data")])
-            Nothing -> respond $ jsonResponse status400 $ encode (object [("error", "Invalid user ID")])
-        _ -> respond $ jsonResponse status404 $ encode (object [("error", "Endpoint not found")])
+                    then respond <| jsonResponse status200 <| encode userWithId
+                    else respond <| jsonResponse status404 <| encode (object [("error", "User not found")])
+                Nothing -> respond <| jsonResponse status400 <| encode (object [("error", "Invalid user data")])
+            Nothing -> respond <| jsonResponse status400 <| encode (object [("error", "Invalid user ID")])
+        _ -> respond <| jsonResponse status404 <| encode (object [("error", "Endpoint not found")])
 
     -- DELETE requests
     method | method == methodDelete -> do
@@ -113,13 +123,13 @@ app conn request respond = do
             Just id' -> do
               success <- deleteUser conn id'
               if success
-                then respond $ jsonResponse status204 $ encode (object [])
-                else respond $ jsonResponse status404 $ encode (object [("error", "User not found")])
-            Nothing -> respond $ jsonResponse status400 $ encode (object [("error", "Invalid user ID")])
-        _ -> respond $ jsonResponse status404 $ encode (object [("error", "Endpoint not found")])
+                then respond <| jsonResponse status204 <| encode (object [])
+                else respond <| jsonResponse status404 <| encode (object [("error", "User not found")])
+            Nothing -> respond <| jsonResponse status400 <| encode (object [("error", "Invalid user ID")])
+        _ -> respond <| jsonResponse status404 <| encode (object [("error", "Endpoint not found")])
 
     -- Other methods
-    _ -> respond $ jsonResponse status404 $ encode (object [("error", "Method not supported")])
+    _ -> respond <| jsonResponse status404 <| encode (object [("error", "Method not supported")])
 
 -- | CORS header
 -- | JSON Response helper
