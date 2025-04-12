@@ -1,6 +1,6 @@
 cabal-version: 3.0
 
--- This file has been generated from package.yaml by hpack version 0.36.0.
+-- This file has been generated from package.yaml by hpack version 0.38.0.
 --
 -- see: https://github.com/sol/hpack
 
@@ -14,7 +14,7 @@ bug-reports:    https://github.com/mingyuchoo/warp-t02-sqlite/issues
 author:         Mingyu Choo
 maintainer:     mingyuhcoo@gmail.com
 copyright:      2025, Mingyu Choo
-license:        BSD 3-Clause
+license:        BSD-3-Clause
 license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
@@ -29,6 +29,8 @@ library
   exposed-modules:
       Lib
   other-modules:
+      Paths_warp_t02_sqlite
+  autogen-modules:
       Paths_warp_t02_sqlite
   hs-source-dirs:
       src
@@ -49,6 +51,8 @@ library
 executable warp-t02-sqlite-exe
   main-is: Main.hs
   other-modules:
+      Paths_warp_t02_sqlite
+  autogen-modules:
       Paths_warp_t02_sqlite
   hs-source-dirs:
       app
@@ -71,6 +75,8 @@ test-suite warp-t02-sqlite-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      Paths_warp_t02_sqlite
+  autogen-modules:
       Paths_warp_t02_sqlite
   hs-source-dirs:
       test

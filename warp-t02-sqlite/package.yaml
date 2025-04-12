@@ -15,7 +15,7 @@ extra-source-files:
 
 dependencies:
   - aeson
-  - base >= 4.19 && < 5
+  - base
   - bytestring
   - flow
   - http-types
