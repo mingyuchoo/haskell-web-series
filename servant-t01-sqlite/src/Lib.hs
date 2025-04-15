@@ -2,7 +2,6 @@
 {-# LANGUAGE DeriveGeneric     #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE TypeOperators     #-}
-{-# LANGUAGE DeriveGeneric #-}
 
 module Lib
     ( appRunner
@@ -12,10 +11,8 @@ module Lib
 
 import           Control.Monad.IO.Class   (liftIO)
 import           Control.Exception        (try)
-import           Data.Aeson               (FromJSON, ToJSON, object, (.=))
-import           Data.Aeson.Types         (Value(..), Pair)
-import qualified Data.Text               as T
-import           Data.Text                (Text, pack, unpack)
+import           Data.Aeson               (FromJSON, ToJSON)
+import           Data.Text                (Text, pack)
 import           Database.SQLite.Simple
     ( Connection
     , FromRow (..)
@@ -32,11 +29,9 @@ import           Database.SQLite.Simple
     )
 import           GHC.Generics             (Generic)
 import           Lucid
-import           Lucid.Base               (makeAttribute)
-import           Network.HTTP.Media       ((//), (/:))
 import           Network.Wai              (Application)
 import           Network.Wai.Handler.Warp (run)
-import           Network.Wai.Application.Static (staticApp, defaultWebAppSettings)
+import           Network.Wai.Application.Static (defaultWebAppSettings)
 import           Servant
     ( Capture
     , Delete
@@ -49,7 +44,6 @@ import           Servant
     , Raw
     , ReqBody
     , Server
-    , ServerT
     , serveDirectoryWith
     , serve
     , type (:<|>) (..)
@@ -66,16 +60,16 @@ data User = User { userId   :: Int
                  } deriving (Eq, Show, Generic)
 
 -- Used for creating a new user without specifying userId
-data NewUser = NewUser { newUserName :: String
-                       } deriving (Eq, Show, Generic)
+newtype NewUser = NewUser { newUserName :: String
+                         } deriving (Eq, Show, Generic)
 
 instance FromJSON NewUser
 
 instance ToJSON NewUser
 
 -- Validation error response
-data ValidationError = ValidationError { errorMessage :: Text
-                                     } deriving (Eq, Show, Generic)
+newtype ValidationError = ValidationError { errorMessage :: Text
+                                         } deriving (Eq, Show, Generic)
 
 instance ToJSON ValidationError
 
