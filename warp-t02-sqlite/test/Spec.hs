@@ -3,19 +3,20 @@
 
 import Test.Hspec
 import Lib
+import Flow ((<|))
 
 main :: IO ()
 main = hspec spec
 
 spec :: Spec
 spec = do
-    describe "Given Prelude" $ do
-        context "when use `read` function" $ do
-            it "should parse integers" $ do
+    describe "Given Prelude" <| do
+        context "when use `read` function" <| do
+            it "should parse integers" <| do
                 read "10" `shouldBe` (10 :: Int)
-            it "should parse floating-point numbers" $ do
+            it "should parse floating-point numbers" <| do
                 read "2.5" `shouldBe` (2.5 :: Float)
-    describe "Given Lib" $ do
-        context "when use `appRunner` function" $ do
-            it "should be succeeded" $ do
+    describe "Given Lib" <| do
+        context "when use `appRunner` function" <| do
+            it "should be succeeded" <| do
               appRunner

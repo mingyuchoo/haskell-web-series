@@ -1,30 +1,30 @@
-name:                socket-echo-server
-version:             0.1.0.0
-github:              mingyuchoo/socket-echo-server
-license:             BSD 3-Clause
-author:              Mingyu Choo
-maintainer:          mingyuhcoo@gmail.com
-copyright:           2025, Mingyu Choo
-synopsis:            Short description of your package
-category:            CLI
-description:         Please see the README on GitHub at <https://github.com/mingyuchoo/socket-echo-server#readme>
+name: socket-echo-server
+version: 0.1.0.0
+github: mingyuchoo/socket-echo-server
+license: BSD-3-Clause
+author: Mingyu Choo
+maintainer: mingyuhcoo@gmail.com
+copyright: 2025, Mingyu Choo
+synopsis: Short description of your package
+category: CLI
+description: Please see the README on GitHub at <https://github.com/mingyuchoo/socket-echo-server#readme>
 
 extra-source-files:
-- README.md
-- CHANGELOG.md
+  - README.md
+  - CHANGELOG.md
 
 dependencies:
-- base >= 4.19 && < 5
-- network
+  - base >= 4.19 && < 5
+  - network
 
 default-extensions:
-- StandaloneKindSignatures
-- TypeApplications
+  - StandaloneKindSignatures
+  - TypeApplications
 
 ghc-options:
-- -Wall
-- -O2
-- -haddock
+  - -Wall
+  - -O2
+  - -haddock
 
 language: Haskell2010
 
@@ -33,27 +33,27 @@ library:
 
 executables:
   socket-echo-server-exe:
-    main:                Main.hs
-    source-dirs:         app
+    main: Main.hs
+    source-dirs: app
     ghc-options:
-    - -dynamic
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N4
+      - -dynamic
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N4
     dependencies:
-    - socket-echo-server
+      - socket-echo-server
 
 tests:
   socket-echo-server-test:
-    main:                Spec.hs
-    source-dirs:         test
+    main: Spec.hs
+    source-dirs: test
     ghc-options:
-    - -dynamic
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N4
+      - -dynamic
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N4
     dependencies:
-    - socket-echo-server
-    - hspec
-    - doctest
-    - doctest-discover
+      - socket-echo-server
+      - hspec
+      - doctest
+      - doctest-discover

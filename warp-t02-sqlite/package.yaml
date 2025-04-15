@@ -1,35 +1,39 @@
-name:                warp-t02-sqlite
-version:             0.1.0.0
-github:              mingyuchoo/warp-t02-sqlite
-license:             BSD 3-Clause
-author:              Mingyu Choo
-maintainer:          mingyuhcoo@gmail.com
-copyright:           2025, Mingyu Choo
-synopsis:            Short description of your package
-category:            CLI
-description:         Please see the README on GitHub at <https://github.com/mingyuchoo/warp-t02-sqlite#readme>
+name: warp-t02-sqlite
+version: 0.1.0.0
+github: mingyuchoo/warp-t02-sqlite
+license: BSD-3-Clause
+author: Mingyu Choo
+maintainer: mingyuhcoo@gmail.com
+copyright: 2025, Mingyu Choo
+synopsis: Short description of your package
+category: CLI
+description: Please see the README on GitHub at <https://github.com/mingyuchoo/warp-t02-sqlite#readme>
 
 extra-source-files:
-- README.md
-- CHANGELOG.md
+  - README.md
+  - CHANGELOG.md
 
 dependencies:
-- aeson
-- base >= 4.19 && < 5
-- bytestring
-- flow
-- http-types
-- wai
-- warp
+  - aeson
+  - base
+  - bytestring
+  - flow
+  - http-types
+  - wai
+  - warp
+  - text
+  - sqlite-simple
+  - uuid
+  - time
 
 default-extensions:
-- StandaloneKindSignatures
-- TypeApplications
+  - StandaloneKindSignatures
+  - TypeApplications
 
 ghc-options:
-- -Wall
-- -O2
-- -haddock
+  - -Wall
+  - -O2
+  - -haddock
 
 language: Haskell2010
 
@@ -38,27 +42,27 @@ library:
 
 executables:
   warp-t02-sqlite-exe:
-    main:                Main.hs
-    source-dirs:         app
+    main: Main.hs
+    source-dirs: app
     ghc-options:
-    - -dynamic
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N4
+      - -dynamic
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N4
     dependencies:
-    - warp-t02-sqlite
+      - warp-t02-sqlite
 
 tests:
   warp-t02-sqlite-test:
-    main:                Spec.hs
-    source-dirs:         test
+    main: Spec.hs
+    source-dirs: test
     ghc-options:
-    - -dynamic
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N4
+      - -dynamic
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N4
     dependencies:
-    - warp-t02-sqlite
-    - hspec
-    - doctest
-    - doctest-discover
+      - warp-t02-sqlite
+      - hspec
+      - doctest
+      - doctest-discover

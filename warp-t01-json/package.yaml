@@ -1,38 +1,38 @@
-name:                warp-t01-json
-version:             0.1.0.0
-github:              mingyuchoo/warp-t01-json
-license:             BSD 3-Clause
-author:              Mingyu Choo
-maintainer:          mingyuhcoo@gmail.com
-copyright:           2025, Mingyu Choo
-synopsis:            Short description of your package
-category:            CLI
-description:         Please see the README on GitHub at <https://github.com/mingyuchoo/warp-t01-json#readme>
+name: warp-t01-json
+version: 0.1.0.0
+github: mingyuchoo/warp-t01-json
+license: BSD-3-Clause
+author: Mingyu Choo
+maintainer: mingyuhcoo@gmail.com
+copyright: 2025, Mingyu Choo
+synopsis: Short description of your package
+category: CLI
+description: Please see the README on GitHub at <https://github.com/mingyuchoo/warp-t01-json#readme>
 
 extra-source-files:
-- README.md
-- CHANGELOG.md
+  - README.md
+  - CHANGELOG.md
 
 dependencies:
-- base >= 4.19 && < 5
-- aeson
-- bytestring
-- containers
-- flow
-- http-types
-- parallel
-- text
-- wai
-- warp
+  - base >= 4.19 && < 5
+  - aeson
+  - bytestring
+  - containers
+  - flow
+  - http-types
+  - parallel
+  - text
+  - wai
+  - warp
 
 default-extensions:
-- StandaloneKindSignatures
-- TypeApplications
+  - StandaloneKindSignatures
+  - TypeApplications
 
 ghc-options:
-- -Wall
-- -O2
-- -haddock
+  - -Wall
+  - -O2
+  - -haddock
 
 language: Haskell2010
 
@@ -41,28 +41,28 @@ library:
 
 executables:
   warp-t01-json-exe:
-    main:                Main.hs
-    source-dirs:         app
+    main: Main.hs
+    source-dirs: app
     ghc-options:
-    - -dynamic
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N4
+      - -dynamic
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N4
     dependencies:
-    - warp-t01-json
+      - warp-t01-json
 
 tests:
   warp-t01-json-test:
-    main:                Spec.hs
-    source-dirs:         test
+    main: Spec.hs
+    source-dirs: test
     ghc-options:
-    - -dynamic
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N4
+      - -dynamic
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N4
     dependencies:
-    - warp-t01-json
-    - hspec
-    - hspec-discover
-    - doctest
-    - doctest-discover
+      - warp-t01-json
+      - hspec
+      - hspec-discover
+      - doctest
+      - doctest-discover

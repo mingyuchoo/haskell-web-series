@@ -1,35 +1,40 @@
-name:                servant-t01-sqlite
-version:             0.1.0.0
-github:              mingyuchoo/servant-t01-sqlite
-license:             BSD-3-Clause
-author:              Mingyu Choo
-maintainer:          mingyuhcoo@gmail.com
-copyright:           2025, Mingyu Choo
-synopsis:            Short description of your package
-category:            CLI
-description:         Please see the README on GitHub at <https://github.com/mingyuchoo/servant-t01-sqlite#readme>
+name: servant-t01-sqlite
+version: 0.1.0.0
+github: mingyuchoo/servant-t01-sqlite
+license: BSD-3-Clause
+author: Mingyu Choo
+maintainer: mingyuhcoo@gmail.com
+copyright: 2025, Mingyu Choo
+synopsis: Short description of your package
+category: CLI
+description: Please see the README on GitHub at <https://github.com/mingyuchoo/servant-t01-sqlite#readme>
 
 extra-source-files:
-- README.md
-- CHANGELOG.md
+  - README.md
+  - CHANGELOG.md
 
 dependencies:
-- base
-- aeson
-- servant-server
-- text
-- wai
-- warp
-- sqlite-simple
+  - base
+  - aeson
+  - servant-server
+  - text
+  - wai
+  - warp
+  - sqlite-simple
+  - lucid
+  - servant-lucid
+  - blaze-html
+  - http-media
+  - wai-app-static
 
 default-extensions:
-- StandaloneKindSignatures
-- TypeApplications
+  - StandaloneKindSignatures
+  - TypeApplications
 
 ghc-options:
-- -Wall
-- -O2
-- -haddock
+  - -Wall
+  - -O2
+  - -haddock
 
 language: Haskell2010
 
@@ -38,27 +43,27 @@ library:
 
 executables:
   servant-t01-sqlite-exe:
-    main:                Main.hs
-    source-dirs:         app
+    main: Main.hs
+    source-dirs: app
     ghc-options:
-    - -dynamic
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N4
+      - -dynamic
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N4
     dependencies:
-    - servant-t01-sqlite
+      - servant-t01-sqlite
 
 tests:
   servant-t01-sqlite-test:
-    main:                Spec.hs
-    source-dirs:         test
+    main: Spec.hs
+    source-dirs: test
     ghc-options:
-    - -dynamic
-    - -threaded
-    - -rtsopts
-    - -with-rtsopts=-N4
+      - -dynamic
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N4
     dependencies:
-    - servant-t01-sqlite
-    - hspec
-    - doctest
-    - doctest-discover
+      - servant-t01-sqlite
+      - hspec
+      - doctest
+      - doctest-discover

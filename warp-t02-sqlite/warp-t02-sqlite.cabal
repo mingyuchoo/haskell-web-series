@@ -1,6 +1,6 @@
-cabal-version: 3.0
+cabal-version: 2.2
 
--- This file has been generated from package.yaml by hpack version 0.36.0.
+-- This file has been generated from package.yaml by hpack version 0.38.0.
 --
 -- see: https://github.com/sol/hpack
 
@@ -14,7 +14,7 @@ bug-reports:    https://github.com/mingyuchoo/warp-t02-sqlite/issues
 author:         Mingyu Choo
 maintainer:     mingyuhcoo@gmail.com
 copyright:      2025, Mingyu Choo
-license:        BSD 3-Clause
+license:        BSD-3-Clause
 license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
@@ -27,8 +27,11 @@ source-repository head
 
 library
   exposed-modules:
+      Database
       Lib
   other-modules:
+      Paths_warp_t02_sqlite
+  autogen-modules:
       Paths_warp_t02_sqlite
   hs-source-dirs:
       src
@@ -38,10 +41,14 @@ library
   ghc-options: -Wall -O2 -haddock
   build-depends:
       aeson
-    , base >=4.19 && <5
+    , base
     , bytestring
     , flow
     , http-types
+    , sqlite-simple
+    , text
+    , time
+    , uuid
     , wai
     , warp
   default-language: Haskell2010
@@ -49,6 +56,8 @@ library
 executable warp-t02-sqlite-exe
   main-is: Main.hs
   other-modules:
+      Paths_warp_t02_sqlite
+  autogen-modules:
       Paths_warp_t02_sqlite
   hs-source-dirs:
       app
@@ -58,10 +67,14 @@ executable warp-t02-sqlite-exe
   ghc-options: -Wall -O2 -haddock -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       aeson
-    , base >=4.19 && <5
+    , base
     , bytestring
     , flow
     , http-types
+    , sqlite-simple
+    , text
+    , time
+    , uuid
     , wai
     , warp
     , warp-t02-sqlite
@@ -72,6 +85,8 @@ test-suite warp-t02-sqlite-test
   main-is: Spec.hs
   other-modules:
       Paths_warp_t02_sqlite
+  autogen-modules:
+      Paths_warp_t02_sqlite
   hs-source-dirs:
       test
   default-extensions:
@@ -80,13 +95,17 @@ test-suite warp-t02-sqlite-test
   ghc-options: -Wall -O2 -haddock -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       aeson
-    , base >=4.19 && <5
+    , base
     , bytestring
     , doctest
     , doctest-discover
     , flow
     , hspec
     , http-types
+    , sqlite-simple
+    , text
+    , time
+    , uuid
     , wai
     , warp
     , warp-t02-sqlite
