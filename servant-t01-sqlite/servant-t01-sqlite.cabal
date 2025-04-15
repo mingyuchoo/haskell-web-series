@@ -1,6 +1,6 @@
-cabal-version: 3.0
+cabal-version: 2.2
 
--- This file has been generated from package.yaml by hpack version 0.36.0.
+-- This file has been generated from package.yaml by hpack version 0.37.0.
 --
 -- see: https://github.com/sol/hpack
 
@@ -14,7 +14,7 @@ bug-reports:    https://github.com/mingyuchoo/servant-t01-sqlite/issues
 author:         Mingyu Choo
 maintainer:     mingyuhcoo@gmail.com
 copyright:      2025, Mingyu Choo
-license:        BSD 3-Clause
+license:        BSD-3-Clause
 license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
@@ -30,6 +30,8 @@ library
       Lib
   other-modules:
       Paths_servant_t01_sqlite
+  autogen-modules:
+      Paths_servant_t01_sqlite
   hs-source-dirs:
       src
   default-extensions:
@@ -38,7 +40,7 @@ library
   ghc-options: -Wall -O2 -haddock
   build-depends:
       aeson
-    , base >=4.19 && <5
+    , base
     , servant-server
     , sqlite-simple
     , text
@@ -50,6 +52,8 @@ executable servant-t01-sqlite-exe
   main-is: Main.hs
   other-modules:
       Paths_servant_t01_sqlite
+  autogen-modules:
+      Paths_servant_t01_sqlite
   hs-source-dirs:
       app
   default-extensions:
@@ -58,7 +62,7 @@ executable servant-t01-sqlite-exe
   ghc-options: -Wall -O2 -haddock -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       aeson
-    , base >=4.19 && <5
+    , base
     , servant-server
     , servant-t01-sqlite
     , sqlite-simple
@@ -72,6 +76,8 @@ test-suite servant-t01-sqlite-test
   main-is: Spec.hs
   other-modules:
       Paths_servant_t01_sqlite
+  autogen-modules:
+      Paths_servant_t01_sqlite
   hs-source-dirs:
       test
   default-extensions:
@@ -80,7 +86,7 @@ test-suite servant-t01-sqlite-test
   ghc-options: -Wall -O2 -haddock -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       aeson
-    , base >=4.19 && <5
+    , base
     , doctest
     , doctest-discover
     , hspec
