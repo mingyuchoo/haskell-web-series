@@ -1,5 +1,5 @@
-# https://www.stackage.org/lts-23.6
-resolver: lts-23.6
+# https://www.stackage.org/lts-23.18
+resolver: lts-23.18
 
 packages:
 - .
@@ -8,14 +8,14 @@ extra-package-dbs: []
 extra-deps: []
 flags: {}
 
-nix:
-  enable: true
-  pure: true
-  packages:
-  - zlib
-  - glpk
-  - pcre
-  #shell-file: shell.nix
-  nix-shell-options: []
-  path: []
-  add-gc-roots: false
+# nix:
+#   enable: true
+#   pure: true
+#   packages:
+#   - zlib
+#   - glpk
+#   - pcre
+#   #shell-file: shell.nix
+#   nix-shell-options: []
+#   path: []
+#   add-gc-roots: false

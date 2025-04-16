@@ -1,6 +1,6 @@
-cabal-version: 3.0
+cabal-version: 2.2
 
--- This file has been generated from package.yaml by hpack version 0.36.0.
+-- This file has been generated from package.yaml by hpack version 0.37.0.
 --
 -- see: https://github.com/sol/hpack
 
@@ -14,7 +14,7 @@ bug-reports:    https://github.com/mingyuchoo/servant-t00-init/issues
 author:         Mingyu Choo
 maintainer:     mingyuhcoo@gmail.com
 copyright:      2025, Mingyu Choo
-license:        BSD 3-Clause
+license:        BSD-3-Clause
 license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
@@ -29,6 +29,8 @@ library
   exposed-modules:
       Lib
   other-modules:
+      Paths_servant_t00_init
+  autogen-modules:
       Paths_servant_t00_init
   hs-source-dirs:
       src
@@ -52,6 +54,8 @@ library
 executable servant-t00-init-exe
   main-is: Main.hs
   other-modules:
+      Paths_servant_t00_init
+  autogen-modules:
       Paths_servant_t00_init
   hs-source-dirs:
       app
@@ -77,6 +81,8 @@ test-suite servant-t00-init-test
   type: exitcode-stdio-1.0
   main-is: Spec.hs
   other-modules:
+      Paths_servant_t00_init
+  autogen-modules:
       Paths_servant_t00_init
   hs-source-dirs:
       test

@@ -1,5 +1,5 @@
-# https://www.stackage.org/lts-23.6
-resolver: lts-23.6
+# https://www.stackage.org/lts-23.18
+resolver: lts-23.18
 
 packages:
 - .
