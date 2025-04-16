@@ -1,6 +1,6 @@
 cabal-version: 2.2
 
--- This file has been generated from package.yaml by hpack version 0.37.0.
+-- This file has been generated from package.yaml by hpack version 0.38.0.
 --
 -- see: https://github.com/sol/hpack
 
@@ -40,7 +40,7 @@ library
   ghc-options: -Wall -O2 -haddock
   build-depends:
       aeson
-    , base >=4.19 && <5
+    , base
     , containers
     , flow
     , parallel
@@ -65,7 +65,7 @@ executable servant-t00-init-exe
   ghc-options: -Wall -O2 -haddock -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       aeson
-    , base >=4.19 && <5
+    , base
     , containers
     , flow
     , parallel
@@ -92,7 +92,7 @@ test-suite servant-t00-init-test
   ghc-options: -Wall -O2 -haddock -dynamic -threaded -rtsopts -with-rtsopts=-N4
   build-depends:
       aeson
-    , base >=4.19 && <5
+    , base
     , containers
     , doctest
     , doctest-discover
