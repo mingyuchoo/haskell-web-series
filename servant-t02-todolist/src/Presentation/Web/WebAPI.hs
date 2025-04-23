@@ -7,9 +7,9 @@ module Presentation.Web.WebAPI
     ) where
 
 import           Control.Monad.IO.Class         (liftIO)
-import           Domain.Entities.Todo           (Todo)
+import           Domain.Repositories.Entities.Todo           (Todo)
 import           Application.UseCases.TodoUseCases (getTodoList)
-import           Infrastructure.Persistence.SQLiteTodoRepository (SQLiteIO)
+import           Infrastructure.Repositories.SQLiteTodoRepository (SQLiteIO)
 import           Network.Wai.Application.Static (defaultWebAppSettings)
 import           Presentation.Web.Templates      (indexTemplate)
 import           Servant

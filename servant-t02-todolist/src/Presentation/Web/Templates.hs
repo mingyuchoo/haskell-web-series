@@ -6,8 +6,8 @@ module Presentation.Web.Templates
     ) where
 
 import           Data.Text                      (Text, pack)
-import           Domain.Entities.Todo           (Todo(..))
 import           Lucid
+import           Domain.Repositories.Entities.Todo (Todo(..))
 
 
 -- -------------------------------------------------------------------

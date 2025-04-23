@@ -1,6 +1,7 @@
 {-# LANGUAGE DeriveGeneric     #-}
+{-# LANGUAGE FlexibleInstances #-}
 
-module Domain.Entities.Todo
+module Domain.Repositories.Entities.Todo
     ( Todo(..) 
     , NewTodo(..)
     , ValidationError(..)
@@ -38,8 +39,10 @@ newtype ValidationError = ValidationError
 -- JSON instances
 instance FromJSON Todo
 instance ToJSON Todo
+
 instance FromJSON NewTodo
 instance ToJSON NewTodo
+
 instance ToJSON ValidationError
 
 -- Database mapping instances

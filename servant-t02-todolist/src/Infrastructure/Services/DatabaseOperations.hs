@@ -1,12 +1,9 @@
-module Application.UseCases.DatabaseOperations
+module Infrastructure.Services.DatabaseOperations
     ( initializeDatabase
     ) where
 
--- Import the repository interface
-import Domain.Repositories.DatabaseRepository (DatabaseRepository(..))
-
 -- Import the concrete implementation (but keep it hidden from upper layers)
-import Infrastructure.Persistence.SQLiteTodoRepository ()
+import Infrastructure.Repositories.SQLiteTodoRepository (migrate)
 
 -- -------------------------------------------------------------------
 -- Use cases for database operations
@@ -14,4 +11,4 @@ import Infrastructure.Persistence.SQLiteTodoRepository ()
 
 -- Initialize the database (create tables, etc.)
 initializeDatabase :: IO ()
-initializeDatabase = migrateDatabase
+initializeDatabase = migrate

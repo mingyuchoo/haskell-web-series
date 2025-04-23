@@ -1,7 +1,6 @@
 {-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE InstanceSigs      #-}
 
-module Infrastructure.Persistence.SQLiteTodoRepository
+module Infrastructure.Repositories.SQLiteTodoRepository
     ( SQLiteIO
     , withConn
     , migrate
@@ -27,9 +26,7 @@ import           Database.SQLite.Simple
     , query
     , query_
     )
-import           Domain.Entities.Todo           (Todo(..), NewTodo(..), ValidationError(..), validateTodoTitle)
-import           Domain.Repositories.TodoRepository (TodoRepository(..))
-import           Domain.Repositories.DatabaseRepository (DatabaseRepository(..))
+import           Domain.Repositories.Entities.Todo (Todo(..), NewTodo(..), ValidationError(..), validateTodoTitle)
 
 -- -------------------------------------------------------------------
 -- Infrastructure
@@ -102,18 +99,4 @@ deleteTodoById uId = withConn $ \conn -> do
   execute conn (Query $ pack "DELETE FROM haskell_todo WHERE todoId = (?)") (Only uId)
   return todo
 
--- Implementation of TodoRepository for SQLiteIO
--- Note: This is an orphan instance, but we're keeping it here for simplicity
--- In a production environment, we would either:
--- 1. Move this instance to the TodoRepository module, or
--- 2. Create a newtype wrapper around SQLiteIO and define the instance for that
-instance TodoRepository SQLiteIO where
-    getAllTodos = selectAllTodos
-    getTodoById = selectTodoById
-    createTodo = insertTodo
-    updateTodo = updateTodoById
-    deleteTodo = deleteTodoById
 
--- Implementation of DatabaseRepository for SQLiteIO
-instance DatabaseRepository SQLiteIO where
-    migrateDatabase = migrate

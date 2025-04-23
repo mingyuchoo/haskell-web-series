@@ -1,5 +1,5 @@
 module Domain.Repositories.DatabaseRepository
-    ( DatabaseRepository(..) 
+    ( migrateDatabase
     ) where
 
 -- -------------------------------------------------------------------

@@ -1,8 +1,13 @@
 module Domain.Repositories.TodoRepository
-    ( TodoRepository(..) 
+    ( TodoRepository(..)
+    , Todo
+    , NewTodo
+    , ValidationError
     ) where
 
-import           Domain.Entities.Todo           (Todo, NewTodo, ValidationError)
+import           Domain.Repositories.Entities.Todo
+    ( Todo, NewTodo, ValidationError
+    )
 
 -- -------------------------------------------------------------------
 -- Repository
