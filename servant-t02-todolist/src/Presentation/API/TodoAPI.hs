@@ -44,7 +44,7 @@ todoServer = getAll
   :<|> delOne
   where
     getAll :: Handler [Todo]
-    getAll = liftIO (getTodoList)
+    getAll = liftIO (getTodoList :: SQLiteIO [Todo])
 
     postOne :: NewTodo -> Handler (Either ValidationError [Todo])
     postOne newTodo = liftIO (createNewTodo newTodo :: SQLiteIO (Either ValidationError [Todo]))

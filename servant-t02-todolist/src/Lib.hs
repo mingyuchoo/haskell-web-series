@@ -7,10 +7,8 @@ module Lib
 
 -- -------------------------------------------------------------------
 
-import           Network.Wai
-    ( Application
-    )
-import           Network.Wai.Handler.Warp                                 (run)
+import           Network.Wai                                (Application)
+import           Network.Wai.Handler.Warp                   (run)
 import           Servant
     ( Proxy (..)
     , Server
@@ -18,31 +16,20 @@ import           Servant
     , type (:<|>) (..)
     )
 
--- Import application layer for database operations
-import           Application.UseCases.DatabaseOperations
-    ( initializeDatabase
-    )
+
+-- Import instances for the combined API type
+import           Lucid                                      ()
+import           Servant.HTML.Lucid                         ()
 
 -- Import presentation layer
 import           Presentation.API.TodoAPI
     ( TodoAPI
     , todoServer
     )
-import           Presentation.Web.WebAPI
-    ( WebAPI
-    , webServer
-    )
+import           Presentation.Web.WebAPI                    (WebAPI, webServer)
 
--- Import instances for the combined API type
-import           Domain.Entities.Todo                                     ()
-import           Lucid                                                    ()
-import           Servant.HTML.Lucid                                       ()
-
--- Import repository instance
-import           Infrastructure.Repositories.SQLiteTodoRepositoryInstance ()
-
-
-
+-- Import database operations
+import           Infrastructure.Services.DatabaseOperations (initializeDatabase)
 -- -------------------------------------------------------------------
 -- Application
 -- -------------------------------------------------------------------
@@ -55,7 +42,7 @@ app = serve appAPI appServer
 appRunner :: IO ()
 appRunner = do
   putStrLn "Starting server on port 4000..."
-  initializeDatabase  -- Run database migration through application layer
+  _ <- initializeDatabase  -- Run database migration through application layer
   run 4000 app  -- Start the server
 
 -- -------------------------------------------------------------------

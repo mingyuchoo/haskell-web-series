@@ -27,6 +27,7 @@ import           Database.SQLite.Simple
     , query_
     )
 import           Domain.Repositories.Entities.Todo (Todo(..), NewTodo(..), ValidationError(..), validateTodoTitle)
+import           Domain.Repositories.TodoRepository (TodoRepository(..))
 
 -- -------------------------------------------------------------------
 -- Infrastructure
@@ -34,6 +35,14 @@ import           Domain.Repositories.Entities.Todo (Todo(..), NewTodo(..), Valid
 
 -- Type for SQLite IO operations
 type SQLiteIO = IO
+
+-- TodoRepository implementation for SQLiteIO
+instance TodoRepository SQLiteIO where
+    getAllTodos = selectAllTodos
+    getTodoById = selectTodoById
+    createTodo = insertTodo
+    updateTodo = updateTodoById
+    deleteTodo = deleteTodoById
 
 -- Connection helper
 withConn :: (Connection -> IO a) -> IO a
