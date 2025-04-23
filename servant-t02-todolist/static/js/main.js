@@ -12,9 +12,36 @@ document.addEventListener('DOMContentLoaded', function() {
 // Function to load all todos from the API
 async function loadTodos() {
   try {
-    const response = await fetch('/todos');
-    const todos = await response.json();
-    displayTodos(todos);
+    console.log('Fetching todos...');
+    const response = await fetch('/api/todos');
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    
+    const responseText = await response.text();
+    console.log('Response text:', responseText);
+    
+    if (!responseText || responseText.trim() === '') {
+      console.error('Empty response received');
+      displayTodos([]);
+      return;
+    }
+    
+    try {
+      const parsedData = JSON.parse(responseText);
+      console.log('Parsed data:', parsedData);
+      
+      // Check if the response is wrapped in a Right field (Either type in Haskell)
+      const todos = Array.isArray(parsedData) ? parsedData : 
+                   (parsedData.Right ? parsedData.Right : []);
+      
+      console.log('Extracted todos:', todos);
+      displayTodos(todos);
+    } catch (parseError) {
+      console.error('JSON parse error:', parseError, 'for text:', responseText);
+      showMessage('Error parsing todos data. Please try again.', 'error');
+    }
   } catch (error) {
     console.error('Error loading todos:', error);
     showMessage('Error loading todos. Please try again.', 'error');
@@ -72,7 +99,7 @@ async function handleFormSubmit(event) {
         newTodoName: todoTitle
       };
       
-      response = await fetch('/todos', {
+      response = await fetch('/api/todos', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -86,7 +113,7 @@ async function handleFormSubmit(event) {
         todoTitle: todoTitle
       };
       
-      response = await fetch(`/todos/${todoId}`, {
+      response = await fetch(`/api/todos/${todoId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json'
@@ -101,8 +128,15 @@ async function handleFormSubmit(event) {
     
     // Parse the response
     const data = await response.json();
+    console.log('Form submission response:', data);
     
-    // Check if there's a validation error
+    // Check if there's a validation error (Left case in Either)
+    if (data.Left) {
+      showMessage(`Validation error: ${data.Left.errorMessage || 'Unknown error'}`, 'error');
+      return;
+    }
+    
+    // Check for other error formats
     if (data && data.errorMessage) {
       showMessage(`Validation error: ${data.errorMessage}`, 'error');
       return;
@@ -150,7 +184,7 @@ async function deleteTodo(todoId) {
   }
   
   try {
-    const response = await fetch(`/todos/${todoId}`, {
+    const response = await fetch(`/api/todos/${todoId}`, {
       method: 'DELETE'
     });
     

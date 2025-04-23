@@ -6,7 +6,7 @@ module Application.UseCases.TodoUseCases
     , removeTodo
     ) where
 
-import           Domain.Entities.Todo           (Todo, NewTodo, ValidationError, validateTodoTitle)
+import           Domain.Entities.Todo           (Todo, NewTodo, ValidationError)
 import           Domain.Repositories.TodoRepository (TodoRepository(..)) 
 
 -- Use cases for Todo operations
