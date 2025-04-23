@@ -36,7 +36,7 @@ indexTemplate todos = baseTemplate "Todo Management" mempty $ do
       input_ [type_ "hidden", id_ "form-mode", name_ "form-mode", value_ "create"]
       input_ [type_ "hidden", id_ "todoId", name_ "todoId"]
       div_ [class_ "form-group"] $ do
-        label_ [for_ "todoTitle"] "Todo Name:"
+        label_ [for_ "todoTitle"] "Todo Title:"
         input_ [type_ "text", id_ "todoTitle", name_ "todoTitle", required_ "required"]
       button_ [type_ "submit", class_ "btn btn-success", id_ "submit-btn"] "Create Todo"
       button_ [type_ "button", class_ "btn", onclick_ "resetForm()"] "Reset"
@@ -48,7 +48,7 @@ indexTemplate todos = baseTemplate "Todo Management" mempty $ do
       thead_ $ do
         tr_ $ do
           th_ "ID"
-          th_ "Name"
+          th_ "Todo"
           th_ "Actions"
       tbody_ [id_ "todos-table-body"] $ do
         if null todos

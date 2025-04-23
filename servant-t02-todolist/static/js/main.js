@@ -1,4 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
+  // Show default message
+  showDefaultMessage();
+  
   // Load all todos when the page loads
   loadTodos();
 
@@ -84,7 +87,7 @@ async function handleFormSubmit(event) {
   const todoTitle = document.getElementById('todoTitle').value;
   
   if (!todoTitle) {
-    showMessage('Please enter a todo name', 'error');
+    showMessage('Please enter a todo title', 'error');
     return;
   }
   
@@ -203,6 +206,7 @@ async function deleteTodo(todoId) {
 // Function to reset the form
 function resetForm() {
   setupCreateForm();
+  showDefaultMessage();
 }
 
 // Function to show a message to the todo
@@ -218,8 +222,20 @@ function showMessage(message, type) {
     </div>
   `;
   
-  // Clear the message after 5 seconds
+  // Clear the message after 5 seconds and show default message
   setTimeout(() => {
-    messageContainer.innerHTML = '';
+    showDefaultMessage();
   }, 5000);
+}
+
+// Function to show the default message
+function showDefaultMessage() {
+  const messageContainer = document.getElementById('message-container');
+  if (!messageContainer) return;
+  
+  messageContainer.innerHTML = `
+    <div class="alert alert-info">
+      Add your new Todo or search for an existing Todo
+    </div>
+  `;
 }
