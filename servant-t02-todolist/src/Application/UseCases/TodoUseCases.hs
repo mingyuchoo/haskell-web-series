@@ -9,7 +9,9 @@ module Application.UseCases.TodoUseCases
 import           Domain.Entities.Todo           (Todo, NewTodo, ValidationError)
 import           Domain.Repositories.TodoRepository (TodoRepository(..)) 
 
+-- -------------------------------------------------------------------
 -- Use cases for Todo operations
+-- -------------------------------------------------------------------
 
 -- Get all todos
 getTodoList :: TodoRepository m => m [Todo]

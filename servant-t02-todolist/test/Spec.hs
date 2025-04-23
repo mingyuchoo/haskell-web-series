@@ -3,9 +3,15 @@
 
 import Test.Hspec
 
+-- -------------------------------------------------------------------
+-- Test
+-- -------------------------------------------------------------------
+
+-- Main function
 main :: IO ()
 main = hspec spec
 
+-- Test suite
 spec :: Spec
 spec = do
     describe "Given Prelude" $ do

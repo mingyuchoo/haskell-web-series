@@ -22,6 +22,10 @@ import           Servant
 import           Servant.HTML.Lucid             (HTML)
 import           Lucid                          (Html)
 
+-- -------------------------------------------------------------------
+-- Web APIs
+-- -------------------------------------------------------------------
+
 -- API type definition for web interface
 type WebAPI = Get '[HTML] (Html ())
           :<|> "static" :> Raw

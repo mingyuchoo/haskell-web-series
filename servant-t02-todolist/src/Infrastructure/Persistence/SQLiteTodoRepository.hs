@@ -30,6 +30,10 @@ import           Database.SQLite.Simple
 import           Domain.Entities.Todo           (Todo(..), NewTodo(..), ValidationError(..), validateTodoTitle)
 import           Domain.Repositories.TodoRepository (TodoRepository(..))
 
+-- -------------------------------------------------------------------
+-- Infrastructure
+-- -------------------------------------------------------------------
+
 -- Type for SQLite IO operations
 type SQLiteIO = IO
 

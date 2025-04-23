@@ -12,6 +12,10 @@ import           Data.Text                      (Text, pack)
 import           Database.SQLite.Simple         (FromRow (..), ToRow (..), field)
 import           GHC.Generics                   (Generic)
 
+-- -------------------------------------------------------------------
+-- Entities
+-- -------------------------------------------------------------------
+
 -- Core entity
 data Todo = Todo 
     { todoId    :: Int

@@ -9,6 +9,11 @@ import           Data.Text                      (Text, pack)
 import           Domain.Entities.Todo           (Todo(..))
 import           Lucid
 
+
+-- -------------------------------------------------------------------
+-- Templates
+-- -------------------------------------------------------------------
+
 -- Base template with common elements
 baseTemplate :: Text -> Html () -> Html () -> Html ()
 baseTemplate title headContent bodyContent = doctypehtml_ $ do

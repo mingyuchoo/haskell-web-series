@@ -4,6 +4,10 @@ module Domain.Repositories.TodoRepository
 
 import           Domain.Entities.Todo           (Todo, NewTodo, ValidationError)
 
+-- -------------------------------------------------------------------
+-- Repository
+-- -------------------------------------------------------------------
+    
 -- Repository interface defining operations that can be performed on Todo entities
 class TodoRepository m where
     getAllTodos :: m [Todo]

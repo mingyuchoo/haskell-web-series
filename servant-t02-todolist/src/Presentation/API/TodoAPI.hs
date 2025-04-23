@@ -24,6 +24,11 @@ import           Servant
     , type (:>)
     )
 
+-- -------------------------------------------------------------------
+-- APIs
+-- -------------------------------------------------------------------
+
+
 -- API type definition
 type TodoAPI = "api" :> "todos" :> Get '[JSON] [Todo]
           :<|> "api" :> "todos" :> ReqBody '[JSON] NewTodo :> Post '[JSON] (Either ValidationError [Todo])
