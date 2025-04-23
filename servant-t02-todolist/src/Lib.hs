@@ -16,8 +16,8 @@ import           Servant
     , type (:<|>) (..)
     )
 
--- Import domain, application, and infrastructure layers
-import           Infrastructure.Persistence.SQLiteTodoRepository (migrate)
+-- Import application layer for database operations
+import           Application.UseCases.DatabaseOperations         (initializeDatabase)
 
 -- Import presentation layer
 import           Presentation.API.TodoAPI
@@ -48,7 +48,7 @@ app = serve appAPI appServer
 appRunner :: IO ()
 appRunner = do
   putStrLn "Starting server on port 4000..."
-  migrate  -- Run database migration
+  initializeDatabase  -- Run database migration through application layer
   run 4000 app  -- Start the server
 
 -- -------------------------------------------------------------------

@@ -7,7 +7,9 @@ module Presentation.Web.WebAPI
     ) where
 
 import           Control.Monad.IO.Class         (liftIO)
-import           Infrastructure.Persistence.SQLiteTodoRepository (selectAllTodos)
+import           Domain.Entities.Todo           (Todo)
+import           Application.UseCases.TodoUseCases (getTodoList)
+import           Infrastructure.Persistence.SQLiteTodoRepository (SQLiteIO)
 import           Network.Wai.Application.Static (defaultWebAppSettings)
 import           Presentation.Web.Templates      (indexTemplate)
 import           Servant
@@ -36,7 +38,7 @@ webServer = indexHandler :<|> staticFiles
   where
     indexHandler :: Handler (Html ())
     indexHandler = do
-      todos <- liftIO selectAllTodos
+      todos <- liftIO (getTodoList :: SQLiteIO [Todo])
       return $ indexTemplate todos
 
     staticFiles :: Server Raw

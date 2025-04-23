@@ -27,8 +27,10 @@ source-repository head
 
 library
   exposed-modules:
+      Application.UseCases.DatabaseOperations
       Application.UseCases.TodoUseCases
       Domain.Entities.Todo
+      Domain.Repositories.DatabaseRepository
       Domain.Repositories.TodoRepository
       Infrastructure.Persistence.SQLiteTodoRepository
       Lib

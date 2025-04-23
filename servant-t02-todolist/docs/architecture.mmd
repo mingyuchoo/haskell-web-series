@@ -1,0 +1,71 @@
+graph TD
+    %% 메인 진입점
+    Lib["Lib.hs"]
+    
+    %% Domain 레이어
+    subgraph Domain["Domain Layer"]
+        Todo["Domain.Entities.Todo.hs"]
+        TodoRepo["Domain.Repositories.TodoRepository.hs"]
+        DBRepo["Domain.Repositories.DatabaseRepository.hs"]
+    end
+    
+    %% Application 레이어
+    subgraph Application["Application Layer"]
+        TodoUC["Application.UseCases.TodoUseCases.hs"]
+        DBUC["Application.UseCases.DatabaseOperations.hs"]
+    end
+    
+    %% Infrastructure 레이어
+    subgraph Infrastructure["Infrastructure Layer"]
+        SQLiteRepo["Infrastructure.Persistence.SQLiteTodoRepository.hs"]
+    end
+    
+    %% Presentation 레이어
+    subgraph Presentation["Presentation Layer"]
+        TodoAPI["Presentation.API.TodoAPI.hs"]
+        WebAPI["Presentation.Web.WebAPI.hs"]
+        Templates["Presentation.Web.Templates.hs"]
+    end
+    
+    %% 의존성 관계
+    %% Domain 레이어 내부 의존성
+    TodoRepo --> Todo
+    
+    %% Application 레이어 의존성
+    TodoUC --> TodoRepo
+    TodoUC --> Todo
+    DBUC --> DBRepo
+    
+    %% Infrastructure 레이어 의존성
+    SQLiteRepo --> Todo
+    SQLiteRepo --> TodoRepo
+    SQLiteRepo --> DBRepo
+    
+    %% Presentation 레이어 의존성
+    TodoAPI --> Todo
+    TodoAPI --> TodoUC
+    TodoAPI --> SQLiteRepo
+    WebAPI --> Todo
+    WebAPI --> TodoUC
+    WebAPI --> SQLiteRepo
+    WebAPI --> Templates
+    Templates --> Todo
+    
+    %% 메인 진입점 의존성
+    Lib --> DBUC
+    Lib --> TodoAPI
+    Lib --> WebAPI
+    Lib --> Todo
+    
+    %% 스타일링
+    classDef domain fill:#f9f,stroke:#333,stroke-width:2px;
+    classDef application fill:#bbf,stroke:#333,stroke-width:2px;
+    classDef infrastructure fill:#bfb,stroke:#333,stroke-width:2px;
+    classDef presentation fill:#fbb,stroke:#333,stroke-width:2px;
+    classDef main fill:#fff,stroke:#333,stroke-width:4px;
+    
+    class Todo,TodoRepo,DBRepo domain;
+    class TodoUC,DBUC application;
+    class SQLiteRepo infrastructure;
+    class TodoAPI,WebAPI,Templates presentation;
+    class Lib main;

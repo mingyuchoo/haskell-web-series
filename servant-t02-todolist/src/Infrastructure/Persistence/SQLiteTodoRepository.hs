@@ -29,6 +29,7 @@ import           Database.SQLite.Simple
     )
 import           Domain.Entities.Todo           (Todo(..), NewTodo(..), ValidationError(..), validateTodoTitle)
 import           Domain.Repositories.TodoRepository (TodoRepository(..))
+import           Domain.Repositories.DatabaseRepository (DatabaseRepository(..))
 
 -- -------------------------------------------------------------------
 -- Infrastructure
@@ -112,3 +113,7 @@ instance TodoRepository SQLiteIO where
     createTodo = insertTodo
     updateTodo = updateTodoById
     deleteTodo = deleteTodoById
+
+-- Implementation of DatabaseRepository for SQLiteIO
+instance DatabaseRepository SQLiteIO where
+    migrateDatabase = migrate
