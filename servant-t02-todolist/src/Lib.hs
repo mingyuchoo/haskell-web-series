@@ -47,9 +47,9 @@ app = serve appAPI appServer
 -- Run the application
 appRunner :: IO ()
 appRunner = do
-  putStrLn "Starting server on port 8080..."
+  putStrLn "Starting server on port 4000..."
   migrate  -- Run database migration
-  run 8080 app  -- Start the server
+  run 4000 app  -- Start the server
 
 -- -------------------------------------------------------------------
 -- API
