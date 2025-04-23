@@ -1,4 +1,4 @@
-module Domain.Repositories.DatabaseRepository
+module Infrastructure.Repositories.DatabaseRepository
     ( migrateDatabase
     ) where
 
