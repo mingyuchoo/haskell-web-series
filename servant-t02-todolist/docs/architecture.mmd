@@ -1,71 +1,55 @@
 graph TD
-    %% 메인 진입점
+    %% Main entry point
     Lib["Lib.hs"]
     
-    %% Domain 레이어
+    %% Domain Layer (innermost)
     subgraph Domain["Domain Layer"]
-        Todo["Domain.Entities.Todo.hs"]
-        TodoRepo["Domain.Repositories.TodoRepository.hs"]
-        DBRepo["Domain.Repositories.DatabaseRepository.hs"]
+        Todo["Domain/Repositories/Entities/Todo.hs"]
+        TodoRepo["Domain/Repositories/TodoRepository.hs"]
     end
     
-    %% Application 레이어
+    %% Application Layer
     subgraph Application["Application Layer"]
-        TodoUC["Application.UseCases.TodoUseCases.hs"]
-        DBUC["Application.UseCases.DatabaseOperations.hs"]
+        TodoUseCases["Application/UseCases/TodoUseCases.hs"]
     end
     
-    %% Infrastructure 레이어
+    %% Infrastructure Layer
     subgraph Infrastructure["Infrastructure Layer"]
-        SQLiteRepo["Infrastructure.Persistence.SQLiteTodoRepository.hs"]
+        DatabaseRepo["Infrastructure/Repositories/DatabaseRepository.hs"]
+        SQLiteTodoRepo["Infrastructure/Repositories/SQLiteTodoRepository.hs"]
+        DatabaseOps["Infrastructure/Services/DatabaseOperations.hs"]
     end
     
-    %% Presentation 레이어
+    %% Presentation Layer (outermost)
     subgraph Presentation["Presentation Layer"]
-        TodoAPI["Presentation.API.TodoAPI.hs"]
-        WebAPI["Presentation.Web.WebAPI.hs"]
-        Templates["Presentation.Web.Templates.hs"]
+        TodoAPI["Presentation/API/TodoAPI.hs"]
+        Templates["Presentation/Web/Templates.hs"]
+        WebAPI["Presentation/Web/WebAPI.hs"]
     end
     
-    %% 의존성 관계
-    %% Domain 레이어 내부 의존성
+    %% Dependencies (pointing inward according to Onion Architecture)
     TodoRepo --> Todo
     
-    %% Application 레이어 의존성
-    TodoUC --> TodoRepo
-    TodoUC --> Todo
-    DBUC --> DBRepo
+    TodoUseCases --> TodoRepo
+    TodoUseCases --> Todo
     
-    %% Infrastructure 레이어 의존성
-    SQLiteRepo --> Todo
-    SQLiteRepo --> TodoRepo
-    SQLiteRepo --> DBRepo
+    SQLiteTodoRepo --> TodoRepo
+    SQLiteTodoRepo --> Todo
+    SQLiteTodoRepo --> DatabaseRepo
+    SQLiteTodoRepo --> DatabaseOps
     
-    %% Presentation 레이어 의존성
+    DatabaseRepo --> DatabaseOps
+    
+    TodoAPI --> TodoUseCases
     TodoAPI --> Todo
-    TodoAPI --> TodoUC
-    TodoAPI --> SQLiteRepo
-    WebAPI --> Todo
-    WebAPI --> TodoUC
-    WebAPI --> SQLiteRepo
-    WebAPI --> Templates
+    
     Templates --> Todo
     
-    %% 메인 진입점 의존성
-    Lib --> DBUC
+    WebAPI --> TodoUseCases
+    WebAPI --> Templates
+    WebAPI --> Todo
+    
     Lib --> TodoAPI
     Lib --> WebAPI
-    Lib --> Todo
-    
-    %% 스타일링
-    classDef domain fill:#f9f,stroke:#333,stroke-width:2px;
-    classDef application fill:#bbf,stroke:#333,stroke-width:2px;
-    classDef infrastructure fill:#bfb,stroke:#333,stroke-width:2px;
-    classDef presentation fill:#fbb,stroke:#333,stroke-width:2px;
-    classDef main fill:#fff,stroke:#333,stroke-width:4px;
-    
-    class Todo,TodoRepo,DBRepo domain;
-    class TodoUC,DBUC application;
-    class SQLiteRepo infrastructure;
-    class TodoAPI,WebAPI,Templates presentation;
-    class Lib main;
+    Lib --> SQLiteTodoRepo
+    Lib --> TodoUseCases
