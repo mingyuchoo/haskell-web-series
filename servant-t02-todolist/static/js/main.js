@@ -1,21 +1,21 @@
-document.addEventListener('DOMContentLoaded', function() {
-  // Show default message
+/**
+ * Initialize the application when the DOM is fully loaded
+ */
+document.addEventListener('DOMContentLoaded', () => {
   showDefaultMessage();
-  
-  // Load all todos when the page loads
   loadTodos();
 
-  // Set up event listeners
   const todoForm = document.getElementById('todo-form');
-  if (todoForm) {
-    todoForm.addEventListener('submit', handleFormSubmit);
-  }
+  todoForm?.addEventListener('submit', handleFormSubmit);
 });
 
-// Function to load all todos from the API
-async function loadTodos() {
+/**
+ * Fetch all todos from the API and display them
+ * Handles Haskell's Either type responses (Right for success, Left for errors)
+ * @returns {Promise<void>}
+ */
+const loadTodos = async () => {
   try {
-    console.log('Fetching todos...');
     const response = await fetch('/api/todos');
     
     if (!response.ok) {
@@ -23,26 +23,21 @@ async function loadTodos() {
     }
     
     const responseText = await response.text();
-    console.log('Response text:', responseText);
     
-    if (!responseText || responseText.trim() === '') {
-      console.error('Empty response received');
+    if (!responseText?.trim()) {
       displayTodos([]);
       return;
     }
     
     try {
       const parsedData = JSON.parse(responseText);
-      console.log('Parsed data:', parsedData);
       
-      // Check if the response is wrapped in a Right field (Either type in Haskell)
-      const todos = Array.isArray(parsedData) ? parsedData : 
-                   (parsedData.Right ? parsedData.Right : []);
+      // Extract todos from Either type (Right field) or use directly if it's an array
+      const todos = Array.isArray(parsedData) ? parsedData : parsedData?.Right || [];
       
-      console.log('Extracted todos:', todos);
       displayTodos(todos);
     } catch (parseError) {
-      console.error('JSON parse error:', parseError, 'for text:', responseText);
+      console.error('JSON parse error:', parseError);
       showMessage('Error parsing todos data. Please try again.', 'error');
     }
   } catch (error) {
@@ -51,115 +46,99 @@ async function loadTodos() {
   }
 }
 
-// Function to display todos in the table
-function displayTodos(todos) {
+/**
+ * Display todos in the table
+ * @param {Array} todos - Array of todo objects
+ */
+const displayTodos = (todos) => {
   const tableBody = document.getElementById('todos-table-body');
   if (!tableBody) return;
 
   tableBody.innerHTML = '';
   
-  if (todos.length === 0) {
-    const row = document.createElement('tr');
-    row.innerHTML = '<td colspan="4">No todos found</td>';
-    tableBody.appendChild(row);
+  if (!todos?.length) {
+    tableBody.innerHTML = '<tr><td colspan="4">No todos found</td></tr>';
     return;
   }
 
-  todos.forEach(todo => {
-    const row = document.createElement('tr');
-    row.innerHTML = `
-      <td>${todo.todoId}</td>
-      <td>${todo.todoTitle}</td>
+  const todosHtml = todos.map(({ todoId, todoTitle }) => `
+    <tr>
+      <td>${todoId}</td>
+      <td>${todoTitle}</td>
       <td>
-        <button class="btn" onclick="editTodo(${todo.todoId}, '${todo.todoTitle}')">Edit</button>
-        <button class="btn btn-danger" onclick="deleteTodo(${todo.todoId})">Delete</button>
+        <button class="btn" onclick="editTodo(${todoId}, '${todoTitle}')">Edit</button>
+        <button class="btn btn-danger" onclick="deleteTodo(${todoId})">Delete</button>
       </td>
-    `;
-    tableBody.appendChild(row);
-  });
+    </tr>
+  `).join('');
+  
+  tableBody.innerHTML = todosHtml;
 }
 
-// Function to handle form submission (create or update todo)
-async function handleFormSubmit(event) {
+/**
+ * Handle form submission for creating or updating a todo
+ * @param {Event} event - The form submission event
+ * @returns {Promise<void>}
+ */
+const handleFormSubmit = async (event) => {
   event.preventDefault();
   
   const todoId = document.getElementById('todoId').value;
   const todoTitle = document.getElementById('todoTitle').value;
+  const formMode = document.getElementById('form-mode').value;
   
-  if (!todoTitle) {
+  if (!todoTitle?.trim()) {
     showMessage('Please enter a todo title', 'error');
     return;
   }
   
-  const formMode = document.getElementById('form-mode').value;
-  
   try {
-    let response;
+    const isCreate = formMode === 'create';
+    const endpoint = isCreate ? '/api/todos' : `/api/todos/${todoId}`;
+    const method = isCreate ? 'POST' : 'PUT';
+    const payload = isCreate 
+      ? { newTodoName: todoTitle }
+      : { todoId: parseInt(todoId, 10), todoTitle };
     
-    if (formMode === 'create') {
-      // For creation, we only need todoTitle as todoId is auto-generated
-      const newTodoData = {
-        newTodoName: todoTitle
-      };
-      
-      response = await fetch('/api/todos', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(newTodoData)
-      });
-    } else if (formMode === 'update') {
-      // For updates, we need both todoId and todoTitle
-      const todoData = {
-        todoId: parseInt(todoId),
-        todoTitle: todoTitle
-      };
-      
-      response = await fetch(`/api/todos/${todoId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(todoData)
-      });
-    }
+    const response = await fetch(endpoint, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
     
     if (!response.ok) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
     
-    // Parse the response
     const data = await response.json();
-    console.log('Form submission response:', data);
     
-    // Check if there's a validation error (Left case in Either)
+    // Handle Haskell's Either type response (Left for errors)
     if (data.Left) {
       showMessage(`Validation error: ${data.Left.errorMessage || 'Unknown error'}`, 'error');
       return;
     }
     
-    // Check for other error formats
-    if (data && data.errorMessage) {
+    // Handle other error formats
+    if (data?.errorMessage) {
       showMessage(`Validation error: ${data.errorMessage}`, 'error');
       return;
     }
     
-    // Reset form
     resetForm();
-    
-    // Reload todos
     loadTodos();
     
-    showMessage(formMode === 'create' ? 'Todo created successfully!' : 'Todo updated successfully!', 'success');
+    const successMessage = isCreate ? 'Todo created successfully!' : 'Todo updated successfully!';
+    showMessage(successMessage, 'success');
   } catch (error) {
     console.error('Error:', error);
     showMessage(`Error: ${error.message}`, 'error');
   }
 }
 
-// Function to set up form for creating a new todo
-function setupCreateForm() {
+/**
+ * Set up form for creating a new todo
+ */
+const setupCreateForm = () => {
   document.getElementById('form-title').textContent = 'Create New Todo';
   document.getElementById('form-mode').value = 'create';
   document.getElementById('todoId').value = '';
@@ -167,8 +146,12 @@ function setupCreateForm() {
   document.getElementById('submit-btn').textContent = 'Create Todo';
 }
 
-// Function to set up form for editing a todo
-function editTodo(todoId, todoTitle) {
+/**
+ * Set up form for editing an existing todo
+ * @param {number} todoId - ID of the todo to edit
+ * @param {string} todoTitle - Title of the todo to edit
+ */
+const editTodo = (todoId, todoTitle) => {
   document.getElementById('form-title').textContent = 'Edit Todo';
   document.getElementById('form-mode').value = 'update';
   document.getElementById('todoId').setAttribute('readonly', 'readonly');
@@ -180,8 +163,12 @@ function editTodo(todoId, todoTitle) {
   document.getElementById('todo-form').scrollIntoView({ behavior: 'smooth' });
 }
 
-// Function to delete a todo
-async function deleteTodo(todoId) {
+/**
+ * Delete a todo by ID
+ * @param {number} todoId - ID of the todo to delete
+ * @returns {Promise<void>}
+ */
+const deleteTodo = async (todoId) => {
   if (!confirm(`Are you sure you want to delete todo with ID ${todoId}?`)) {
     return;
   }
@@ -203,14 +190,20 @@ async function deleteTodo(todoId) {
   }
 }
 
-// Function to reset the form
-function resetForm() {
+/**
+ * Reset the form to its initial state
+ */
+const resetForm = () => {
   setupCreateForm();
   showDefaultMessage();
 }
 
-// Function to show a message to the todo
-function showMessage(message, type) {
+/**
+ * Show a message to the user
+ * @param {string} message - Message to display
+ * @param {string} type - Message type ('error' or 'success')
+ */
+const showMessage = (message, type) => {
   const messageContainer = document.getElementById('message-container');
   if (!messageContainer) return;
   
@@ -223,13 +216,13 @@ function showMessage(message, type) {
   `;
   
   // Clear the message after 5 seconds and show default message
-  setTimeout(() => {
-    showDefaultMessage();
-  }, 5000);
+  setTimeout(showDefaultMessage, 5000);
 }
 
-// Function to show the default message
-function showDefaultMessage() {
+/**
+ * Show the default message
+ */
+const showDefaultMessage = () => {
   const messageContainer = document.getElementById('message-container');
   if (!messageContainer) return;
   
