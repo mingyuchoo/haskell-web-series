@@ -9,7 +9,7 @@ module Presentation.API.TodoAPI
 import           Control.Monad.IO.Class         (liftIO)
 import           Domain.Repositories.Entities.Todo (Todo, NewTodo, ValidationError)
 import           Application.UseCases.TodoUseCases (getTodoList, getTodo, createNewTodo, updateExistingTodo, removeTodo)
-import           Infrastructure.Repositories.SQLiteTodoRepository (SQLiteIO)
+import           Infrastructure.Repositories.SQLiteTodoRepository (SQLiteRepo(..))
 import           Servant
     ( Capture
     , Delete
@@ -44,16 +44,16 @@ todoServer = getAll
   :<|> delOne
   where
     getAll :: Handler [Todo]
-    getAll = liftIO (getTodoList :: SQLiteIO [Todo])
+    getAll = liftIO $ runSQLiteRepo (getTodoList :: SQLiteRepo [Todo])
 
     postOne :: NewTodo -> Handler (Either ValidationError [Todo])
-    postOne newTodo = liftIO (createNewTodo newTodo :: SQLiteIO (Either ValidationError [Todo]))
+    postOne newTodo = liftIO $ runSQLiteRepo (createNewTodo newTodo :: SQLiteRepo (Either ValidationError [Todo]))
 
     getOne :: Int -> Handler [Todo]
-    getOne todoId = liftIO (getTodo todoId :: SQLiteIO [Todo])
+    getOne todoId = liftIO $ runSQLiteRepo (getTodo todoId :: SQLiteRepo [Todo])
 
     putOne :: Int -> Todo -> Handler (Either ValidationError [Todo])
-    putOne uId todo = liftIO (updateExistingTodo uId todo :: SQLiteIO (Either ValidationError [Todo]))
+    putOne uId todo = liftIO $ runSQLiteRepo (updateExistingTodo uId todo :: SQLiteRepo (Either ValidationError [Todo]))
 
     delOne ::  Int -> Handler [Todo]
-    delOne todoId = liftIO (removeTodo todoId :: SQLiteIO [Todo])
+    delOne todoId = liftIO $ runSQLiteRepo (removeTodo todoId :: SQLiteRepo [Todo])

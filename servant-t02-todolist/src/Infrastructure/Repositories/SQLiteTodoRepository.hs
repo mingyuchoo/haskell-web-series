@@ -1,7 +1,8 @@
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 
 module Infrastructure.Repositories.SQLiteTodoRepository
-    ( SQLiteIO
+    ( SQLiteRepo(..) -- Export the newtype wrapper including runSQLiteRepo
     , withConn
     , migrate
     -- Direct functions for use in the presentation layer
@@ -33,16 +34,17 @@ import           Domain.Repositories.TodoRepository (TodoRepository(..))
 -- Infrastructure
 -- -------------------------------------------------------------------
 
--- Type for SQLite IO operations
-type SQLiteIO = IO
+-- Newtype wrapper for SQLite IO operations
+newtype SQLiteRepo a = SQLiteRepo { runSQLiteRepo :: IO a }
+    deriving (Functor, Applicative, Monad)
 
--- TodoRepository implementation for SQLiteIO
-instance TodoRepository SQLiteIO where
-    getAllTodos = selectAllTodos
-    getTodoById = selectTodoById
-    createTodo = insertTodo
-    updateTodo = updateTodoById
-    deleteTodo = deleteTodoById
+-- TodoRepository implementation for SQLiteRepo
+instance TodoRepository SQLiteRepo where
+    getAllTodos = SQLiteRepo selectAllTodos
+    getTodoById tid = SQLiteRepo $ selectTodoById tid
+    createTodo newTodo = SQLiteRepo $ insertTodo newTodo
+    updateTodo tid todo = SQLiteRepo $ updateTodoById tid todo
+    deleteTodo tid = SQLiteRepo $ deleteTodoById tid
 
 -- Connection helper
 withConn :: (Connection -> IO a) -> IO a

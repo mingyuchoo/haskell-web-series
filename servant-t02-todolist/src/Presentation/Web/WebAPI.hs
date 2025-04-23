@@ -9,7 +9,7 @@ module Presentation.Web.WebAPI
 import           Control.Monad.IO.Class         (liftIO)
 import           Domain.Repositories.Entities.Todo           (Todo)
 import           Application.UseCases.TodoUseCases (getTodoList)
-import           Infrastructure.Repositories.SQLiteTodoRepository (SQLiteIO)
+import           Infrastructure.Repositories.SQLiteTodoRepository (SQLiteRepo(..))
 import           Network.Wai.Application.Static (defaultWebAppSettings)
 import           Presentation.Web.Templates      (indexTemplate)
 import           Servant
@@ -38,7 +38,7 @@ webServer = indexHandler :<|> staticFiles
   where
     indexHandler :: Handler (Html ())
     indexHandler = do
-      todos <- liftIO (getTodoList :: SQLiteIO [Todo])
+      todos <- liftIO $ runSQLiteRepo (getTodoList :: SQLiteRepo [Todo])
       return $ indexTemplate todos
 
     staticFiles :: Server Raw
