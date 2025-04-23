@@ -1,0 +1,114 @@
+cabal-version: 2.2
+
+-- This file has been generated from package.yaml by hpack version 0.38.0.
+--
+-- see: https://github.com/sol/hpack
+
+name:           servant-t02-todolist
+version:        0.1.0.0
+synopsis:       Short description of your package
+description:    Please see the README on GitHub at <https://github.com/mingyuchoo/servant-t02-todolist#readme>
+category:       CLI
+homepage:       https://github.com/mingyuchoo/servant-t02-todolist#readme
+bug-reports:    https://github.com/mingyuchoo/servant-t02-todolist/issues
+author:         Mingyu Choo
+maintainer:     mingyuhcoo@gmail.com
+copyright:      2025, Mingyu Choo
+license:        BSD-3-Clause
+license-file:   LICENSE
+build-type:     Simple
+extra-source-files:
+    README.md
+    CHANGELOG.md
+
+source-repository head
+  type: git
+  location: https://github.com/mingyuchoo/servant-t02-todolist
+
+library
+  exposed-modules:
+      Lib
+  other-modules:
+      Paths_servant_t02_todolist
+  autogen-modules:
+      Paths_servant_t02_todolist
+  hs-source-dirs:
+      src
+  default-extensions:
+      StandaloneKindSignatures
+      TypeApplications
+  ghc-options: -Wall -O2 -haddock
+  build-depends:
+      aeson
+    , base
+    , blaze-html
+    , http-media
+    , lucid
+    , servant-lucid
+    , servant-server
+    , sqlite-simple
+    , text
+    , wai
+    , wai-app-static
+    , warp
+  default-language: Haskell2010
+
+executable servant-t02-todolist-exe
+  main-is: Main.hs
+  other-modules:
+      Paths_servant_t02_todolist
+  autogen-modules:
+      Paths_servant_t02_todolist
+  hs-source-dirs:
+      app
+  default-extensions:
+      StandaloneKindSignatures
+      TypeApplications
+  ghc-options: -Wall -O2 -haddock -dynamic -threaded -rtsopts -with-rtsopts=-N4
+  build-depends:
+      aeson
+    , base
+    , blaze-html
+    , http-media
+    , lucid
+    , servant-lucid
+    , servant-server
+    , servant-t02-todolist
+    , sqlite-simple
+    , text
+    , wai
+    , wai-app-static
+    , warp
+  default-language: Haskell2010
+
+test-suite servant-t02-todolist-test
+  type: exitcode-stdio-1.0
+  main-is: Spec.hs
+  other-modules:
+      Paths_servant_t02_todolist
+  autogen-modules:
+      Paths_servant_t02_todolist
+  hs-source-dirs:
+      test
+  default-extensions:
+      StandaloneKindSignatures
+      TypeApplications
+  ghc-options: -Wall -O2 -haddock -dynamic -threaded -rtsopts -with-rtsopts=-N4
+  build-depends:
+      aeson
+    , base
+    , blaze-html
+    , doctest
+    , doctest-discover
+    , hspec
+    , http-media
+    , lucid
+    , servant-lucid
+    , servant-server
+    , servant-t02-todolist
+    , sqlite-simple
+    , text
+    , wai
+    , wai-app-static
+    , warp
+  default-language: Haskell2010
