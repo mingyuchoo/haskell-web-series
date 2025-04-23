@@ -27,7 +27,14 @@ source-repository head
 
 library
   exposed-modules:
+      Application.UseCases.TodoUseCases
+      Domain.Entities.Todo
+      Domain.Repositories.TodoRepository
+      Infrastructure.Persistence.SQLiteTodoRepository
       Lib
+      Presentation.API.TodoAPI
+      Presentation.Web.Templates
+      Presentation.Web.WebAPI
   other-modules:
       Paths_servant_t02_todolist
   autogen-modules:
