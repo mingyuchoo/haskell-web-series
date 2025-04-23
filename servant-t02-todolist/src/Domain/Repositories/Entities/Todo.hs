@@ -58,6 +58,4 @@ validateTodoTitle title
   | null title = Left $ ValidationError (pack "TodoTitle cannot be empty")
   | length title < 3 = Left $ ValidationError (pack "TodoTitle must be at least 3 characters long")
   | length title > 50 = Left $ ValidationError (pack "TodoTitle must be at most 50 characters long")
-  | not (all (\c -> c `elem` ['a'..'z'] ++ ['A'..'Z'] ++ ['0'..'9'] ++ [' ', '_', '-']) title) =
-      Left $ ValidationError (pack "TodoTitle can only contain letters, numbers, spaces, underscores, and hyphens")
   | otherwise = Right ()
