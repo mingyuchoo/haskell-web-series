@@ -80,6 +80,10 @@ indexTemplate todos = baseTemplate "Todo Management" mempty $ do
 formatTodoTime :: UTCTime -> Text
 formatTodoTime time = pack $ formatTime defaultTimeLocale "%Y-%m-%d %H:%M:%S" time
 
+-- Format UTC time as ISO 8601 for data attribute
+formatISOTime :: UTCTime -> Text
+formatISOTime time = pack $ formatTime defaultTimeLocale "%Y-%m-%dT%H:%M:%SZ" time
+
 -- Format priority for display with color
 formatPriority :: Priority -> Html ()
 formatPriority Low = span_ [class_ "priority-low"] "Low"
@@ -102,7 +106,7 @@ todoRow :: Todo -> Html ()
 todoRow todo = tr_ $ do
   td_ (toHtml $ show $ todoId todo)
   td_ (toHtml $ todoTitle todo)
-  td_ (toHtml $ formatTodoTime $ createdAt todo)
+  td_ [class_ "relative-time", data_ "timestamp" (formatISOTime $ createdAt todo)] (toHtml $ formatTodoTime $ createdAt todo)
   td_ (formatPriority $ priority todo)
   td_ (formatStatus $ isCompleted todo)
   td_ $ do

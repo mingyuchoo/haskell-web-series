@@ -7,7 +7,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const todoForm = document.getElementById('todo-form');
   todoForm?.addEventListener('submit', handleFormSubmit);
+  
+  // Set up interval to update relative times every minute
+  setInterval(updateRelativeTimes, 60000);
 });
+
+/**
+ * Update all relative time displays on the page
+ */
+const updateRelativeTimes = () => {
+  const timeElements = document.querySelectorAll('.relative-time[data-timestamp]');
+  
+  timeElements.forEach(element => {
+    const timestamp = element.getAttribute('data-timestamp');
+    if (timestamp) {
+      element.textContent = formatRelativeTime(timestamp);
+    }
+  });
+}
 
 /**
  * Fetch all todos from the API and display them
@@ -47,6 +64,40 @@ const loadTodos = async () => {
 }
 
 /**
+ * Format a timestamp as a relative time string (e.g., '2 minutes ago', '3 hours ago')
+ * @param {string} timestamp - ISO timestamp string
+ * @returns {string} - Formatted relative time string
+ */
+const formatRelativeTime = (timestamp) => {
+  const date = new Date(timestamp);
+  const now = new Date();
+  const diffMs = now - date;
+  const diffSec = Math.floor(diffMs / 1000);
+  const diffMin = Math.floor(diffSec / 60);
+  const diffHour = Math.floor(diffMin / 60);
+  const diffDay = Math.floor(diffHour / 24);
+  const diffMonth = Math.floor(diffDay / 30);
+  const diffYear = Math.floor(diffMonth / 12);
+
+  // Store the absolute date for tooltip
+  const absoluteDate = date.toLocaleString();
+  
+  if (diffSec < 60) {
+    return `${diffSec} second${diffSec !== 1 ? 's' : ''} ago`;
+  } else if (diffMin < 60) {
+    return `${diffMin} minute${diffMin !== 1 ? 's' : ''} ago`;
+  } else if (diffHour < 24) {
+    return `${diffHour} hour${diffHour !== 1 ? 's' : ''} ago`;
+  } else if (diffDay < 30) {
+    return `${diffDay} day${diffDay !== 1 ? 's' : ''} ago`;
+  } else if (diffMonth < 12) {
+    return `${diffMonth} month${diffMonth !== 1 ? 's' : ''} ago`;
+  } else {
+    return `${diffYear} year${diffYear !== 1 ? 's' : ''} ago`;
+  }
+}
+
+/**
  * Display todos in the table
  * @param {Array} todos - Array of todo objects
  */
@@ -70,14 +121,15 @@ const displayTodos = (todos) => {
     const statusClass = isCompleted ? 'status-completed' : 'status-pending';
     const statusDisplay = `<span class="${statusClass}">${isCompleted ? 'Completed' : 'Pending'}</span>`;
     
-    // Format the date
-    const formattedDate = new Date(createdAt).toLocaleString();
+    // Format the date as relative time
+    const relativeTime = formatRelativeTime(createdAt);
+    const absoluteDate = new Date(createdAt).toLocaleString();
     
     return `
     <tr>
       <td>${todoId}</td>
       <td>${todoTitle}</td>
-      <td>${formattedDate}</td>
+      <td class="relative-time" data-timestamp="${createdAt}" title="${absoluteDate}">${relativeTime}</td>
       <td>${priorityDisplay}</td>
       <td>${statusDisplay}</td>
       <td>
