@@ -52,6 +52,7 @@ library
     , base
     , blaze-html
     , data-default
+    , flow
     , http-media
     , lucid
     , servant-lucid
@@ -81,6 +82,7 @@ executable servant-t02-todolist-exe
     , base
     , blaze-html
     , data-default
+    , flow
     , http-media
     , lucid
     , servant-lucid
@@ -114,6 +116,7 @@ test-suite servant-t02-todolist-test
     , data-default
     , doctest
     , doctest-discover
+    , flow
     , hspec
     , http-media
     , lucid

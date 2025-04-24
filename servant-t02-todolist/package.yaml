@@ -14,20 +14,21 @@ extra-source-files:
   - CHANGELOG.md
 
 dependencies:
-  - base
   - aeson
+  - base
+  - blaze-html
   - data-default
+  - flow
+  - http-media
+  - lucid
+  - servant-lucid
   - servant-server
+  - sqlite-simple
   - text
   - time
   - wai
-  - warp
-  - sqlite-simple
-  - lucid
-  - servant-lucid
-  - blaze-html
-  - http-media
   - wai-app-static
+  - warp
 
 default-extensions:
   - StandaloneKindSignatures

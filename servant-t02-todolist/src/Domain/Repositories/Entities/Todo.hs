@@ -23,6 +23,7 @@ import qualified Data.Text                      as T
 import           Data.Time                      (UTCTime)
 import           Database.SQLite.Simple         (FromRow (..), ToRow (..), field)
 import           Database.SQLite.Simple.Internal (RowParser)
+import           Flow                           ((<|))
 import           GHC.Generics                   (Generic)
 
 -- -------------------------------------------------------------------
@@ -72,7 +73,7 @@ instance FromJSON Priority where
         "Low" -> pure Low
         "Medium" -> pure Medium
         "High" -> pure High
-        _ -> fail $ "Unknown priority: " ++ T.unpack t
+        _ -> fail <| "Unknown priority: " ++ T.unpack t
     parseJSON _ = fail "Expected String for Priority"
 
 instance ToJSON Priority where
@@ -123,7 +124,7 @@ instance FromJSON Status where
         "TodoStatus" -> pure TodoStatus
         "DoingStatus" -> pure DoingStatus
         "DoneStatus" -> pure DoneStatus
-        _ -> fail $ "Unknown status: " ++ T.unpack t
+        _ -> fail <| "Unknown status: " ++ T.unpack t
     parseJSON _ = fail "Expected String for Status"
 
 instance ToJSON Status where
@@ -194,7 +195,7 @@ instance FromRow Todo where
           "Done" -> DoneStatus
           "Doing" -> DoingStatus
           _ -> TodoStatus  -- Default to Todo if unknown
-    pure $ Todo tId tTitle tCreatedAt tPriority tStatus
+    pure <| Todo tId tTitle tCreatedAt tPriority tStatus
 
 instance ToRow Todo where
   toRow Todo{..} = toRow (todoId, todoTitle, createdAt, show priority, show status)
@@ -207,7 +208,7 @@ instance ToRow Todo where
 -- * Must be at most 50 characters
 validateTodoTitle :: Text -> Either ValidationError ()
 validateTodoTitle title
-  | T.null title = Left $ ValidationError "TodoTitle cannot be empty"
-  | T.length title < 3 = Left $ ValidationError "TodoTitle must be at least 3 characters long"
-  | T.length title > 50 = Left $ ValidationError "TodoTitle must be at most 50 characters long"
+  | T.null title = Left <| ValidationError "TodoTitle cannot be empty"
+  | T.length title < 3 = Left <| ValidationError "TodoTitle must be at least 3 characters long"
+  | T.length title > 50 = Left <| ValidationError "TodoTitle must be at most 50 characters long"
   | otherwise = Right ()

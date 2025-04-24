@@ -23,6 +23,7 @@ import           Application.UseCases.TodoUseCases
     , removeTodo
     )
 import           Infrastructure.Repositories.SQLiteTodoRepository (SQLiteRepo(..))
+import           Flow                           ((<|))
 import           Servant
     ( Capture
     , Delete
@@ -67,7 +68,7 @@ todoServer = getAll
   where
     -- | Get all todos
     getAll :: Handler [Todo]
-    getAll = liftIO $ runSQLiteRepo getAllTodos
+    getAll = liftIO <| runSQLiteRepo getAllTodos
 
     -- | Create a new todo
     postOne :: NewTodo -> Handler (Either ValidationError [Todo])

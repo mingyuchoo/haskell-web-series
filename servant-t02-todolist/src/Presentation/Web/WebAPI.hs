@@ -12,6 +12,7 @@ module Presentation.Web.WebAPI
 import           Control.Monad.IO.Class         (liftIO)
 import           Domain.Repositories.TodoRepository (getAllTodos)
 import           Infrastructure.Repositories.SQLiteTodoRepository (SQLiteRepo(..))
+import           Flow                           ((<|))
 import           Lucid                          (Html)
 import           Network.Wai.Application.Static (defaultWebAppSettings)
 import           Presentation.Web.Templates     (indexTemplate)
@@ -46,8 +47,8 @@ webServer = indexHandler :<|> staticFiles
     -- Fetches all todos and renders them using the index template
     indexHandler :: Handler (Html ())
     indexHandler = do
-      todos <- liftIO $ runSQLiteRepo getAllTodos
-      pure $ indexTemplate todos
+      todos <- liftIO <| runSQLiteRepo getAllTodos
+      pure <| indexTemplate todos
 
     -- | Handler for static files (CSS, JS, images)
     staticFiles :: Server Raw

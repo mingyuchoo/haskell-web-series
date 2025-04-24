@@ -41,7 +41,7 @@ import           Domain.Repositories.TodoRepository
     , ValidationError (..)
     )
 import           Domain.Repositories.Entities.Todo (validateTodoTitle)
-
+import           Flow                           ((<|))
 -- -------------------------------------------------------------------
 -- Infrastructure
 -- -------------------------------------------------------------------
@@ -70,7 +70,7 @@ withConn action = do
 -- | Initialize the database schema
 -- This will recreate the table if it already exists
 migrate :: IO ()
-migrate = withConn $ \conn -> do
+migrate = withConn <| \conn -> do
   -- Drop the existing table if it exists (for schema migration)
   execute_ conn "DROP TABLE IF EXISTS haskell_todo"
   -- Create the table with the new schema
@@ -80,13 +80,13 @@ migrate = withConn $ \conn -> do
 
 -- | Get all todos from the database
 selectAllTodos :: IO [Todo]
-selectAllTodos = withConn $ \conn ->
+selectAllTodos = withConn <| \conn ->
   query_ conn "SELECT todoId, todoTitle, createdAt, priority, status FROM haskell_todo"
 
 -- | Get a specific todo by ID
 -- Returns an empty list if the todo doesn't exist
 selectTodoById :: Int -> IO [Todo]
-selectTodoById todoId = withConn $ \conn ->
+selectTodoById todoId = withConn <| \conn ->
   query conn "SELECT todoId, todoTitle, createdAt, priority, status FROM haskell_todo WHERE todoId = ?" (Only todoId)
 
 -- | Insert a new todo
@@ -94,15 +94,15 @@ selectTodoById todoId = withConn $ \conn ->
 insertTodo :: NewTodo -> IO (Either ValidationError [Todo])
 insertTodo newTodo = 
   case validateTodoTitle (newTodoName newTodo) of
-    Left err -> pure $ Left err
+    Left err -> pure <| Left err
     Right () -> do
       result <- try (insertTodoInDb newTodo) :: IO (Either IOError [Todo])
       case result of
-        Left e -> pure $ Left $ ValidationError $ "Database error: " <> T.pack (show e)
-        Right todos -> pure $ Right todos
+        Left e -> pure <| Left <| ValidationError <| "Database error: " <> T.pack (show e)
+        Right todos -> pure <| Right todos
   where
     insertTodoInDb :: NewTodo -> IO [Todo]
-    insertTodoInDb todo = withConn $ \conn -> do
+    insertTodoInDb todo = withConn <| \conn -> do
       currentTime <- getCurrentTime
       -- Use Medium as the default priority and TodoStatus as the default status
       execute conn "INSERT INTO haskell_todo (todoTitle, createdAt, priority, status) VALUES (?, ?, ?, ?)" (newTodoName todo, currentTime, ("Medium" :: String), ("Todo" :: String))
@@ -114,33 +114,33 @@ insertTodo newTodo =
 updateTodoById :: Int -> Todo -> IO (Either ValidationError [Todo])
 updateTodoById todoId' todo = 
   case validateTodoTitle (todoTitle todo) of
-    Left err -> pure $ Left err
+    Left err -> pure <| Left err
     Right () -> do
       result <- try (updateTodoInDb todoId' todo) :: IO (Either IOError [Todo])
       case result of
-        Left e -> pure $ Left $ ValidationError $ "Database error: " <> T.pack (show e)
-        Right todos -> pure $ Right todos
+        Left e -> pure <| Left <| ValidationError <| "Database error: " <> T.pack (show e)
+        Right todos -> pure <| Right todos
   where
     updateTodoInDb :: Int -> Todo -> IO [Todo]
-    updateTodoInDb tid Todo{..} = withConn $ \conn -> do
+    updateTodoInDb tid Todo{..} = withConn <| \conn -> do
       -- Convert Priority to string
       let priorityStr = show priority
       -- Convert Status to string
       let statusStr = show status
       
-      void $ execute conn "UPDATE haskell_todo SET todoTitle = ?, priority = ?, status = ? WHERE todoId = ?" (todoTitle, priorityStr, statusStr, tid)
+      void <| execute conn "UPDATE haskell_todo SET todoTitle = ?, priority = ?, status = ? WHERE todoId = ?" (todoTitle, priorityStr, statusStr, tid)
                      
       query conn "SELECT todoId, todoTitle, createdAt, priority, status FROM haskell_todo WHERE todoId = ?" (Only tid)
 
 -- | Delete a todo by ID
 -- Returns the deleted todo before removal
 deleteTodoById :: Int -> IO [Todo]
-deleteTodoById todoId = withConn $ \conn -> do
+deleteTodoById todoId = withConn <| \conn -> do
   -- First get the todo to return it
   todo <- query conn "SELECT todoId, todoTitle, createdAt, priority, status FROM haskell_todo WHERE todoId = ?" (Only todoId)
                
   -- Then delete it
-  void $ execute conn "DELETE FROM haskell_todo WHERE todoId = ?" (Only todoId)
+  void <| execute conn "DELETE FROM haskell_todo WHERE todoId = ?" (Only todoId)
   
   -- Return the deleted todo
   pure todo
