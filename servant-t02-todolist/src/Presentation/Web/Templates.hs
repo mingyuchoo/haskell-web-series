@@ -3,18 +3,27 @@
 -- | HTML templates for the Todo application
 module Presentation.Web.Templates
     ( -- * Main Templates
-      indexTemplate
-    , baseTemplate
+      baseTemplate
+    , indexTemplate
     ) where
 
 -- -------------------------------------------------------------------
 -- Imports
 -- -------------------------------------------------------------------
 
-import           Data.Text                      (Text, pack)
-import           Data.Time                      (UTCTime, formatTime, defaultTimeLocale)
-import           Domain.Repositories.Entities.Todo (Todo(..), Priority(..), Status(..), todoTitle)
-import           Flow                           ((<|))
+import           Data.Text                         (Text, pack)
+import           Data.Time
+    ( UTCTime
+    , defaultTimeLocale
+    , formatTime
+    )
+import           Domain.Repositories.Entities.Todo
+    ( Priority (..)
+    , Status (..)
+    , Todo (..)
+    , todoTitle
+    )
+import           Flow                              ((<|))
 import           Lucid
 
 
@@ -23,9 +32,9 @@ import           Lucid
 -- -------------------------------------------------------------------
 
 -- | Base template with common elements
--- 
+--
 -- Provides the HTML structure with header, body, and common scripts/styles
--- 
+--
 -- @param title The page title
 -- @param headContent Additional content for the head section
 -- @param bodyContent Main content for the body section
@@ -44,9 +53,9 @@ baseTemplate title headContent bodyContent = doctypehtml_ <| do
     script_ [src_ "/static/js/main.js"] ("" :: Text)
 
 -- | Index page template for the Todo application
--- 
+--
 -- Renders the todo form and the list of existing todos
--- 
+--
 -- @param todos List of todos to display
 indexTemplate :: [Todo] -> Html ()
 indexTemplate todos = baseTemplate "Todo Management" mempty <| do
@@ -61,7 +70,7 @@ indexTemplate todos = baseTemplate "Todo Management" mempty <| do
       div_ [class_ "form-group"] <| do
         label_ [for_ "todoTitle"] "Todo Title:"
         input_ [type_ "text", id_ "todoTitle", name_ "todoTitle", required_ "required"]
-      
+
       div_ [class_ "form-row"] <| do
         div_ [class_ "form-group priority-group"] <| do
           label_ [for_ "todoPriority"] "Priority:"
@@ -69,14 +78,14 @@ indexTemplate todos = baseTemplate "Todo Management" mempty <| do
             option_ [value_ "Low"] "Low"
             option_ [value_ "Medium"] "Medium"
             option_ [value_ "High"] "High"
-        
+
         div_ [class_ "form-group", id_ "status-group"] <| do
           label_ [for_ "todoStatus"] "Status:"
           select_ [id_ "todoStatus", name_ "todoStatus"] <| do
             option_ [value_ "Todo"] "Todo"
             option_ [value_ "Doing"] "Doing"
             option_ [value_ "Done"] "Done"
-      
+
       button_ [type_ "submit", class_ "btn btn-success", id_ "submit-btn"] "Create Todo"
       button_ [type_ "button", class_ "btn", onclick_ "resetForm()"] "Reset"
 
@@ -113,9 +122,9 @@ formatPriority High = span_ [class_ "priority-high", onclick_ "togglePriority(th
 
 -- | Convert Priority to Text for JavaScript
 priorityToString :: Priority -> Text
-priorityToString Low = "Low"
+priorityToString Low    = "Low"
 priorityToString Medium = "Medium"
-priorityToString High = "High"
+priorityToString High   = "High"
 
 -- | Format status with appropriate CSS class and click handler
 formatStatus :: Status -> Html ()
@@ -124,27 +133,27 @@ formatStatus DoingStatus = span_ [class_ "status-doing", data_ "status" "doing",
 formatStatus TodoStatus = span_ [class_ "status-pending", data_ "status" "todo", onclick_ "toggleStatus(this)"] "Todo"
 
 -- | Single todo row template
--- 
+--
 -- Renders a table row for a single todo item with all its properties
 todoRow :: Todo -> Html ()
 todoRow todo = tr_ [data_ "todo-id" (pack <| show <| todoId todo)] <| do
   td_ (toHtml <| show <| todoId todo)
   td_ (toHtml <| todoTitle todo)
-  td_ [class_ "relative-time", data_ "timestamp" (formatISOTime <| createdAt todo)] 
+  td_ [class_ "relative-time", data_ "timestamp" (formatISOTime <| createdAt todo)]
       (toHtml <| formatTodoTime <| createdAt todo)
   td_ (formatPriority <| priority todo)
   td_ (formatStatus <| status todo)
   td_ <| do
     -- Edit button with all todo data as parameters
-    button_ 
-      [class_ "btn", 
-       onclick_ <| "editTodo(" <> idText <> ", '" <> titleText <> "', '" 
-                <> priorityToString (priority todo) <> "', '" 
+    button_
+      [class_ "btn",
+       onclick_ <| "editTodo(" <> idText <> ", '" <> titleText <> "', '"
+                <> priorityToString (priority todo) <> "', '"
                 <> statusText <> "')"]
       "Edit"
     -- Delete button
-    button_ 
-      [class_ "btn btn-danger", 
+    button_
+      [class_ "btn btn-danger",
        onclick_ <| "deleteTodo(" <> idText <> ")"]
       "Delete"
   where

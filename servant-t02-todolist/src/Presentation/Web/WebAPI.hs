@@ -1,5 +1,5 @@
-{-# LANGUAGE DataKinds         #-}
-{-# LANGUAGE TypeOperators     #-}
+{-# LANGUAGE DataKinds     #-}
+{-# LANGUAGE TypeOperators #-}
 
 -- | Web interface API for Todo application
 module Presentation.Web.WebAPI
@@ -13,13 +13,19 @@ module Presentation.Web.WebAPI
 -- Imports
 -- -------------------------------------------------------------------
 
-import           Control.Monad.IO.Class         (liftIO)
-import           Domain.Repositories.TodoRepository (getAllTodos)
-import           Infrastructure.Repositories.SQLiteTodoRepository (SQLiteRepo(..))
-import           Flow                           ((<|))
-import           Lucid                          (Html)
-import           Network.Wai.Application.Static (defaultWebAppSettings)
-import           Presentation.Web.Templates     (indexTemplate)
+import           Control.Monad.IO.Class                           (liftIO)
+import           Domain.Repositories.TodoRepository               (getAllTodos)
+import           Flow                                             ((<|))
+import           Infrastructure.Repositories.SQLiteTodoRepository
+    ( SQLiteRepo (..)
+    )
+import           Lucid                                            (Html)
+import           Network.Wai.Application.Static
+    ( defaultWebAppSettings
+    )
+import           Presentation.Web.Templates
+    ( indexTemplate
+    )
 import           Servant
     ( Get
     , Handler
@@ -29,16 +35,16 @@ import           Servant
     , (:<|>) (..)
     , (:>)
     )
-import           Servant.HTML.Lucid             (HTML)
+import           Servant.HTML.Lucid                               (HTML)
 
 -- -------------------------------------------------------------------
 -- Web API Definitions
 -- -------------------------------------------------------------------
 
 -- | API type definition for web interface
--- 
+--
 -- Defines the following endpoints:
--- 
+--
 -- * GET / - Main index page with todos list
 -- * GET /static/* - Static files (CSS, JS, etc.)
 type WebAPI = Get '[HTML] (Html ()) :<|> "static" :> Raw

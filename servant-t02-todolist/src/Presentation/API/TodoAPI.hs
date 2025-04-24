@@ -1,5 +1,5 @@
-{-# LANGUAGE DataKinds         #-}
-{-# LANGUAGE TypeOperators     #-}
+{-# LANGUAGE DataKinds     #-}
+{-# LANGUAGE TypeOperators #-}
 
 -- | REST API for Todo operations
 module Presentation.API.TodoAPI
@@ -13,21 +13,23 @@ module Presentation.API.TodoAPI
 -- Imports
 -- -------------------------------------------------------------------
 
-import           Control.Monad.IO.Class         (liftIO)
-import           Domain.Repositories.TodoRepository 
+import           Application.UseCases.TodoUseCases
+    ( createNewTodo
+    , getTodo
+    , removeTodo
+    , updateExistingTodo
+    )
+import           Control.Monad.IO.Class                           (liftIO)
+import           Domain.Repositories.TodoRepository
     ( NewTodo
     , Todo
+    , TodoRepository (getAllTodos)
     , ValidationError
-    , TodoRepository(getAllTodos)
     )
-import           Application.UseCases.TodoUseCases 
-    ( getTodo
-    , createNewTodo
-    , updateExistingTodo
-    , removeTodo
+import           Flow                                             ((<|))
+import           Infrastructure.Repositories.SQLiteTodoRepository
+    ( SQLiteRepo (..)
     )
-import           Infrastructure.Repositories.SQLiteTodoRepository (SQLiteRepo(..))
-import           Flow                           ((<|))
 import           Servant
     ( Capture
     , Delete
@@ -47,15 +49,15 @@ import           Servant
 -- -------------------------------------------------------------------
 
 -- | API type definition for Todo operations
--- 
+--
 -- Defines the following endpoints:
--- 
+--
 -- * GET    /api/todos - Get all todos
 -- * POST   /api/todos - Create a new todo
 -- * GET    /api/todos/:id - Get a specific todo
 -- * PUT    /api/todos/:id - Update a todo
 -- * DELETE /api/todos/:id - Delete a todo
-type TodoAPI = 
+type TodoAPI =
        "api" :> "todos" :> Get '[JSON] [Todo]
   :<|> "api" :> "todos" :> ReqBody '[JSON] NewTodo :> Post '[JSON] (Either ValidationError [Todo])
   :<|> "api" :> "todos" :> Capture "todoId" Int :> Get '[JSON] [Todo]

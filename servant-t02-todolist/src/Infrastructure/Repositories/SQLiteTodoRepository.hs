@@ -1,32 +1,32 @@
 {-# LANGUAGE FlexibleInstances          #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-{-# LANGUAGE OverloadedStrings         #-}
-{-# LANGUAGE RecordWildCards           #-}
+{-# LANGUAGE OverloadedStrings          #-}
+{-# LANGUAGE RecordWildCards            #-}
 
 -- | SQLite implementation of the Todo repository
 module Infrastructure.Repositories.SQLiteTodoRepository
     ( -- * Repository implementation
-      SQLiteRepo(..)
+      SQLiteRepo (..)
       -- * Database operations
-    , withConn
     , migrate
+    , withConn
       -- * Direct access functions
       -- | These functions are exported for direct use in tests or specialized scenarios
+    , deleteTodoById
+    , insertTodo
     , selectAllTodos
     , selectTodoById
-    , insertTodo
     , updateTodoById
-    , deleteTodoById
     ) where
 
 -- -------------------------------------------------------------------
 -- Imports
 -- -------------------------------------------------------------------
 
-import           Control.Exception              (try)
-import           Control.Monad                  (void)
-import qualified Data.Text                      as T
-import           Data.Time                      (getCurrentTime)
+import           Control.Exception                  (try)
+import           Control.Monad                      (void)
+import qualified Data.Text                          as T
+import           Data.Time                          (getCurrentTime)
 import           Database.SQLite.Simple
     ( Connection
     , Only (Only)
@@ -38,21 +38,21 @@ import           Database.SQLite.Simple
     , query
     , query_
     )
+import           Domain.Repositories.Entities.Todo  (validateTodoTitle)
 import           Domain.Repositories.TodoRepository
-    ( TodoRepository(..)
-    , Todo (Todo, todoTitle, priority, status)
-    , NewTodo (newTodoName)
+    ( NewTodo (newTodoName)
+    , Todo (Todo, priority, status, todoTitle)
+    , TodoRepository (..)
     , ValidationError (..)
     )
-import           Domain.Repositories.Entities.Todo (validateTodoTitle)
-import           Flow                           ((<|))
+import           Flow                               ((<|))
 -- -------------------------------------------------------------------
 -- Infrastructure
 -- -------------------------------------------------------------------
 
 -- | Newtype wrapper for SQLite IO operations
 newtype SQLiteRepo a = SQLiteRepo { runSQLiteRepo :: IO a }
-    deriving (Functor, Applicative, Monad)
+     deriving (Applicative, Functor, Monad)
 
 -- | TodoRepository implementation for SQLiteRepo
 instance TodoRepository SQLiteRepo where
@@ -96,7 +96,7 @@ selectTodoById todoId = withConn <| \conn ->
 -- | Insert a new todo
 -- Validates the todo title before insertion
 insertTodo :: NewTodo -> IO (Either ValidationError [Todo])
-insertTodo newTodo = 
+insertTodo newTodo =
   case validateTodoTitle (newTodoName newTodo) of
     Left err -> pure <| Left err
     Right () -> do
@@ -116,7 +116,7 @@ insertTodo newTodo =
 -- | Update an existing todo
 -- Validates the todo title before updating
 updateTodoById :: Int -> Todo -> IO (Either ValidationError [Todo])
-updateTodoById todoId' todo = 
+updateTodoById todoId' todo =
   case validateTodoTitle (todoTitle todo) of
     Left err -> pure <| Left err
     Right () -> do
@@ -131,9 +131,9 @@ updateTodoById todoId' todo =
       let priorityStr = show priority
       -- Convert Status to string
       let statusStr = show status
-      
+
       void <| execute conn "UPDATE haskell_todo SET todoTitle = ?, priority = ?, status = ? WHERE todoId = ?" (todoTitle, priorityStr, statusStr, tid)
-                     
+
       query conn "SELECT todoId, todoTitle, createdAt, priority, status FROM haskell_todo WHERE todoId = ?" (Only tid)
 
 -- | Delete a todo by ID
@@ -142,9 +142,9 @@ deleteTodoById :: Int -> IO [Todo]
 deleteTodoById todoId = withConn <| \conn -> do
   -- First get the todo to return it
   todo <- query conn "SELECT todoId, todoTitle, createdAt, priority, status FROM haskell_todo WHERE todoId = ?" (Only todoId)
-               
+
   -- Then delete it
   void <| execute conn "DELETE FROM haskell_todo WHERE todoId = ?" (Only todoId)
-  
+
   -- Return the deleted todo
   pure todo

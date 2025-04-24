@@ -10,10 +10,10 @@ setup:
 	stack test --only-dependencies
 
 build:
-	stack build
-
-build-fast:
 	stack build --fast --file-watch --ghc-options "-j4 +RTS -A128m -n2m -RTS"
+
+build-release:
+	stack build --docker --ghc-options="-optl-static -fPIC" --flag servant-t02-todolist:static
 
 test:
 	stack test --fast
