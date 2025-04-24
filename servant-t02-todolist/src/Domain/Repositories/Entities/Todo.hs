@@ -120,9 +120,6 @@ instance Show Status where
 -- | Custom JSON instances for Status
 instance FromJSON Status where
     parseJSON (String t) = case T.unpack t of
-        "Todo" -> pure TodoStatus
-        "Doing" -> pure DoingStatus
-        "Done" -> pure DoneStatus
         "TodoStatus" -> pure TodoStatus
         "DoingStatus" -> pure DoingStatus
         "DoneStatus" -> pure DoneStatus

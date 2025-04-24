@@ -36,9 +36,7 @@ import           Servant.HTML.Lucid             (HTML)
 -- 
 -- * GET / - Main index page with todos list
 -- * GET /static/* - Static files (CSS, JS, etc.)
-type WebAPI = 
-       Get '[HTML] (Html ())
-  :<|> "static" :> Raw
+type WebAPI = Get '[HTML] (Html ()) :<|> "static" :> Raw
 
 -- | Web interface server implementation
 webServer :: Server WebAPI

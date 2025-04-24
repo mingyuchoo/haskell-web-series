@@ -3,7 +3,7 @@ module Infrastructure.Repositories.DatabaseRepository
       initializeDatabase
     ) where
 
-import           Infrastructure.Repositories.Operations.DatabaseOperations
+import Infrastructure.Repositories.Operations.DatabaseOperations
     ( initializeDatabase
     )
 
