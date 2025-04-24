@@ -31,8 +31,8 @@ library
       Domain.Repositories.Entities.Todo
       Domain.Repositories.TodoRepository
       Infrastructure.Repositories.DatabaseRepository
+      Infrastructure.Repositories.Operations.DatabaseOperations
       Infrastructure.Repositories.SQLiteTodoRepository
-      Infrastructure.Services.DatabaseOperations
       Lib
       Presentation.API.TodoAPI
       Presentation.Web.Templates

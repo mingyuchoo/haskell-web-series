@@ -1,4 +1,4 @@
-module Infrastructure.Services.DatabaseOperations
+module Infrastructure.Repositories.Operations.DatabaseOperations
     ( initializeDatabase
     ) where
 

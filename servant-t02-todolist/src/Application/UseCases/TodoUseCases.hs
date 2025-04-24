@@ -4,6 +4,7 @@ module Application.UseCases.TodoUseCases
     , createNewTodo
     , updateExistingTodo
     , removeTodo
+    , TodoRepository (getAllTodos, getTodoById, createTodo, updateTodo, deleteTodo)
     ) where
 
 import           Domain.Repositories.TodoRepository (TodoRepository(..), getAllTodos, getTodoById, createTodo, updateTodo, deleteTodo)

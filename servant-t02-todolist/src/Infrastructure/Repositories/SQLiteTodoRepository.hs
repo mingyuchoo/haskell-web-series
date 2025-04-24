@@ -27,8 +27,8 @@ import           Database.SQLite.Simple
     , query
     , query_
     )
-import           Domain.Repositories.Entities.Todo (Todo(..), NewTodo(..), ValidationError(..), validateTodoTitle)
-import           Domain.Repositories.TodoRepository (TodoRepository(..))
+import           Domain.Repositories.TodoRepository (TodoRepository(..), Todo (Todo, todoTitle), NewTodo (newTodoName), ValidationError (..))
+import           Domain.Repositories.Entities.Todo (validateTodoTitle)
 
 -- -------------------------------------------------------------------
 -- Infrastructure

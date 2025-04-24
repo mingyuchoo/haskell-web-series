@@ -3,53 +3,58 @@ graph TD
     Lib["Lib.hs"]
     
     %% Domain Layer (innermost)
-    subgraph Domain["Domain Layer"]
-        Todo["Domain/Repositories/Entities/Todo.hs"]
-        TodoRepo["Domain/Repositories/TodoRepository.hs"]
-    end
+    DomainTodo["Domain/Repositories/Entities/Todo.hs"]
+    DomainRepo["Domain/Repositories/TodoRepository.hs"]
     
     %% Application Layer
-    subgraph Application["Application Layer"]
-        TodoUseCases["Application/UseCases/TodoUseCases.hs"]
-    end
+    AppUseCases["Application/UseCases/TodoUseCases.hs"]
     
     %% Infrastructure Layer
-    subgraph Infrastructure["Infrastructure Layer"]
-        DatabaseRepo["Infrastructure/Repositories/DatabaseRepository.hs"]
-        SQLiteTodoRepo["Infrastructure/Repositories/SQLiteTodoRepository.hs"]
-        DatabaseOps["Infrastructure/Services/DatabaseOperations.hs"]
-    end
+    InfraDBRepo["Infrastructure/Repositories/DatabaseRepository.hs"]
+    InfraDBOps["Infrastructure/Repositories/Operations/DatabaseOperations.hs"]
+    InfraSQLiteRepo["Infrastructure/Repositories/SQLiteTodoRepository.hs"]
     
     %% Presentation Layer (outermost)
-    subgraph Presentation["Presentation Layer"]
-        TodoAPI["Presentation/API/TodoAPI.hs"]
-        Templates["Presentation/Web/Templates.hs"]
-        WebAPI["Presentation/Web/WebAPI.hs"]
-    end
+    PresentAPI["Presentation/API/TodoAPI.hs"]
+    PresentTemplates["Presentation/Web/Templates.hs"]
+    PresentWebAPI["Presentation/Web/WebAPI.hs"]
     
-    %% Dependencies (pointing inward according to Onion Architecture)
-    TodoRepo --> Todo
+    %% Relationships following Onion Architecture (dependencies point inward)
     
-    TodoUseCases --> TodoRepo
-    TodoUseCases --> Todo
+    %% Domain Layer dependencies (none, it's the innermost layer)
     
-    SQLiteTodoRepo --> TodoRepo
-    SQLiteTodoRepo --> Todo
-    SQLiteTodoRepo --> DatabaseRepo
-    SQLiteTodoRepo --> DatabaseOps
+    %% Application Layer dependencies
+    AppUseCases --> DomainTodo
+    AppUseCases --> DomainRepo
     
-    DatabaseRepo --> DatabaseOps
+    %% Infrastructure Layer dependencies
+    InfraDBRepo --> DomainRepo
+    InfraDBOps --> InfraDBRepo
+    InfraSQLiteRepo --> DomainTodo
+    InfraSQLiteRepo --> DomainRepo
+    InfraSQLiteRepo --> InfraDBOps
     
-    TodoAPI --> TodoUseCases
-    TodoAPI --> Todo
+    %% Presentation Layer dependencies
+    PresentAPI --> AppUseCases
+    PresentAPI --> DomainTodo
+    PresentTemplates --> DomainTodo
+    PresentWebAPI --> AppUseCases
+    PresentWebAPI --> PresentTemplates
     
-    Templates --> Todo
+    %% Main entry point dependencies
+    Lib --> PresentAPI
+    Lib --> PresentWebAPI
+    Lib --> InfraSQLiteRepo
     
-    WebAPI --> TodoUseCases
-    WebAPI --> Templates
-    WebAPI --> Todo
+    %% Style
+    classDef domain fill:#f9f,stroke:#333,stroke-width:2px
+    classDef application fill:#bbf,stroke:#333,stroke-width:2px
+    classDef infrastructure fill:#bfb,stroke:#333,stroke-width:2px
+    classDef presentation fill:#fbb,stroke:#333,stroke-width:2px
+    classDef main fill:#ddd,stroke:#333,stroke-width:2px
     
-    Lib --> TodoAPI
-    Lib --> WebAPI
-    Lib --> SQLiteTodoRepo
-    Lib --> TodoUseCases
+    class DomainTodo,DomainRepo domain
+    class AppUseCases application
+    class InfraDBRepo,InfraDBOps,InfraSQLiteRepo infrastructure
+    class PresentAPI,PresentTemplates,PresentWebAPI presentation
+    class Lib main

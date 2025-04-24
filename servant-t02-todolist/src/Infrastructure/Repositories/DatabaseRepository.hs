@@ -1,6 +1,11 @@
 module Infrastructure.Repositories.DatabaseRepository
-    ( migrateDatabase
+    ( migrateDatabase,
+      initializeDatabase
     ) where
+
+import           Infrastructure.Repositories.Operations.DatabaseOperations
+    ( initializeDatabase
+    )
 
 -- -------------------------------------------------------------------
 -- Repository

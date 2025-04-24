@@ -1,13 +1,11 @@
 module Domain.Repositories.TodoRepository
-    ( TodoRepository(..)
-    , Todo
-    , NewTodo
-    , ValidationError
+    ( -- Repository interface
+      TodoRepository(..)
+      -- Re-export everything from Domain.Repositories.Entities.Todo
+    , module Domain.Repositories.Entities.Todo
     ) where
 
 import           Domain.Repositories.Entities.Todo
-    ( Todo, NewTodo, ValidationError
-    )
 
 -- -------------------------------------------------------------------
 -- Repository
