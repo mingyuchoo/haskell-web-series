@@ -142,6 +142,7 @@ label {
   color: white;
   border-radius: 4px;
   font-size: 0.9em;
+  cursor: pointer;
 }
 
 .priority-medium {
@@ -151,6 +152,7 @@ label {
   color: white;
   border-radius: 4px;
   font-size: 0.9em;
+  cursor: pointer;
 }
 
 .priority-high {
@@ -160,6 +162,7 @@ label {
   color: white;
   border-radius: 4px;
   font-size: 0.9em;
+  cursor: pointer;
 }
 
 /* Status styles */
