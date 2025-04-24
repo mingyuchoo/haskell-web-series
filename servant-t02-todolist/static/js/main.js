@@ -115,7 +115,7 @@ const displayTodos = (todos) => {
   const todosHtml = todos.map(({ todoId, todoTitle, createdAt, priority, status }) => {
     // Format the priority with appropriate class
     const priorityClass = `priority-${priority.toLowerCase()}`;
-    const priorityDisplay = `<span class="${priorityClass}">${priority}</span>`;
+    const priorityDisplay = `<span class="${priorityClass}" data-priority="${priority.toLowerCase()}" data-todo-id="${todoId}" onclick="togglePriority(this)">${priority}</span>`;
     
     // Format the status with appropriate class
     let statusClass, statusText, statusDataAttr;
@@ -407,6 +407,90 @@ const toggleStatus = async (element) => {
   } catch (error) {
     console.error('Error updating todo status:', error);
     showMessage(`Error updating todo status: ${error.message}`, 'error');
+  }
+}
+
+/**
+ * Toggle the priority of a todo item (Low -> Medium -> High -> Low)
+ * @param {HTMLElement} element - The priority element that was clicked
+ */
+const togglePriority = async (element) => {
+  const todoId = element.getAttribute('data-todo-id');
+  const currentPriority = element.getAttribute('data-priority');
+  
+  if (!todoId) return;
+  
+  // Find the todo in the table row
+  const row = element.closest('tr');
+  if (!row) return;
+  
+  try {
+    // Get the current todo data
+    const response = await fetch(`/api/todos/${todoId}`);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    
+    const todos = await response.json();
+    if (!todos || !todos.length) {
+      throw new Error('Todo not found');
+    }
+    
+    // Make a deep copy of the todo to avoid reference issues
+    const todo = JSON.parse(JSON.stringify(todos[0]));
+    
+    // Determine the next priority
+    let newPriority;
+    let priorityValue;
+    let priorityClass;
+    let priorityText;
+    
+    if (currentPriority === 'low') {
+      // Low -> Medium
+      newPriority = 'medium';
+      priorityValue = 'Medium';
+      priorityClass = 'priority-medium';
+      priorityText = 'Medium';
+    } else if (currentPriority === 'medium') {
+      // Medium -> High
+      newPriority = 'high';
+      priorityValue = 'High';
+      priorityClass = 'priority-high';
+      priorityText = 'High';
+    } else {
+      // High -> Low
+      newPriority = 'low';
+      priorityValue = 'Low';
+      priorityClass = 'priority-low';
+      priorityText = 'Low';
+    }
+    
+    // Update the todo with the new priority
+    const updatedTodo = {
+      ...todo,
+      priority: priorityValue
+    };
+    
+    const updateResponse = await fetch(`/api/todos/${todoId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedTodo)
+    });
+    
+    if (!updateResponse.ok) {
+      throw new Error(`HTTP error! Status: ${updateResponse.status}`);
+    }
+    
+    // Update the UI without reloading the entire list
+    element.className = priorityClass;
+    element.setAttribute('data-priority', newPriority);
+    element.textContent = priorityText;
+    
+    showMessage(`Todo priority updated to ${priorityText}`, 'success');
+  } catch (error) {
+    console.error('Error updating todo priority:', error);
+    showMessage(`Error updating todo priority: ${error.message}`, 'error');
   }
 }
 

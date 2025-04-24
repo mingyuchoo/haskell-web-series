@@ -31,9 +31,19 @@ instance Show Priority where
     show Medium = "Medium"
     show High = "High"
 
--- JSON instances for Priority
-instance FromJSON Priority
-instance ToJSON Priority
+-- Custom JSON instances for Priority
+instance FromJSON Priority where
+    parseJSON (String t) = case unpack t of
+        "Low" -> return Low
+        "Medium" -> return Medium
+        "High" -> return High
+        _ -> fail $ "Unknown priority: " ++ unpack t
+    parseJSON _ = fail "Expected String for Priority"
+
+instance ToJSON Priority where
+    toJSON Low = String (pack "Low")
+    toJSON Medium = String (pack "Medium")
+    toJSON High = String (pack "High")
 
 -- Status levels for todos
 data Status = TodoStatus | DoingStatus | DoneStatus
