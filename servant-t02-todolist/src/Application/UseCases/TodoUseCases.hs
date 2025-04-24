@@ -10,6 +10,10 @@ module Application.UseCases.TodoUseCases
     , TodoRepository(getAllTodos, getTodoById, createTodo, updateTodo, deleteTodo)
     ) where
 
+-- -------------------------------------------------------------------
+-- Imports
+-- -------------------------------------------------------------------
+
 import           Domain.Repositories.TodoRepository (TodoRepository(..), getAllTodos, getTodoById, createTodo, updateTodo, deleteTodo)
 import           Domain.Repositories.Entities.Todo (Todo, NewTodo, ValidationError) 
 

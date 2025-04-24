@@ -3,6 +3,10 @@ module Infrastructure.Repositories.Operations.DatabaseOperations
       initializeDatabase
     ) where
 
+-- -------------------------------------------------------------------
+-- Imports
+-- -------------------------------------------------------------------
+
 import Infrastructure.Repositories.SQLiteTodoRepository (migrate)
 
 -- -------------------------------------------------------------------

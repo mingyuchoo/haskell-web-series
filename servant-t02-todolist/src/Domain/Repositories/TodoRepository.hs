@@ -6,6 +6,10 @@ module Domain.Repositories.TodoRepository
     , module Domain.Repositories.Entities.Todo
     ) where
 
+-- -------------------------------------------------------------------
+-- Imports
+-- -------------------------------------------------------------------
+
 import           Domain.Repositories.Entities.Todo
 
 -- -------------------------------------------------------------------

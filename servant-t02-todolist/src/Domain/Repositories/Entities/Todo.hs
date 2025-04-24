@@ -17,6 +17,10 @@ module Domain.Repositories.Entities.Todo
     , mkNewTodo
     ) where
 
+-- -------------------------------------------------------------------
+-- Imports
+-- -------------------------------------------------------------------
+
 import           Data.Aeson                     (FromJSON(..), ToJSON(..), Value(..))
 import           Data.Text                      (Text)
 import qualified Data.Text                      as T

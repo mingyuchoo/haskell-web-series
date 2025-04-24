@@ -7,6 +7,10 @@ module Presentation.Web.Templates
     , baseTemplate
     ) where
 
+-- -------------------------------------------------------------------
+-- Imports
+-- -------------------------------------------------------------------
+
 import           Data.Text                      (Text, pack)
 import           Data.Time                      (UTCTime, formatTime, defaultTimeLocale)
 import           Domain.Repositories.Entities.Todo (Todo(..), Priority(..), Status(..), todoTitle)

@@ -19,6 +19,10 @@ module Infrastructure.Repositories.SQLiteTodoRepository
     , deleteTodoById
     ) where
 
+-- -------------------------------------------------------------------
+-- Imports
+-- -------------------------------------------------------------------
+
 import           Control.Exception              (try)
 import           Control.Monad                  (void)
 import qualified Data.Text                      as T
