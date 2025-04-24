@@ -51,6 +51,9 @@ instance FromJSON Status where
         "Todo" -> return TodoStatus
         "Doing" -> return DoingStatus
         "Done" -> return DoneStatus
+        "TodoStatus" -> return TodoStatus
+        "DoingStatus" -> return DoingStatus
+        "DoneStatus" -> return DoneStatus
         _ -> fail $ "Unknown status: " ++ unpack t
     parseJSON _ = fail "Expected String for Status"
 
