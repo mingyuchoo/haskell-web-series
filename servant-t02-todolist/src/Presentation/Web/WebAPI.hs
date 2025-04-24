@@ -1,17 +1,20 @@
 {-# LANGUAGE DataKinds         #-}
 {-# LANGUAGE TypeOperators     #-}
 
+-- | Web interface API for Todo application
 module Presentation.Web.WebAPI
-    ( WebAPI
+    ( -- * API Type
+      WebAPI
+      -- * Server Implementation
     , webServer
     ) where
 
 import           Control.Monad.IO.Class         (liftIO)
-import           Domain.Repositories.Entities.Todo           (Todo)
-import Domain.Repositories.TodoRepository ( getAllTodos )
+import           Domain.Repositories.TodoRepository (getAllTodos)
 import           Infrastructure.Repositories.SQLiteTodoRepository (SQLiteRepo(..))
+import           Lucid                          (Html)
 import           Network.Wai.Application.Static (defaultWebAppSettings)
-import           Presentation.Web.Templates      (indexTemplate)
+import           Presentation.Web.Templates     (indexTemplate)
 import           Servant
     ( Get
     , Handler
@@ -22,24 +25,32 @@ import           Servant
     , (:>)
     )
 import           Servant.HTML.Lucid             (HTML)
-import           Lucid                          (Html)
 
 -- -------------------------------------------------------------------
--- Web APIs
+-- Web API Definitions
 -- -------------------------------------------------------------------
 
--- API type definition for web interface
-type WebAPI = Get '[HTML] (Html ())
-          :<|> "static" :> Raw
+-- | API type definition for web interface
+-- 
+-- Defines the following endpoints:
+-- 
+-- * GET / - Main index page with todos list
+-- * GET /static/* - Static files (CSS, JS, etc.)
+type WebAPI = 
+       Get '[HTML] (Html ())
+  :<|> "static" :> Raw
 
--- Web interface server implementation
+-- | Web interface server implementation
 webServer :: Server WebAPI
 webServer = indexHandler :<|> staticFiles
   where
+    -- | Handler for the main index page
+    -- Fetches all todos and renders them using the index template
     indexHandler :: Handler (Html ())
     indexHandler = do
-      todos <- liftIO $ runSQLiteRepo (getAllTodos :: SQLiteRepo [Todo])
-      return $ indexTemplate todos
+      todos <- liftIO $ runSQLiteRepo getAllTodos
+      pure $ indexTemplate todos
 
+    -- | Handler for static files (CSS, JS, images)
     staticFiles :: Server Raw
     staticFiles = serveDirectoryWith (defaultWebAppSettings "static")

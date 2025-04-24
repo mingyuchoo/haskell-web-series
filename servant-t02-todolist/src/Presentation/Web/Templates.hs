@@ -1,21 +1,29 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+-- | HTML templates for the Todo application
 module Presentation.Web.Templates
-    ( indexTemplate
+    ( -- * Main Templates
+      indexTemplate
     , baseTemplate
     ) where
 
 import           Data.Text                      (Text, pack)
 import           Data.Time                      (UTCTime, formatTime, defaultTimeLocale)
+import           Domain.Repositories.Entities.Todo (Todo(..), Priority(..), Status(..), todoTitle)
 import           Lucid
-import           Domain.Repositories.Entities.Todo (Todo(..), Priority(..), Status(..))
 
 
 -- -------------------------------------------------------------------
 -- Templates
 -- -------------------------------------------------------------------
 
--- Base template with common elements
+-- | Base template with common elements
+-- 
+-- Provides the HTML structure with header, body, and common scripts/styles
+-- 
+-- @param title The page title
+-- @param headContent Additional content for the head section
+-- @param bodyContent Main content for the body section
 baseTemplate :: Text -> Html () -> Html () -> Html ()
 baseTemplate title headContent bodyContent = doctypehtml_ $ do
   head_ $ do
@@ -30,7 +38,11 @@ baseTemplate title headContent bodyContent = doctypehtml_ $ do
       bodyContent
     script_ [src_ "/static/js/main.js"] ("" :: Text)
 
--- Index page template
+-- | Index page template for the Todo application
+-- 
+-- Renders the todo form and the list of existing todos
+-- 
+-- @param todos List of todos to display
 indexTemplate :: [Todo] -> Html ()
 indexTemplate todos = baseTemplate "Todo Management" mempty $ do
   div_ [id_ "message-container"] mempty
@@ -80,42 +92,58 @@ indexTemplate todos = baseTemplate "Todo Management" mempty $ do
           then tr_ $ td_ [colspan_ "6"] "No todos found"
           else mapM_ todoRow todos
 
--- Format UTC time for display
+-- | Format UTC time for display in a human-readable format
 formatTodoTime :: UTCTime -> Text
 formatTodoTime time = pack $ formatTime defaultTimeLocale "%Y-%m-%d %H:%M:%S" time
 
--- Format UTC time as ISO 8601 for data attribute
+-- | Format UTC time as ISO 8601 for data attribute
 formatISOTime :: UTCTime -> Text
 formatISOTime time = pack $ formatTime defaultTimeLocale "%Y-%m-%dT%H:%M:%SZ" time
 
--- Format priority for display with color
+-- | Format priority for display with appropriate CSS class
 formatPriority :: Priority -> Html ()
-formatPriority Low = span_ [class_ "priority-low"] "Low"
-formatPriority Medium = span_ [class_ "priority-medium"] "Medium"
-formatPriority High = span_ [class_ "priority-high"] "High"
+formatPriority Low = span_ [class_ "priority-low", onclick_ "togglePriority(this)"] "Low"
+formatPriority Medium = span_ [class_ "priority-medium", onclick_ "togglePriority(this)"] "Medium"
+formatPriority High = span_ [class_ "priority-high", onclick_ "togglePriority(this)"] "High"
 
--- Convert Priority to string for JavaScript
+-- | Convert Priority to Text for JavaScript
 priorityToString :: Priority -> Text
 priorityToString Low = "Low"
 priorityToString Medium = "Medium"
 priorityToString High = "High"
 
--- Format status
+-- | Format status with appropriate CSS class and click handler
 formatStatus :: Status -> Html ()
 formatStatus DoneStatus = span_ [class_ "status-completed", data_ "status" "done", onclick_ "toggleStatus(this)"] "Done"
 formatStatus DoingStatus = span_ [class_ "status-doing", data_ "status" "doing", onclick_ "toggleStatus(this)"] "Doing"
 formatStatus TodoStatus = span_ [class_ "status-pending", data_ "status" "todo", onclick_ "toggleStatus(this)"] "Todo"
 
--- Single todo row template
+-- | Single todo row template
+-- 
+-- Renders a table row for a single todo item with all its properties
 todoRow :: Todo -> Html ()
 todoRow todo = tr_ [data_ "todo-id" (pack $ show $ todoId todo)] $ do
   td_ (toHtml $ show $ todoId todo)
   td_ (toHtml $ todoTitle todo)
-  td_ [class_ "relative-time", data_ "timestamp" (formatISOTime $ createdAt todo)] (toHtml $ formatTodoTime $ createdAt todo)
+  td_ [class_ "relative-time", data_ "timestamp" (formatISOTime $ createdAt todo)] 
+      (toHtml $ formatTodoTime $ createdAt todo)
   td_ (formatPriority $ priority todo)
   td_ (formatStatus $ status todo)
   td_ $ do
-    button_ [class_ "btn", onclick_ $ "editTodo(" <> pack (show $ todoId todo) <> ", '" <> pack (todoTitle todo) <> "', '" <> priorityToString (priority todo) <> "', '" <> pack (show $ status todo) <> "')"]
+    -- Edit button with all todo data as parameters
+    button_ 
+      [class_ "btn", 
+       onclick_ $ "editTodo(" <> idText <> ", '" <> titleText <> "', '" 
+                <> priorityToString (priority todo) <> "', '" 
+                <> statusText <> "')"]
       "Edit"
-    button_ [class_ "btn btn-danger", onclick_ $ "deleteTodo(" <> pack (show $ todoId todo) <> ")"]
+    -- Delete button
+    button_ 
+      [class_ "btn btn-danger", 
+       onclick_ $ "deleteTodo(" <> idText <> ")"]
       "Delete"
+  where
+    -- Extract values once to avoid repetition
+    idText = pack $ show $ todoId todo
+    titleText = todoTitle todo  -- Already Text from the refactored Todo entity
+    statusText = pack $ show $ status todo

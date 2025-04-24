@@ -334,13 +334,9 @@ const toggleStatus = async (element) => {
   const currentStatus = element.getAttribute('data-status');
   
   if (!todoId) return;
-  
-  // Find the todo in the table row
-  const row = element.closest('tr');
-  if (!row) return;
+  if (!element.closest('tr')) return;
   
   try {
-    // Get the current todo data
     const response = await fetch(`/api/todos/${todoId}`);
     
     if (!response.ok) {
@@ -352,40 +348,30 @@ const toggleStatus = async (element) => {
       throw new Error('Todo not found');
     }
     
-    // Make a deep copy of the todo to avoid reference issues
     const todo = JSON.parse(JSON.stringify(todos[0]));
     
-    // Determine the next status
-    let newStatus;
-    let statusValue;
-    let statusClass;
-    let statusText;
+    let newStatus, statusValue, statusClass, statusText;
     
     if (currentStatus === 'todo') {
-      // Todo -> Doing
       newStatus = 'doing';
       statusValue = 'DoingStatus';
       statusClass = 'status-doing';
       statusText = 'Doing';
     } else if (currentStatus === 'doing') {
-      // Doing -> Done
       newStatus = 'done';
       statusValue = 'DoneStatus';
       statusClass = 'status-completed';
       statusText = 'Done';
     } else {
-      // Done -> Todo
       newStatus = 'todo';
       statusValue = 'TodoStatus';
       statusClass = 'status-pending';
       statusText = 'Todo';
     }
     
-    // Update the todo with the new status
-    // The backend expects the status as a string value that matches the FromJSON instance in Todo.hs
     const updatedTodo = {
       ...todo,
-      status: statusValue  // Use statusValue (TodoStatus, DoingStatus, DoneStatus) as that's what the backend expects
+      status: statusValue
     };
     
     const updateResponse = await fetch(`/api/todos/${todoId}`, {
@@ -398,7 +384,6 @@ const toggleStatus = async (element) => {
       throw new Error(`HTTP error! Status: ${updateResponse.status}`);
     }
     
-    // Update the UI without reloading the entire list
     element.className = statusClass;
     element.setAttribute('data-status', newStatus);
     element.textContent = statusText;
@@ -419,13 +404,9 @@ const togglePriority = async (element) => {
   const currentPriority = element.getAttribute('data-priority');
   
   if (!todoId) return;
-  
-  // Find the todo in the table row
-  const row = element.closest('tr');
-  if (!row) return;
+  if (!element.closest('tr')) return;
   
   try {
-    // Get the current todo data
     const response = await fetch(`/api/todos/${todoId}`);
     
     if (!response.ok) {
@@ -441,10 +422,7 @@ const togglePriority = async (element) => {
     const todo = JSON.parse(JSON.stringify(todos[0]));
     
     // Determine the next priority
-    let newPriority;
-    let priorityValue;
-    let priorityClass;
-    let priorityText;
+    let newPriority, priorityValue, priorityClass, priorityText;
     
     if (currentPriority === 'low') {
       // Low -> Medium

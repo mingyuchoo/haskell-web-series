@@ -1,16 +1,23 @@
 {-# LANGUAGE DataKinds     #-}
 {-# LANGUAGE TypeOperators #-}
 
+-- | Main application entry point and server setup
 module Lib
-    ( appRunner
+    ( -- * Application Runner
+      appRunner
     ) where
 
 -- -------------------------------------------------------------------
+-- Imports
+-- -------------------------------------------------------------------
 
+-- Network/Web imports
 import           Network.Wai
     ( Application
     )
 import           Network.Wai.Handler.Warp                                  (run)
+
+-- Servant imports
 import           Servant
     ( Proxy (..)
     , Server
@@ -18,12 +25,11 @@ import           Servant
     , type (:<|>) (..)
     )
 
-
--- Import instances for the combined API type
+-- HTML rendering imports (for instances)
 import           Lucid                                                     ()
 import           Servant.HTML.Lucid                                        ()
 
--- Import presentation layer
+-- API layer imports
 import           Presentation.API.TodoAPI
     ( TodoAPI
     , todoServer
@@ -33,7 +39,7 @@ import           Presentation.Web.WebAPI
     , webServer
     )
 
--- Import database operations
+-- Database operations
 import           Infrastructure.Repositories.Operations.DatabaseOperations
     ( initializeDatabase
     )
@@ -41,30 +47,40 @@ import           Infrastructure.Repositories.Operations.DatabaseOperations
 -- Application
 -- -------------------------------------------------------------------
 
--- Create the WAI application
+-- | Create the WAI application by combining all API endpoints
 app :: Application
 app = serve appAPI appServer
 
--- Run the application
+-- | Run the application server
+--
+-- This function:
+-- 1. Initializes the database (creates tables if they don't exist)
+-- 2. Starts the web server on port 4000
 appRunner :: IO ()
 appRunner = do
   putStrLn "Starting server on port 4000..."
-  _ <- initializeDatabase  -- Run database migration through application layer
-  run 4000 app  -- Start the server
+  -- Initialize database (creates tables if they don't exist)
+  _ <- initializeDatabase
+  -- Start the web server
+  run 4000 app
 
 -- -------------------------------------------------------------------
--- API
+-- API Definitions
 -- -------------------------------------------------------------------
 
--- Combined API types are imported from the presentation layer modules
-
--- Combined API
+-- | Combined API type that includes both REST API and Web interface
+--
+-- This combines:
+-- * TodoAPI - REST API for Todo operations
+-- * WebAPI - Web interface with HTML pages
 type AppAPI = TodoAPI :<|> WebAPI
 
--- API proxy
+-- | API proxy for the combined API
 appAPI :: Proxy AppAPI
 appAPI = Proxy
 
--- Server implementation
+-- | Combined server implementation
+--
+-- This combines the server implementations from both APIs
 appServer :: Server AppAPI
 appServer = todoServer :<|> webServer
