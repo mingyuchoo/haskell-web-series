@@ -9,6 +9,12 @@ synopsis: Short description of your package
 category: CLI
 description: Please see the README on GitHub at <https://github.com/mingyuchoo/servant-t02-todolist#readme>
 
+flags:
+  static:
+    description: Build static binary
+    manual: true
+    default: false
+
 extra-source-files:
   - README.md
   - CHANGELOG.md
@@ -49,10 +55,19 @@ executables:
     main: Main.hs
     source-dirs: app
     ghc-options:
-      - -dynamic
       - -threaded
       - -rtsopts
       - -with-rtsopts=-N4
+    when:
+      - condition: flag(static)
+        ghc-options:
+          - -static
+          - -optl-static
+          - -optc-static
+          - -optc-fno-PIC
+      - condition: '!(flag(static))'
+        ghc-options:
+          - -dynamic
     dependencies:
       - servant-t02-todolist
 

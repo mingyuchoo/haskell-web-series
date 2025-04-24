@@ -15,11 +15,9 @@ docker:
   detach: false
   persist: false
   container-name: "servant-t02-todolist"
-  network: host
-  run-args: ["--net=bridge"]
+  run-args: []
   stack-exe: host
   set-user: true
-
 
 # nix:
 #   enable: true
