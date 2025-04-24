@@ -7,8 +7,8 @@ module Presentation.API.TodoAPI
     ) where
 
 import           Control.Monad.IO.Class         (liftIO)
-import           Domain.Repositories.Entities.Todo (Todo, NewTodo, ValidationError)
-import           Application.UseCases.TodoUseCases (getTodoList, getTodo, createNewTodo, updateExistingTodo, removeTodo)
+import           Domain.Repositories.TodoRepository (NewTodo, Todo, ValidationError, TodoRepository(getAllTodos))
+import           Application.UseCases.TodoUseCases (getTodo, createNewTodo, updateExistingTodo, removeTodo)
 import           Infrastructure.Repositories.SQLiteTodoRepository (SQLiteRepo(..))
 import           Servant
     ( Capture
@@ -44,7 +44,7 @@ todoServer = getAll
   :<|> delOne
   where
     getAll :: Handler [Todo]
-    getAll = liftIO $ runSQLiteRepo (getTodoList :: SQLiteRepo [Todo])
+    getAll = liftIO $ runSQLiteRepo (getAllTodos :: SQLiteRepo [Todo])
 
     postOne :: NewTodo -> Handler (Either ValidationError [Todo])
     postOne newTodo = liftIO $ runSQLiteRepo (createNewTodo newTodo :: SQLiteRepo (Either ValidationError [Todo]))

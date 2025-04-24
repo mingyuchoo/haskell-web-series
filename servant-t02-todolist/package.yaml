@@ -16,8 +16,10 @@ extra-source-files:
 dependencies:
   - base
   - aeson
+  - data-default
   - servant-server
   - text
+  - time
   - wai
   - warp
   - sqlite-simple

@@ -7,8 +7,10 @@ module Lib
 
 -- -------------------------------------------------------------------
 
-import           Network.Wai                                    (Application)
-import           Network.Wai.Handler.Warp                       (run)
+import           Network.Wai
+    ( Application
+    )
+import           Network.Wai.Handler.Warp                                  (run)
 import           Servant
     ( Proxy (..)
     , Server
@@ -18,8 +20,8 @@ import           Servant
 
 
 -- Import instances for the combined API type
-import           Lucid                                          ()
-import           Servant.HTML.Lucid                             ()
+import           Lucid                                                     ()
+import           Servant.HTML.Lucid                                        ()
 
 -- Import presentation layer
 import           Presentation.API.TodoAPI
@@ -32,7 +34,7 @@ import           Presentation.Web.WebAPI
     )
 
 -- Import database operations
-import           Infrastructure.Repositories.DatabaseRepository
+import           Infrastructure.Repositories.Operations.DatabaseOperations
     ( initializeDatabase
     )
 -- -------------------------------------------------------------------

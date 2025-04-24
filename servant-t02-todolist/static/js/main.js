@@ -57,20 +57,35 @@ const displayTodos = (todos) => {
   tableBody.innerHTML = '';
   
   if (!todos?.length) {
-    tableBody.innerHTML = '<tr><td colspan="4">No todos found</td></tr>';
+    tableBody.innerHTML = '<tr><td colspan="6">No todos found</td></tr>';
     return;
   }
 
-  const todosHtml = todos.map(({ todoId, todoTitle }) => `
+  const todosHtml = todos.map(({ todoId, todoTitle, createdAt, priority, isCompleted }) => {
+    // Format the priority with appropriate class
+    const priorityClass = `priority-${priority.toLowerCase()}`;
+    const priorityDisplay = `<span class="${priorityClass}">${priority}</span>`;
+    
+    // Format the status with appropriate class
+    const statusClass = isCompleted ? 'status-completed' : 'status-pending';
+    const statusDisplay = `<span class="${statusClass}">${isCompleted ? 'Completed' : 'Pending'}</span>`;
+    
+    // Format the date
+    const formattedDate = new Date(createdAt).toLocaleString();
+    
+    return `
     <tr>
       <td>${todoId}</td>
       <td>${todoTitle}</td>
+      <td>${formattedDate}</td>
+      <td>${priorityDisplay}</td>
+      <td>${statusDisplay}</td>
       <td>
-        <button class="btn" onclick="editTodo(${todoId}, '${todoTitle}')">Edit</button>
+        <button class="btn" onclick="editTodo(${todoId}, '${todoTitle}', '${priority}', ${isCompleted})">Edit</button>
         <button class="btn btn-danger" onclick="deleteTodo(${todoId})">Delete</button>
       </td>
     </tr>
-  `).join('');
+  `}).join('');
   
   tableBody.innerHTML = todosHtml;
 }
@@ -85,6 +100,8 @@ const handleFormSubmit = async (event) => {
   
   const todoId = document.getElementById('todoId').value;
   const todoTitle = document.getElementById('todoTitle').value;
+  const todoPriority = document.getElementById('todoPriority').value;
+  const todoCompleted = document.getElementById('todoCompleted').checked;
   const formMode = document.getElementById('form-mode').value;
   
   if (!todoTitle?.trim()) {
@@ -97,8 +114,8 @@ const handleFormSubmit = async (event) => {
     const endpoint = isCreate ? '/api/todos' : `/api/todos/${todoId}`;
     const method = isCreate ? 'POST' : 'PUT';
     const payload = isCreate 
-      ? { newTodoName: todoTitle }
-      : { todoId: parseInt(todoId, 10), todoTitle };
+      ? { newTodoName: todoTitle, newTodoPriority: todoPriority }
+      : { todoId: parseInt(todoId, 10), todoTitle, priority: todoPriority, isCompleted: todoCompleted };
     
     const response = await fetch(endpoint, {
       method,
@@ -143,6 +160,9 @@ const setupCreateForm = () => {
   document.getElementById('form-mode').value = 'create';
   document.getElementById('todoId').value = '';
   document.getElementById('todoTitle').value = '';
+  document.getElementById('todoPriority').value = 'Medium';
+  document.getElementById('todoCompleted').checked = false;
+  document.getElementById('completed-group').style.display = 'none';
   document.getElementById('submit-btn').textContent = 'Create Todo';
 }
 
@@ -151,12 +171,15 @@ const setupCreateForm = () => {
  * @param {number} todoId - ID of the todo to edit
  * @param {string} todoTitle - Title of the todo to edit
  */
-const editTodo = (todoId, todoTitle) => {
+const editTodo = (todoId, todoTitle, priority, isCompleted) => {
   document.getElementById('form-title').textContent = 'Edit Todo';
   document.getElementById('form-mode').value = 'update';
   document.getElementById('todoId').setAttribute('readonly', 'readonly');
   document.getElementById('todoId').value = todoId;
   document.getElementById('todoTitle').value = todoTitle;
+  document.getElementById('todoPriority').value = priority;
+  document.getElementById('todoCompleted').checked = isCompleted;
+  document.getElementById('completed-group').style.display = 'block';
   document.getElementById('submit-btn').textContent = 'Update Todo';
   
   // Scroll to form
