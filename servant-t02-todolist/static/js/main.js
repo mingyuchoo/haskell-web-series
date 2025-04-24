@@ -418,8 +418,8 @@ const togglePriority = async (element) => {
       throw new Error('Todo not found');
     }
     
-    // Make a deep copy of the todo to avoid reference issues
-    const todo = JSON.parse(JSON.stringify(todos[0]));
+    // Get the todo object
+    const todo = todos[0];
     
     // Determine the next priority
     let newPriority, priorityValue, priorityClass, priorityText;
@@ -444,11 +444,27 @@ const togglePriority = async (element) => {
       priorityText = 'Low';
     }
     
-    // Update the todo with the new priority
+    // Ensure status is in the correct format expected by the server
+    // The server expects 'TodoStatus', 'DoingStatus', or 'DoneStatus'
+    let statusValue = todo.status;
+    if (statusValue === 'Todo') {
+      statusValue = 'TodoStatus';
+    } else if (statusValue === 'Doing') {
+      statusValue = 'DoingStatus';
+    } else if (statusValue === 'Done') {
+      statusValue = 'DoneStatus';
+    }
+    
+    // Create the updated todo with all required fields
     const updatedTodo = {
-      ...todo,
-      priority: priorityValue
+      todoId: todo.todoId,
+      todoTitle: todo.todoTitle,
+      createdAt: todo.createdAt,
+      priority: priorityValue,
+      status: statusValue
     };
+    
+    console.log('Sending update:', JSON.stringify(updatedTodo));
     
     const updateResponse = await fetch(`/api/todos/${todoId}`, {
       method: 'PUT',
@@ -457,7 +473,8 @@ const togglePriority = async (element) => {
     });
     
     if (!updateResponse.ok) {
-      throw new Error(`HTTP error! Status: ${updateResponse.status}`);
+      const errorText = await updateResponse.text();
+      throw new Error(`HTTP error! Status: ${updateResponse.status}, Details: ${errorText}`);
     }
     
     // Update the UI without reloading the entire list
