@@ -1,4 +1,4 @@
-.PHONY: test coverage
+.PHONY: test coverage install
 
 all: clean setup build test run
 
@@ -32,3 +32,8 @@ ghcid:
 
 run:
 	time stack exec servant-t02-todolist-exe
+
+install:
+	stack build --docker --flag servant-t02-todolist:static
+	mkdir -p $(HOME)/.local/bin
+	cp $(shell stack path --local-install-root)/bin/servant-t02-todolist-exe $(HOME)/.local/bin/
