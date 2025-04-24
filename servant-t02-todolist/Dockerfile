@@ -3,15 +3,23 @@
 ARG PROJECT_NAME=servant-t02-todolist
 FROM fpco/stack-build:lts-23.18 AS builder
 WORKDIR /app
-COPY stack.yaml stack.yaml.lock package.yaml ./
+# 프로젝트에 필요한 모든 파일들을 복사
+# 설정 파일들
+COPY stack.yaml stack.yaml.lock package.yaml servant-t02-todolist.cabal Setup.hs ./
+COPY README.md CHANGELOG.md LICENSE ./
+# 소스 디렉토리들
 COPY src/ src/
+COPY app/ app/
+COPY test/ test/
 COPY static/ static/
 
-# Build dependencies first for better caching
-RUN stack build --dependencies-only
+# 프로젝트 설정 및 의존성 설치
+# 의존성 설치 시 Docker 사용하지 않음
+RUN stack setup --no-docker && stack build --dependencies-only --no-docker
 # Build the project (statically linked if desired)
 ARG PROJECT_NAME
-RUN stack install --local-bin-path /app/bin --ghc-options="-optl-static -fPIC"
+# 정적 링킹 관련 오류 해결을 위해 옵션 수정
+RUN stack install --no-docker --local-bin-path /app/bin
 
 # Stage 2: Create the final runtime image
 FROM ubuntu:latest
