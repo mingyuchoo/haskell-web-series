@@ -8,7 +8,7 @@ module Presentation.Web.Templates
 import           Data.Text                      (Text, pack)
 import           Data.Time                      (UTCTime, formatTime, defaultTimeLocale)
 import           Lucid
-import           Domain.Repositories.Entities.Todo (Todo(..), Priority(..))
+import           Domain.Repositories.Entities.Todo (Todo(..), Priority(..), Status(..))
 
 
 -- -------------------------------------------------------------------
@@ -45,16 +45,20 @@ indexTemplate todos = baseTemplate "Todo Management" mempty $ do
         label_ [for_ "todoTitle"] "Todo Title:"
         input_ [type_ "text", id_ "todoTitle", name_ "todoTitle", required_ "required"]
       
-      div_ [class_ "form-group"] $ do
-        label_ [for_ "todoPriority"] "Priority:"
-        select_ [id_ "todoPriority", name_ "todoPriority"] $ do
-          option_ [value_ "Low"] "Low"
-          option_ [value_ "Medium"] "Medium"
-          option_ [value_ "High"] "High"
-      
-      div_ [class_ "form-group", id_ "completed-group", style_ "display: none;"] $ do
-        label_ [for_ "todoCompleted"] "Completed:"
-        input_ [type_ "checkbox", id_ "todoCompleted", name_ "todoCompleted"]
+      div_ [class_ "form-row"] $ do
+        div_ [class_ "form-group priority-group"] $ do
+          label_ [for_ "todoPriority"] "Priority:"
+          select_ [id_ "todoPriority", name_ "todoPriority"] $ do
+            option_ [value_ "Low"] "Low"
+            option_ [value_ "Medium"] "Medium"
+            option_ [value_ "High"] "High"
+        
+        div_ [class_ "form-group", id_ "status-group"] $ do
+          label_ [for_ "todoStatus"] "Status:"
+          select_ [id_ "todoStatus", name_ "todoStatus"] $ do
+            option_ [value_ "Todo"] "Todo"
+            option_ [value_ "Doing"] "Doing"
+            option_ [value_ "Done"] "Done"
       
       button_ [type_ "submit", class_ "btn btn-success", id_ "submit-btn"] "Create Todo"
       button_ [type_ "button", class_ "btn", onclick_ "resetForm()"] "Reset"
@@ -96,21 +100,22 @@ priorityToString Low = "Low"
 priorityToString Medium = "Medium"
 priorityToString High = "High"
 
--- Format completion status
-formatStatus :: Bool -> Html ()
-formatStatus True = span_ [class_ "status-completed"] "Completed"
-formatStatus False = span_ [class_ "status-pending"] "Pending"
+-- Format status
+formatStatus :: Status -> Html ()
+formatStatus DoneStatus = span_ [class_ "status-completed", data_ "status" "done", onclick_ "toggleStatus(this)"] "Done"
+formatStatus DoingStatus = span_ [class_ "status-doing", data_ "status" "doing", onclick_ "toggleStatus(this)"] "Doing"
+formatStatus TodoStatus = span_ [class_ "status-pending", data_ "status" "todo", onclick_ "toggleStatus(this)"] "Todo"
 
 -- Single todo row template
 todoRow :: Todo -> Html ()
-todoRow todo = tr_ $ do
+todoRow todo = tr_ [data_ "todo-id" (pack $ show $ todoId todo)] $ do
   td_ (toHtml $ show $ todoId todo)
   td_ (toHtml $ todoTitle todo)
   td_ [class_ "relative-time", data_ "timestamp" (formatISOTime $ createdAt todo)] (toHtml $ formatTodoTime $ createdAt todo)
   td_ (formatPriority $ priority todo)
-  td_ (formatStatus $ isCompleted todo)
+  td_ (formatStatus $ status todo)
   td_ $ do
-    button_ [class_ "btn", onclick_ $ "editTodo(" <> pack (show $ todoId todo) <> ", '" <> pack (todoTitle todo) <> "', '" <> priorityToString (priority todo) <> "', " <> pack (show $ isCompleted todo) <> ")"]
+    button_ [class_ "btn", onclick_ $ "editTodo(" <> pack (show $ todoId todo) <> ", '" <> pack (todoTitle todo) <> "', '" <> priorityToString (priority todo) <> "', '" <> pack (show $ status todo) <> "')"]
       "Edit"
     button_ [class_ "btn btn-danger", onclick_ $ "deleteTodo(" <> pack (show $ todoId todo) <> ")"]
       "Delete"

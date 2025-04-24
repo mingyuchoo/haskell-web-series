@@ -163,22 +163,30 @@ label {
 }
 
 /* Status styles */
-.status-completed {
+.status-completed, .status-doing, .status-pending {
   display: inline-block;
   padding: 3px 8px;
-  background-color: #2ecc71;
   color: white;
   border-radius: 4px;
   font-size: 0.9em;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.status-completed {
+  background-color: #2ecc71;
+}
+
+.status-doing {
+  background-color: #f39c12;
 }
 
 .status-pending {
-  display: inline-block;
-  padding: 3px 8px;
   background-color: #3498db;
-  color: white;
-  border-radius: 4px;
-  font-size: 0.9em;
+}
+
+.status-completed:hover, .status-doing:hover, .status-pending:hover {
+  opacity: 0.8;
 }
 
 /* Form elements */
@@ -194,6 +202,31 @@ select {
 input[type="checkbox"] {
   margin-right: 8px;
   transform: scale(1.2);
+}
+
+/* Form row for horizontal layout */
+.form-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: flex-end;
+  margin-bottom: 15px;
+}
+
+.priority-group {
+  flex: 1;
+  min-width: 200px;
+}
+
+#completed-group {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0;
+}
+
+#completed-group label {
+  margin-right: 10px;
+  margin-bottom: 0;
 }
 
 /* Relative time styles */

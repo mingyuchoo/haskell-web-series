@@ -112,28 +112,43 @@ const displayTodos = (todos) => {
     return;
   }
 
-  const todosHtml = todos.map(({ todoId, todoTitle, createdAt, priority, isCompleted }) => {
+  const todosHtml = todos.map(({ todoId, todoTitle, createdAt, priority, status }) => {
     // Format the priority with appropriate class
     const priorityClass = `priority-${priority.toLowerCase()}`;
     const priorityDisplay = `<span class="${priorityClass}">${priority}</span>`;
     
     // Format the status with appropriate class
-    const statusClass = isCompleted ? 'status-completed' : 'status-pending';
-    const statusDisplay = `<span class="${statusClass}">${isCompleted ? 'Completed' : 'Pending'}</span>`;
+    let statusClass, statusText, statusDataAttr;
+    
+    if (status === 'DoneStatus') {
+      statusClass = 'status-completed';
+      statusText = 'Done';
+      statusDataAttr = 'done';
+    } else if (status === 'DoingStatus') {
+      statusClass = 'status-doing';
+      statusText = 'Doing';
+      statusDataAttr = 'doing';
+    } else {
+      statusClass = 'status-pending';
+      statusText = 'Todo';
+      statusDataAttr = 'todo';
+    }
+    
+    const statusDisplay = `<span class="${statusClass}" data-status="${statusDataAttr}" data-todo-id="${todoId}" onclick="toggleStatus(this)">${statusText}</span>`;
     
     // Format the date as relative time
     const relativeTime = formatRelativeTime(createdAt);
     const absoluteDate = new Date(createdAt).toLocaleString();
     
     return `
-    <tr>
+    <tr data-todo-id="${todoId}">
       <td>${todoId}</td>
       <td>${todoTitle}</td>
       <td class="relative-time" data-timestamp="${createdAt}" title="${absoluteDate}">${relativeTime}</td>
       <td>${priorityDisplay}</td>
       <td>${statusDisplay}</td>
       <td>
-        <button class="btn" onclick="editTodo(${todoId}, '${todoTitle}', '${priority}', ${isCompleted})">Edit</button>
+        <button class="btn" onclick="editTodo(${todoId}, '${todoTitle}', '${priority}', '${status}')">Edit</button>
         <button class="btn btn-danger" onclick="deleteTodo(${todoId})">Delete</button>
       </td>
     </tr>
@@ -153,7 +168,7 @@ const handleFormSubmit = async (event) => {
   const todoId = document.getElementById('todoId').value;
   const todoTitle = document.getElementById('todoTitle').value;
   const todoPriority = document.getElementById('todoPriority').value;
-  const todoCompleted = document.getElementById('todoCompleted').checked;
+  const todoStatus = document.getElementById('todoStatus').value;
   const formMode = document.getElementById('form-mode').value;
   
   if (!todoTitle?.trim()) {
@@ -165,9 +180,14 @@ const handleFormSubmit = async (event) => {
     const isCreate = formMode === 'create';
     const endpoint = isCreate ? '/api/todos' : `/api/todos/${todoId}`;
     const method = isCreate ? 'POST' : 'PUT';
+    
+    // We need to send the status as a string value (Todo, Doing, Done)
+    // The backend will convert it to the correct enum value
+    // No need to map to enum constructor names (TodoStatus, DoingStatus, DoneStatus)
+    
     const payload = isCreate 
       ? { newTodoName: todoTitle, newTodoPriority: todoPriority }
-      : { todoId: parseInt(todoId, 10), todoTitle, priority: todoPriority, isCompleted: todoCompleted };
+      : { todoId: parseInt(todoId, 10), todoTitle, priority: todoPriority, status: todoStatus };
     
     const response = await fetch(endpoint, {
       method,
@@ -213,8 +233,8 @@ const setupCreateForm = () => {
   document.getElementById('todoId').value = '';
   document.getElementById('todoTitle').value = '';
   document.getElementById('todoPriority').value = 'Medium';
-  document.getElementById('todoCompleted').checked = false;
-  document.getElementById('completed-group').style.display = 'none';
+  document.getElementById('todoStatus').value = 'Todo';
+  document.getElementById('status-group').style.display = 'flex';
   document.getElementById('submit-btn').textContent = 'Create Todo';
 }
 
@@ -223,15 +243,23 @@ const setupCreateForm = () => {
  * @param {number} todoId - ID of the todo to edit
  * @param {string} todoTitle - Title of the todo to edit
  */
-const editTodo = (todoId, todoTitle, priority, isCompleted) => {
+const editTodo = (todoId, todoTitle, priority, status) => {
   document.getElementById('form-title').textContent = 'Edit Todo';
   document.getElementById('form-mode').value = 'update';
   document.getElementById('todoId').setAttribute('readonly', 'readonly');
   document.getElementById('todoId').value = todoId;
   document.getElementById('todoTitle').value = todoTitle;
   document.getElementById('todoPriority').value = priority;
-  document.getElementById('todoCompleted').checked = isCompleted;
-  document.getElementById('completed-group').style.display = 'block';
+  
+  // Parse the status string to get the actual status value
+  let statusValue = 'Todo';
+  if (status === 'DoneStatus') {
+    statusValue = 'Done';
+  } else if (status === 'DoingStatus') {
+    statusValue = 'Doing';
+  }
+  document.getElementById('todoStatus').value = statusValue;
+  document.getElementById('status-group').style.display = 'flex';
   document.getElementById('submit-btn').textContent = 'Update Todo';
   
   // Scroll to form
@@ -297,6 +325,91 @@ const showMessage = (message, type) => {
 /**
  * Show the default message
  */
+/**
+ * Toggle the status of a todo item (Todo -> Doing -> Done -> Todo)
+ * @param {HTMLElement} element - The status element that was clicked
+ */
+const toggleStatus = async (element) => {
+  const todoId = element.getAttribute('data-todo-id');
+  const currentStatus = element.getAttribute('data-status');
+  
+  if (!todoId) return;
+  
+  // Find the todo in the table row
+  const row = element.closest('tr');
+  if (!row) return;
+  
+  try {
+    // Get the current todo data
+    const response = await fetch(`/api/todos/${todoId}`);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    
+    const todos = await response.json();
+    if (!todos || !todos.length) {
+      throw new Error('Todo not found');
+    }
+    
+    // Make a deep copy of the todo to avoid reference issues
+    const todo = JSON.parse(JSON.stringify(todos[0]));
+    
+    // Determine the next status
+    let newStatus;
+    let statusValue;
+    let statusClass;
+    let statusText;
+    
+    if (currentStatus === 'todo') {
+      // Todo -> Doing
+      newStatus = 'doing';
+      statusValue = 'DoingStatus';
+      statusClass = 'status-doing';
+      statusText = 'Doing';
+    } else if (currentStatus === 'doing') {
+      // Doing -> Done
+      newStatus = 'done';
+      statusValue = 'DoneStatus';
+      statusClass = 'status-completed';
+      statusText = 'Done';
+    } else {
+      // Done -> Todo
+      newStatus = 'todo';
+      statusValue = 'TodoStatus';
+      statusClass = 'status-pending';
+      statusText = 'Todo';
+    }
+    
+    // Update the todo with the new status
+    // The backend expects the status as a string value that matches the FromJSON instance in Todo.hs
+    const updatedTodo = {
+      ...todo,
+      status: statusValue  // Use statusValue (TodoStatus, DoingStatus, DoneStatus) as that's what the backend expects
+    };
+    
+    const updateResponse = await fetch(`/api/todos/${todoId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(updatedTodo)
+    });
+    
+    if (!updateResponse.ok) {
+      throw new Error(`HTTP error! Status: ${updateResponse.status}`);
+    }
+    
+    // Update the UI without reloading the entire list
+    element.className = statusClass;
+    element.setAttribute('data-status', newStatus);
+    element.textContent = statusText;
+    
+    showMessage(`Todo status updated to ${statusText}`, 'success');
+  } catch (error) {
+    console.error('Error updating todo status:', error);
+    showMessage(`Error updating todo status: ${error.message}`, 'error');
+  }
+}
+
 const showDefaultMessage = () => {
   const messageContainer = document.getElementById('message-container');
   if (!messageContainer) return;

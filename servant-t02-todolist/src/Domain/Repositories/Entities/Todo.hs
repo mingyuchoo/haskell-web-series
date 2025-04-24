@@ -6,11 +6,13 @@ module Domain.Repositories.Entities.Todo
     , NewTodo(..)
     , ValidationError(..)
     , Priority(..)
+    , Status(..)
     , validateTodoTitle
     ) where
 
-import           Data.Aeson                     (FromJSON, ToJSON)
-import           Data.Text                      (Text, pack)
+import           Data.Aeson                     (FromJSON(..), ToJSON(..), Value(..))
+import           Data.Text                      (Text, pack, unpack)
+
 import           Data.Time                      (UTCTime)
 import           Database.SQLite.Simple         (FromRow (..), ToRow (..), field)
 import           GHC.Generics                   (Generic)
@@ -33,13 +35,37 @@ instance Show Priority where
 instance FromJSON Priority
 instance ToJSON Priority
 
+-- Status levels for todos
+data Status = TodoStatus | DoingStatus | DoneStatus
+    deriving (Eq, Generic, Read)
+    
+-- Show instance for Status
+instance Show Status where
+    show TodoStatus = "Todo"
+    show DoingStatus = "Doing"
+    show DoneStatus = "Done"
+
+-- Custom JSON instances for Status
+instance FromJSON Status where
+    parseJSON (String t) = case unpack t of
+        "Todo" -> return TodoStatus
+        "Doing" -> return DoingStatus
+        "Done" -> return DoneStatus
+        _ -> fail $ "Unknown status: " ++ unpack t
+    parseJSON _ = fail "Expected String for Status"
+
+instance ToJSON Status where
+    toJSON TodoStatus = String (pack "Todo")
+    toJSON DoingStatus = String (pack "Doing")
+    toJSON DoneStatus = String (pack "Done")
+
 -- Core entity
 data Todo = Todo 
     { todoId       :: Int
     , todoTitle    :: String
     , createdAt    :: UTCTime
     , priority     :: Priority
-    , isCompleted  :: Bool
+    , status       :: Status
     }
     deriving (Eq, Generic, Show)
 
@@ -73,16 +99,20 @@ instance FromRow Todo where
     tTitle <- field
     tCreatedAt <- field
     tPriorityStr <- field
-    tIsCompleted <- field
+    tStatusStr <- field
     let tPriority = case tPriorityStr of
           "Low" -> Low
           "Medium" -> Medium
           "High" -> High
           _ -> Medium  -- Default to Medium if unknown
-    return $ Todo tId tTitle tCreatedAt tPriority tIsCompleted
+    let tStatus = case tStatusStr of
+          "Done" -> DoneStatus
+          "Doing" -> DoingStatus
+          _ -> TodoStatus  -- Default to Todo if unknown
+    return $ Todo tId tTitle tCreatedAt tPriority tStatus
 
 instance ToRow Todo where
-  toRow (Todo tId tTitle tCreatedAt tPriority tIsCompleted) = toRow (tId, tTitle, tCreatedAt, show tPriority, tIsCompleted)
+  toRow (Todo tId tTitle tCreatedAt tPriority tStatus) = toRow (tId, tTitle, tCreatedAt, show tPriority, show tStatus)
 
 -- Validation functions
 validateTodoTitle :: String -> Either ValidationError ()
