@@ -23,9 +23,11 @@ dependencies:
   - aeson
   - base
   - blaze-html
+  - bytestring
   - data-default
   - flow
   - http-media
+  - http-types
   - lucid
   - servant-lucid
   - servant-server

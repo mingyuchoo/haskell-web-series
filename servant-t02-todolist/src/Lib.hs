@@ -17,6 +17,11 @@ import           Network.Wai
     )
 import           Network.Wai.Handler.Warp                                  (run)
 
+-- Middleware imports
+import           Presentation.Middleware.LoggingMiddleware
+    ( loggingMiddleware
+    )
+
 -- Servant imports
 import           Servant
     ( Proxy (..)
@@ -43,13 +48,19 @@ import           Presentation.Web.WebAPI
 import           Infrastructure.Repositories.Operations.DatabaseOperations
     ( initializeDatabase
     )
+
+import           Flow
+    ( (<|)
+    )
+
 -- -------------------------------------------------------------------
 -- Application
 -- -------------------------------------------------------------------
 
 -- | Create the WAI application by combining all API endpoints
+-- with request/response logging middleware
 app :: Application
-app = serve appAPI appServer
+app = loggingMiddleware <| serve appAPI appServer
 
 -- | Run the application server
 --

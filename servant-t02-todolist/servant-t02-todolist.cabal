@@ -40,6 +40,7 @@ library
       Infrastructure.Repositories.SQLiteTodoRepository
       Lib
       Presentation.API.TodoAPI
+      Presentation.Middleware.LoggingMiddleware
       Presentation.Web.Templates
       Presentation.Web.WebAPI
   other-modules:
@@ -56,9 +57,11 @@ library
       aeson
     , base
     , blaze-html
+    , bytestring
     , data-default
     , flow
     , http-media
+    , http-types
     , lucid
     , servant-lucid
     , servant-server
@@ -86,9 +89,11 @@ executable servant-t02-todolist-exe
       aeson
     , base
     , blaze-html
+    , bytestring
     , data-default
     , flow
     , http-media
+    , http-types
     , lucid
     , servant-lucid
     , servant-server
@@ -122,12 +127,14 @@ test-suite servant-t02-todolist-test
       aeson
     , base
     , blaze-html
+    , bytestring
     , data-default
     , doctest
     , doctest-discover
     , flow
     , hspec
     , http-media
+    , http-types
     , lucid
     , servant-lucid
     , servant-server
