@@ -8,17 +8,22 @@ module Presentation.Middleware.LoggingMiddleware
 -- Imports
 -- -------------------------------------------------------------------
 
-import           Control.Exception       (SomeException, try)
-import           Data.ByteString         (ByteString)
-import qualified Data.ByteString         as BS
-import           Data.ByteString.Char8   (unpack)
-import           Data.IORef              (IORef, modifyIORef', newIORef, readIORef)
-import           Data.Text               (Text)
-import qualified Data.Text               as T
-import qualified Data.Text.Encoding      as TE
-import           Data.Time               (UTCTime, getCurrentTime)
-import           Flow                    ((<|))
-import           Network.HTTP.Types      (statusCode)
+import           Control.Exception     (SomeException, try)
+import           Data.ByteString       (ByteString)
+import qualified Data.ByteString       as BS
+import           Data.ByteString.Char8 (unpack)
+import           Data.IORef
+    ( IORef
+    , modifyIORef'
+    , newIORef
+    , readIORef
+    )
+import           Data.Text             (Text)
+import qualified Data.Text             as T
+import qualified Data.Text.Encoding    as TE
+import           Data.Time             (UTCTime, getCurrentTime)
+import           Flow                  ((<|))
+import           Network.HTTP.Types    (statusCode)
 import           Network.Wai
     ( Middleware
     , Request
@@ -30,8 +35,8 @@ import           Network.Wai
     , responseHeaders
     , responseStatus
     )
-import qualified Network.Wai             as Wai (rawQueryString)
-import           System.IO               (hFlush, stdout)
+import qualified Network.Wai           as Wai (rawQueryString)
+import           System.IO             (hFlush, stdout)
 
 -- -------------------------------------------------------------------
 -- Middleware Implementation
@@ -44,14 +49,14 @@ loggingMiddleware app req sendResponse = do
     time <- getCurrentTime
     logSection "REQUEST" time
     logRequestInfo req
-    
+
     -- Capture the request body
     (req', bodyContent) <- captureRequestBody req
-    
+
     -- Log the body content (safely)
     logBodyContent bodyContent
     hFlush stdout  -- Ensure output is displayed immediately
-    
+
     -- Call the application with the modified request and intercept the response
     app req' <| \res -> do
         -- Log the response
@@ -91,7 +96,7 @@ logBodyContent :: ByteString -> IO ()
 logBodyContent body = do
     let logLine prefix value = putStrLn <| "  " <> prefix <> ": " <> value
     logLine "Body Length" <| show (BS.length body) <> " bytes"
-    
+
     if BS.null body
         then logLine "Body" "<empty>"
         else do
@@ -106,16 +111,16 @@ captureRequestBody :: Request -> IO (Request, ByteString)
 captureRequestBody req = do
     -- Read all body chunks
     bodyChunks <- readRequestBodyChunks req
-    
+
     -- Convert chunks to a single ByteString
     let bodyContent = BS.concat bodyChunks
-    
+
     -- Create a reference to store the body for later use
     bodyRef <- newIORef [bodyContent]
-    
+
     -- Create a new request with the body restored
     let req' = req { requestBody = getBodyChunk bodyRef }
-    
+
     pure (req', bodyContent)
 
 -- | Read all chunks from the request body
