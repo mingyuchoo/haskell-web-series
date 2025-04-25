@@ -167,7 +167,7 @@ mkTodo todoId' title time prio stat = Todo
     }
 
 -- | Used for creating a new todo without specifying todoId
-newtype NewTodo = NewTodo { newTodoName :: Text }
+newtype NewTodo = NewTodo { newTodoTitle :: Text }
      deriving (Eq, Generic, Show)
 
 -- | Helper function to create a new NewTodo

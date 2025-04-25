@@ -5,6 +5,7 @@ module Main
     ( main
     ) where
 
+
 import           Data.Either
     ( isLeft
     , isRight
@@ -17,8 +18,9 @@ import           Test.Hspec
 import           Domain.Repositories.Entities.Todo
     ( NewTodo (..)
     , Priority (..)
-    , Status (DoingStatus, TodoStatus)
+    , Status (DoingStatus, DoneStatus, TodoStatus)
     , Todo (..)
+    , ValidationError (..)
     , validateTodoTitle
     )
 
@@ -54,6 +56,15 @@ spec = do
                 validateTodoTitle (pack "Buy groceries") `shouldSatisfy` isRight
                 validateTodoTitle (pack "abc") `shouldSatisfy` isRight
                 validateTodoTitle (pack <| replicate 50 'a') `shouldSatisfy` isRight
+                
+            it "should return appropriate error messages" <| do
+                case validateTodoTitle (pack "") of
+                    Left (ValidationError msg) -> msg `shouldBe` "TodoTitle cannot be empty"
+                    Right _ -> expectationFailure "Expected validation error for empty title"
+                
+                case validateTodoTitle (pack "ab") of
+                    Left (ValidationError msg) -> msg `shouldBe` "TodoTitle must be at least 3 characters long"
+                    Right _ -> expectationFailure "Expected validation error for short title"
 
         context "when working with Priority" <| do
             it "should convert Priority to String correctly" <| do
@@ -66,14 +77,44 @@ spec = do
                 succ Low `shouldBe` Medium
                 succ Medium `shouldBe` High
                 succ High `shouldBe` Low  -- Wraps around due to Bounded instance
+                
+                -- Test the reverse cycle
+                pred Low `shouldBe` High
+                pred High `shouldBe` Medium
+                pred Medium `shouldBe` Low
 
             it "should have correct min and max bounds" <| do
                 minBound `shouldBe` Low
                 maxBound `shouldBe` High
+                
+            it "should handle toEnum and fromEnum correctly" <| do
+                toEnum 0 `shouldBe` Low
+                toEnum 1 `shouldBe` Medium
+                toEnum 2 `shouldBe` High
+                toEnum 3 `shouldBe` Low  -- Tests wrapping
+                
+                fromEnum Low `shouldBe` 0
+                fromEnum Medium `shouldBe` 1
+                fromEnum High `shouldBe` 2
+
+        context "when working with Status" <| do
+            it "should convert Status to String correctly" <| do
+                show TodoStatus `shouldBe` "Todo"
+                show DoingStatus `shouldBe` "Doing"
+                show DoneStatus `shouldBe` "Done"
+                
+            it "should cycle through statuses correctly" <| do
+                -- Test the cycle: TodoStatus -> DoingStatus -> DoneStatus -> TodoStatus
+                succ TodoStatus `shouldBe` DoingStatus
+                succ DoingStatus `shouldBe` DoneStatus
+                succ DoneStatus `shouldBe` TodoStatus
+                
+                -- Test the reverse cycle
+                pred TodoStatus `shouldBe` DoneStatus
+                pred DoneStatus `shouldBe` DoingStatus
+                pred DoingStatus `shouldBe` TodoStatus
 
     describe "Infrastructure.Repositories.SQLiteTodoRepository" <| do
-        -- These tests require a database connection
-        -- In a real-world scenario, we would use a test database or mock
         context "when performing database operations" <| do
             it "should be able to create a database connection" <| do
                 withConn (\_ -> pure True) `shouldReturn` True
@@ -88,7 +129,14 @@ spec = do
             it "should accept valid todos" <| do
                 let validTodo = NewTodo (pack "Test Todo")
                 -- This is just a validation test, not actually inserting into DB
-                validateTodoTitle (newTodoName validTodo) `shouldSatisfy` isRight
+                validateTodoTitle (newTodoTitle validTodo) `shouldSatisfy` isRight
+                
+            it "should return validation errors with appropriate messages" <| do
+                let emptyTitleTodo = NewTodo (pack "")
+                result <- runSQLiteRepo <| createNewTodo emptyTitleTodo
+                case result of
+                    Left (ValidationError msg) -> msg `shouldBe` "TodoTitle cannot be empty"
+                    Right _ -> expectationFailure "Expected validation error for empty title"
 
         context "when updating a todo" <| do
             it "should validate the todo before update" <| do
@@ -113,32 +161,7 @@ spec = do
                       , status = DoingStatus
                       }
                 validateTodoTitle (todoTitle validTodo) `shouldSatisfy` isRight
-
-    -- Integration tests that would require a test database setup
-    describe "Integration Tests" <| do
-        context "when using the repository through use cases" <| do
-            it "should handle the full lifecycle of a todo" <| pending
-            -- In a complete test suite, we would:
-            -- 1. Set up a test database
-            -- 2. Create a todo
-            -- 3. Verify it exists
-            -- 4. Update it (including priority and status changes)
-            -- 5. Verify the update
-            -- 6. Delete it
-            -- 7. Verify deletion
-            -- 8. Clean up the test database
-
-        context "when toggling priority and status" <| do
-            it "should correctly cycle through priority levels" <| pending
-            -- This would test the full cycle of priority changes:
-            -- 1. Create a todo with Low priority
-            -- 2. Update to Medium priority
-            -- 3. Update to High priority
-            -- 4. Update back to Low priority
-
-            it "should correctly cycle through status levels" <| pending
-            -- This would test the full cycle of status changes:
-            -- 1. Create a todo with TodoStatus
-            -- 2. Update to DoingStatus
-            -- 3. Update to DoneStatus
-            -- 4. Update back to TodoStatus
+        
+        context "when testing integration features" <| do
+            it "should have integration tests in a real project" <| do
+                pendingWith "Integration tests would be implemented with a proper test database setup"
