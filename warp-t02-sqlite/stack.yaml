@@ -8,6 +8,17 @@ extra-package-dbs: []
 extra-deps: []
 flags: {}
 
+docker:
+  enable: true
+  repo: fpco/stack-build:lts-23.18
+  auto-pull: true
+  detach: false
+  persist: false
+  container-name: "warp-t02-sqlite"
+  run-args: []
+  stack-exe: host
+  set-user: true
+
 # nix:
 #   enable: true
 #   pure: true
