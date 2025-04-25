@@ -33,7 +33,7 @@ You can also use `Makefile` for these works.
 
 # REST API Usage
 
-The following REST endpoints are available once the server is running (default: http://localhost:4000):
+The following REST endpoints are available once the server is running (default: http://localhost:8080):
 
 | Method | Path                  | Description                 |
 |--------|-----------------------|-----------------------------|
@@ -47,31 +47,31 @@ The following REST endpoints are available once the server is running (default: 
 
 #### Get all todos
 ```bash
-curl http://localhost:4000/api/todos
+curl http://localhost:8080/api/todos
 ```
 
 #### Create a new todo
 ```bash
-curl -X POST http://localhost:4000/api/todos \
+curl -X POST http://localhost:8080/api/todos \
   -H "Content-Type: application/json" \
   -d '{"todoId": 1, "todoTitle": "Alice"}'
 ```
 
 #### Get a todo by ID
 ```bash
-curl http://localhost:4000/api/todos/1
+curl http://localhost:8080/api/todos/1
 ```
 
 #### Update a todo by ID
 ```bash
-curl -X PUT http://localhost:4000/api/todos/1 \
+curl -X PUT http://localhost:8080/api/todos/1 \
   -H "Content-Type: application/json" \
   -d '{"todoId": 1, "todoTitle": "Bob"}'
 ```
 
 #### Delete a todo by ID
 ```bash
-curl -X DELETE http://localhost:4000/api/todos/1
+curl -X DELETE http://localhost:8080/api/todos/1
 ```
 
 # References

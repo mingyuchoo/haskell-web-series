@@ -55,14 +55,14 @@ app = serve appAPI appServer
 --
 -- This function:
 -- 1. Initializes the database (creates tables if they don't exist)
--- 2. Starts the web server on port 4000
+-- 2. Starts the web server on port 8080
 appRunner :: IO ()
 appRunner = do
-  putStrLn "Starting server on port 4000..."
+  putStrLn "Starting server on port 8080..."
   -- Initialize database (creates tables if they don't exist)
   _ <- initializeDatabase
   -- Start the web server
-  run 4000 app
+  run 8080 app
 
 -- -------------------------------------------------------------------
 -- API Definitions
