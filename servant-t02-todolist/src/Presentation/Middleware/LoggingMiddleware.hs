@@ -1,4 +1,3 @@
--- | Middleware for logging HTTP requests and responses
 module Presentation.Middleware.LoggingMiddleware
     ( -- * Middleware
       loggingMiddleware
