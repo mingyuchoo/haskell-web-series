@@ -5,17 +5,14 @@ module Lib
     ) where
 
 import           Data.Kind                 ()
+
 import           Flow                      ((<|))
+
 import           Network.HTTP.Types        (status200, status404)
 import           Network.HTTP.Types.Header (hContentType)
-import           Network.Wai
-    ( Request
-    , Response
-    , ResponseReceived
-    , rawPathInfo
-    , responseFile
-    , responseLBS
-    )
+import           Network.Wai               (Request, Response, ResponseReceived,
+                                            rawPathInfo, responseFile,
+                                            responseLBS)
 import           Network.Wai.Handler.Warp  (run)
 
 -- |

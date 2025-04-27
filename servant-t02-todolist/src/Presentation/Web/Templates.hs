@@ -12,18 +12,14 @@ module Presentation.Web.Templates
 -- -------------------------------------------------------------------
 
 import           Data.Text                         (Text, pack)
-import           Data.Time
-    ( UTCTime
-    , defaultTimeLocale
-    , formatTime
-    )
-import           Domain.Repositories.Entities.Todo
-    ( Priority (..)
-    , Status (..)
-    , Todo (..)
-    , todoTitle
-    )
+import           Data.Time                         (UTCTime, defaultTimeLocale,
+                                                    formatTime)
+
+import           Domain.Repositories.Entities.Todo (Priority (..), Status (..),
+                                                    Todo (..), todoTitle)
+
 import           Flow                              ((<|))
+
 import           Lucid
 
 

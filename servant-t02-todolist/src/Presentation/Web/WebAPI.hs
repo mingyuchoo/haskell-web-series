@@ -14,27 +14,24 @@ module Presentation.Web.WebAPI
 -- -------------------------------------------------------------------
 
 import           Control.Monad.IO.Class                           (liftIO)
+
 import           Domain.Repositories.TodoRepository               (getAllTodos)
+
 import           Flow                                             ((<|))
-import           Infrastructure.Repositories.SQLiteTodoRepository
-    ( SQLiteRepo (..)
-    )
+
+import           Infrastructure.Repositories.SQLiteTodoRepository (SQLiteRepo (..))
+
 import           Lucid                                            (Html)
-import           Network.Wai.Application.Static
-    ( defaultWebAppSettings
-    )
-import           Presentation.Web.Templates
-    ( indexTemplate
-    )
-import           Servant
-    ( Get
-    , Handler
-    , Raw
-    , Server
-    , serveDirectoryWith
-    , (:<|>) (..)
-    , (:>)
-    )
+
+import           Network.Wai.Application.Static                   (defaultWebAppSettings)
+
+import           Presentation.Web.Templates                       (indexTemplate)
+
+import           Servant                                          (Get, Handler,
+                                                                   Raw, Server,
+                                                                   serveDirectoryWith,
+                                                                   (:<|>) (..),
+                                                                   (:>))
 import           Servant.HTML.Lucid                               (HTML)
 
 -- -------------------------------------------------------------------

@@ -5,43 +5,30 @@ module Lib
     ) where
 
 import           Control.Exception         (bracket)
+
 import           Data.Aeson                (decode, encode, object)
 import qualified Data.ByteString.Lazy      as LBS
 import           Data.Kind                 ()
 import qualified Data.Text                 as T
-import           Database
-    ( User (..)
-    , createUser
-    , deleteUser
-    , getUser
-    , getUsers
-    , initDB
-    , updateUser
-    )
+
+import           Database                  (User (..), createUser, deleteUser,
+                                            getUser, getUsers, initDB,
+                                            updateUser)
 import           Database.SQLite.Simple    (Connection)
+
 import           Flow                      ((<|))
-import           Network.HTTP.Types
-    ( Status
-    , methodDelete
-    , methodGet
-    , methodPost
-    , methodPut
-    , status200
-    , status201
-    , status204
-    , status400
-    , status404
-    )
+
+import           Network.HTTP.Types        (Status, methodDelete, methodGet,
+                                            methodPost, methodPut, status200,
+                                            status201, status204, status400,
+                                            status404)
 import           Network.HTTP.Types.Header (hContentType)
-import           Network.Wai
-    ( Request (pathInfo, requestMethod)
-    , Response
-    , ResponseReceived
-    , responseFile
-    , responseLBS
-    , strictRequestBody
-    )
+import           Network.Wai               (Request (pathInfo, requestMethod),
+                                            Response, ResponseReceived,
+                                            responseFile, responseLBS,
+                                            strictRequestBody)
 import           Network.Wai.Handler.Warp  (run)
+
 import           Text.Read                 (readMaybe)
 
 -- | Main Function

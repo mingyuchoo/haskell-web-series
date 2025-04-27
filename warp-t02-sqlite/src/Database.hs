@@ -11,20 +11,13 @@ module Database
     , updateUser
     ) where
 
-import           Data.Aeson
-    ( FromJSON
-    , ToJSON
-    , object
-    , parseJSON
-    , toJSON
-    , withObject
-    , (.!=)
-    , (.:)
-    , (.:?)
-    , (.=)
-    )
+import           Data.Aeson             (FromJSON, ToJSON, object, parseJSON,
+                                         toJSON, withObject, (.!=), (.:), (.:?),
+                                         (.=))
 import qualified Data.Text              as T
+
 import           Database.SQLite.Simple
+
 import           Flow                   ((<|))
 
 -- | Database initialization

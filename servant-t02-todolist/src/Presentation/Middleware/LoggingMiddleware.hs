@@ -8,33 +8,26 @@ module Presentation.Middleware.LoggingMiddleware
 -- -------------------------------------------------------------------
 
 import           Control.Exception     (SomeException, try)
+
 import           Data.ByteString       (ByteString)
 import qualified Data.ByteString       as BS
 import           Data.ByteString.Char8 (unpack)
-import           Data.IORef
-    ( IORef
-    , modifyIORef'
-    , newIORef
-    , readIORef
-    )
+import           Data.IORef            (IORef, modifyIORef', newIORef,
+                                        readIORef)
 import           Data.Text             (Text)
 import qualified Data.Text             as T
 import qualified Data.Text.Encoding    as TE
 import           Data.Time             (UTCTime, getCurrentTime)
+
 import           Flow                  ((<|))
+
 import           Network.HTTP.Types    (statusCode)
-import           Network.Wai
-    ( Middleware
-    , Request
-    , Response
-    , pathInfo
-    , requestBody
-    , requestHeaders
-    , requestMethod
-    , responseHeaders
-    , responseStatus
-    )
+import           Network.Wai           (Middleware, Request, Response, pathInfo,
+                                        requestBody, requestHeaders,
+                                        requestMethod, responseHeaders,
+                                        responseStatus)
 import qualified Network.Wai           as Wai (rawQueryString)
+
 import           System.IO             (hFlush, stdout)
 
 -- -------------------------------------------------------------------

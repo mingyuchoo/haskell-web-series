@@ -5,20 +5,21 @@ module Lib
     ) where
 
 import           Control.Monad.IO.Class        (MonadIO (liftIO))
+
 import           Data.Foldable                 (for_)
-import           Data.IORef
-    ( modifyIORef
-    , newIORef
-    , readIORef
-    )
+import           Data.IORef                    (modifyIORef, newIORef,
+                                                readIORef)
 import           Data.Map                      (Map)
 import qualified Data.Map                      as M
 import           Data.Text                     (Text)
 import qualified Data.Text.Lazy                as LT
+
 import           Network.HTTP.Types            (status404)
+
 import           Text.Blaze.Html.Renderer.Text (renderHtml)
 import qualified Text.Blaze.Html5              as H
 import qualified Text.Blaze.Html5.Attributes   as A
+
 import           Web.Scotty
 
 -- | shortener

@@ -7,9 +7,7 @@ module Infrastructure.Repositories.DatabaseRepository
 -- Imports
 -- -------------------------------------------------------------------
 
-import           Infrastructure.Repositories.Operations.DatabaseOperations
-    ( initializeDatabase
-    )
+import           Infrastructure.Repositories.Operations.DatabaseOperations (initializeDatabase)
 
 -- -------------------------------------------------------------------
 -- Repository

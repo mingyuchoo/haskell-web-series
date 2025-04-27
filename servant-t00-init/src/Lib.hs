@@ -1,6 +1,6 @@
-{-# LANGUAGE DataKinds                #-}
-{-# LANGUAGE TemplateHaskell          #-}
-{-# LANGUAGE TypeOperators            #-}
+{-# LANGUAGE DataKinds       #-}
+{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE TypeOperators   #-}
 
 module Lib
     ( app
@@ -12,8 +12,10 @@ import           Data.Aeson.TH
 import           Data.Kind
 import           Data.Text
 import           Data.Time.Calendar
+
 import           Network.Wai
 import           Network.Wai.Handler.Warp
+
 import           Servant
 
 -- |

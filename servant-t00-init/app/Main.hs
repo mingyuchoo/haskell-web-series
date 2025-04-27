@@ -3,7 +3,9 @@ module Main
     ) where
 
 import           Data.Kind
+
 import           Lib
+
 import           System.IO (BufferMode (NoBuffering), hSetBuffering, stdout)
 
 -- |

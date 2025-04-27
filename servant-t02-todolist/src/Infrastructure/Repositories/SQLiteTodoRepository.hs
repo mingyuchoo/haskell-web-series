@@ -25,26 +25,21 @@ module Infrastructure.Repositories.SQLiteTodoRepository
 
 import           Control.Exception                  (try)
 import           Control.Monad                      (void)
+
 import qualified Data.Text                          as T
 import           Data.Time                          (getCurrentTime)
-import           Database.SQLite.Simple
-    ( Connection
-    , Only (Only)
-    , close
-    , execute
-    , execute_
-    , lastInsertRowId
-    , open
-    , query
-    , query_
-    )
+
+import           Database.SQLite.Simple             (Connection, Only (Only),
+                                                     close, execute, execute_,
+                                                     lastInsertRowId, open,
+                                                     query, query_)
+
 import           Domain.Repositories.Entities.Todo  (validateTodoTitle)
-import           Domain.Repositories.TodoRepository
-    ( NewTodo (newTodoTitle)
-    , Todo (Todo, priority, status, todoTitle)
-    , TodoRepository (..)
-    , ValidationError (..)
-    )
+import           Domain.Repositories.TodoRepository (NewTodo (newTodoTitle),
+                                                     Todo (Todo, priority, status, todoTitle),
+                                                     TodoRepository (..),
+                                                     ValidationError (..))
+
 import           Flow                               ((<|))
 -- -------------------------------------------------------------------
 -- Infrastructure

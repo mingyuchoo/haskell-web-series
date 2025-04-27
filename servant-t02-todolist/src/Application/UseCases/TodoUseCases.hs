@@ -14,19 +14,12 @@ module Application.UseCases.TodoUseCases
 -- Imports
 -- -------------------------------------------------------------------
 
-import           Domain.Repositories.Entities.Todo
-    ( NewTodo
-    , Todo
-    , ValidationError
-    )
-import           Domain.Repositories.TodoRepository
-    ( TodoRepository (..)
-    , createTodo
-    , deleteTodo
-    , getAllTodos
-    , getTodoById
-    , updateTodo
-    )
+import           Domain.Repositories.Entities.Todo  (NewTodo, Todo,
+                                                     ValidationError)
+import           Domain.Repositories.TodoRepository (TodoRepository (..),
+                                                     createTodo, deleteTodo,
+                                                     getAllTodos, getTodoById,
+                                                     updateTodo)
 
 -- -------------------------------------------------------------------
 -- Use cases for Todo operations

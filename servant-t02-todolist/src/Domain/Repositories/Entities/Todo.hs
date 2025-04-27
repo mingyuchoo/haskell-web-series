@@ -21,21 +21,18 @@ module Domain.Repositories.Entities.Todo
 -- Imports
 -- -------------------------------------------------------------------
 
-import           Data.Aeson
-    ( FromJSON (..)
-    , ToJSON (..)
-    , Value (..)
-    )
+import           Data.Aeson                      (FromJSON (..), ToJSON (..),
+                                                  Value (..))
 import           Data.Text                       (Text)
 import qualified Data.Text                       as T
 import           Data.Time                       (UTCTime)
-import           Database.SQLite.Simple
-    ( FromRow (..)
-    , ToRow (..)
-    , field
-    )
+
+import           Database.SQLite.Simple          (FromRow (..), ToRow (..),
+                                                  field)
 import           Database.SQLite.Simple.Internal (RowParser)
+
 import           Flow                            ((<|))
+
 import           GHC.Generics                    (Generic)
 
 -- -------------------------------------------------------------------

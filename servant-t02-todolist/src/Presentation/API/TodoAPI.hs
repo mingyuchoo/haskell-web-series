@@ -13,36 +13,30 @@ module Presentation.API.TodoAPI
 -- Imports
 -- -------------------------------------------------------------------
 
-import           Application.UseCases.TodoUseCases
-    ( createNewTodo
-    , getTodo
-    , removeTodo
-    , updateExistingTodo
-    )
+import           Application.UseCases.TodoUseCases                (createNewTodo,
+                                                                   getTodo,
+                                                                   removeTodo,
+                                                                   updateExistingTodo)
+
 import           Control.Monad.IO.Class                           (liftIO)
-import           Domain.Repositories.TodoRepository
-    ( NewTodo
-    , Todo
-    , TodoRepository (getAllTodos)
-    , ValidationError
-    )
+
+import           Domain.Repositories.TodoRepository               (NewTodo,
+                                                                   Todo,
+                                                                   TodoRepository (getAllTodos),
+                                                                   ValidationError)
+
 import           Flow                                             ((<|))
-import           Infrastructure.Repositories.SQLiteTodoRepository
-    ( SQLiteRepo (..)
-    )
-import           Servant
-    ( Capture
-    , Delete
-    , Get
-    , Handler
-    , JSON
-    , Post
-    , Put
-    , ReqBody
-    , Server
-    , type (:<|>) (..)
-    , type (:>)
-    )
+
+import           Infrastructure.Repositories.SQLiteTodoRepository (SQLiteRepo (..))
+
+import           Servant                                          (Capture,
+                                                                   Delete, Get,
+                                                                   Handler,
+                                                                   JSON, Post,
+                                                                   Put, ReqBody,
+                                                                   Server,
+                                                                   type (:<|>) (..),
+                                                                   type (:>))
 
 -- -------------------------------------------------------------------
 -- API Definitions

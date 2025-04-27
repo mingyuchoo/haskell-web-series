@@ -9,47 +9,32 @@ module Lib
 
 -- -------------------------------------------------------------------
 
-import           Control.Monad.IO.Class   (liftIO)
-import           Control.Exception        (try)
-import           Data.Aeson               (FromJSON, ToJSON)
-import           Data.Text                (Text, pack)
-import           Database.SQLite.Simple
-    ( Connection
-    , FromRow (..)
-    , Only (Only)
-    , ToRow (..)
-    , close
-    , execute
-    , execute_
-    , field
-    , open
-    , query
-    , query_
-    , lastInsertRowId
-    )
-import           GHC.Generics             (Generic)
+import           Control.Exception              (try)
+import           Control.Monad.IO.Class         (liftIO)
+
+import           Data.Aeson                     (FromJSON, ToJSON)
+import           Data.Text                      (Text, pack)
+
+import           Database.SQLite.Simple         (Connection, FromRow (..),
+                                                 Only (Only), ToRow (..), close,
+                                                 execute, execute_, field,
+                                                 lastInsertRowId, open, query,
+                                                 query_)
+
+import           GHC.Generics                   (Generic)
+
 import           Lucid
-import           Network.Wai              (Application)
-import           Network.Wai.Handler.Warp (run)
+
+import           Network.Wai                    (Application)
 import           Network.Wai.Application.Static (defaultWebAppSettings)
-import           Servant
-    ( Capture
-    , Delete
-    , Get
-    , Handler
-    , JSON
-    , Post
-    , Proxy (..)
-    , Put
-    , Raw
-    , ReqBody
-    , Server
-    , serveDirectoryWith
-    , serve
-    , type (:<|>) (..)
-    , type (:>)
-    )
-import           Servant.HTML.Lucid       (HTML)
+import           Network.Wai.Handler.Warp       (run)
+
+import           Servant                        (Capture, Delete, Get, Handler,
+                                                 JSON, Post, Proxy (..), Put,
+                                                 Raw, ReqBody, Server, serve,
+                                                 serveDirectoryWith,
+                                                 type (:<|>) (..), type (:>))
+import           Servant.HTML.Lucid             (HTML)
 
 -- -------------------------------------------------------------------
 -- Data
@@ -57,19 +42,20 @@ import           Servant.HTML.Lucid       (HTML)
 
 data User = User { userId   :: Int
                  , userName :: String
-                 } deriving (Eq, Show, Generic)
+                 }
+     deriving (Eq, Generic, Show)
 
 -- Used for creating a new user without specifying userId
-newtype NewUser = NewUser { newUserName :: String
-                         } deriving (Eq, Show, Generic)
+newtype NewUser = NewUser { newUserName :: String }
+     deriving (Eq, Generic, Show)
 
 instance FromJSON NewUser
 
 instance ToJSON NewUser
 
 -- Validation error response
-newtype ValidationError = ValidationError { errorMessage :: Text
-                                         } deriving (Eq, Show, Generic)
+newtype ValidationError = ValidationError { errorMessage :: Text }
+     deriving (Eq, Generic, Show)
 
 instance ToJSON ValidationError
 
@@ -106,7 +92,7 @@ baseTemplate title headContent bodyContent = doctypehtml_ $ do
 indexTemplate :: [User] -> Html ()
 indexTemplate users = baseTemplate "User Management" mempty $ do
   div_ [id_ "message-container"] mempty
-  
+
   -- User form
   div_ [class_ "container"] $ do
     h2_ [id_ "form-title"] "Create New User"
@@ -118,7 +104,7 @@ indexTemplate users = baseTemplate "User Management" mempty $ do
         input_ [type_ "text", id_ "userName", name_ "userName", required_ "required"]
       button_ [type_ "submit", class_ "btn btn-success", id_ "submit-btn"] "Create User"
       button_ [type_ "button", class_ "btn", onclick_ "resetForm()"] "Reset"
-  
+
   -- Users table
   div_ [class_ "container"] $ do
     h2_ "User List"
@@ -269,7 +255,7 @@ validateUsername name
   | null name = Left $ ValidationError "Username cannot be empty"
   | length name < 3 = Left $ ValidationError "Username must be at least 3 characters long"
   | length name > 50 = Left $ ValidationError "Username must be at most 50 characters long"
-  | not (all (\c -> c `elem` ['a'..'z'] ++ ['A'..'Z'] ++ ['0'..'9'] ++ [' ', '_', '-']) name) = 
+  | not (all (\c -> c `elem` ['a'..'z'] ++ ['A'..'Z'] ++ ['0'..'9'] ++ [' ', '_', '-']) name) =
       Left $ ValidationError "Username can only contain letters, numbers, spaces, underscores, and hyphens"
   | otherwise = Right ()
 

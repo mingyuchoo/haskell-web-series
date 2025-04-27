@@ -12,46 +12,26 @@ module Lib
 -- -------------------------------------------------------------------
 
 -- Network/Web imports
-import           Network.Wai
-    ( Application
-    )
+import           Flow                                                      ((<|))
+
+import           Infrastructure.Repositories.Operations.DatabaseOperations (initializeDatabase)
+
+import           Lucid                                                     ()
+
+import           Network.Wai                                               (Application)
 import           Network.Wai.Handler.Warp                                  (run)
 
--- Middleware imports
-import           Presentation.Middleware.LoggingMiddleware
-    ( loggingMiddleware
-    )
+import           Presentation.API.TodoAPI                                  (TodoAPI,
+                                                                            todoServer)
+import           Presentation.Middleware.LoggingMiddleware                 (loggingMiddleware)
+import           Presentation.Web.WebAPI                                   (WebAPI,
+                                                                            webServer)
 
--- Servant imports
-import           Servant
-    ( Proxy (..)
-    , Server
-    , serve
-    , type (:<|>) (..)
-    )
-
--- HTML rendering imports (for instances)
-import           Lucid                                                     ()
+import           Servant                                                   (Proxy (..),
+                                                                            Server,
+                                                                            serve,
+                                                                            type (:<|>) (..))
 import           Servant.HTML.Lucid                                        ()
-
--- API layer imports
-import           Presentation.API.TodoAPI
-    ( TodoAPI
-    , todoServer
-    )
-import           Presentation.Web.WebAPI
-    ( WebAPI
-    , webServer
-    )
-
--- Database operations
-import           Infrastructure.Repositories.Operations.DatabaseOperations
-    ( initializeDatabase
-    )
-
-import           Flow
-    ( (<|)
-    )
 
 -- -------------------------------------------------------------------
 -- Application
