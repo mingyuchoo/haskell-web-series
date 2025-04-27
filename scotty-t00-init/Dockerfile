@@ -1,7 +1,7 @@
 # 프로젝트 이름을 ARG로 받아서 사용
 ARG PROJECT_NAME=servant-t02-todolist
 # 빌드와 실행을 동일한 이미지에서 진행
-FROM fpco/stack-build:lts-23.18
+FROM fpco/stack-build:lts-23.19
 WORKDIR /app
 
 # 프로젝트에 필요한 모든 파일들을 복사
